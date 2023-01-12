@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Chart.js example</title>
+  </head>
+  <body>
+
+    <h1 style="text-align: center">ChartTrends</h1>
+
+    <!-- Categories -->
+    <div class="categoryBtns" ,="" style="height: 300px; text-align: center">
+      <span class="categoryBtn">All</span>
+      <span class="categoryBtn">Gold</span>
+      <span class="categoryBtn">Stocks</span>
+      <span class="categoryBtn">Bonds</span>
+      <span class="categoryBtn">Real Estate</span>
+      <span class="categoryBtn">Commodities</span>
+      <span class="categoryBtn">Crypto</span>
+    </div>
+    
+    <!-- Dropdown menus to choose two graphs to compare -->
+    <!-- **wrap two divs later -->
+    <div class="float-container">
+      <div class="dropdown">
+        <button class="dropbtn">Dropdown</button>
+        <div class="dropdown-content">
+          <a href="#">US 10 Year Treasury Bond Yield</a>
+          <a href="#">S&P 500</a>
+          <a href="#">DXY</a>
+        </div>
+      </div>
+
+        <div class="dropdown">
+        <button class="dropbtn">Dropdown</button>
+        <div class="dropdown-content">
+          <a href="#">US 10 Year Treasury Bond Yield</a>
+          <a href="#">S&P 500</a>
+          <a href="#">DXY</a>
+        </div>
+      </div>
+    </div>
+
+    <form>
+      <label for="search"></label>
+      <input type="search" id="search">
+    </form>
+
+    <div class="content">
+
+    </div>
+
+    <div style="width: 800px; margin-top: 200px">
+      <div style="width: 350px; float: left"><canvas id="chartOne"></canvas></div>
+
+   
+      <script src="/index.61573c24.js" defer=""></script>
+      
+      <div style="width: 350px; float: right"><canvas id="chartTwo"></canvas></div>
+      
+     
+      <script src="/index.1fbe4aba.js" defer=""></script>
+    
+    </div>
+    
+    <div style="width: 800px; margin-top: 200px">
+      <div style="width: 350px; float: left"><canvas id="chartThree"></canvas></div>
+  
+ 
+      <script src="/index.ce4d00f3.js" defer=""></script>
+      
+      <div style="width: 350px; float: right"><canvas id="chartFour"></canvas></div>
+      
+     
+      <script src="/index.ab24eb89.js" defer=""></script>
+    </div>
+
+  
+    
+   
+  
+  </body>
+</html>
+ 
+
+<style>.categoryBtns {
+  border: 100px;
+}
+
+.categoryBtn {
+  color: #fff;
+  background-color: tomato;
+  border: 2px solid #000;
+  margin: 20px;
+  padding: 20px;
+}
+
+.dropbtn {
+  color: #fff;
+  background-color: #04aa6d;
+  border: none;
+  padding: 16px;
+  font-size: 16px;
+}
+
+.dropdown {
+  display: inline-block;
+  position: relative;
+}
+
+.dropdown-content {
+  min-width: 160px;
+  z-index: 1;
+  background-color: #f1f1f1;
+  display: none;
+  position: absolute;
+  box-shadow: 0 8px 16px #0003;
+}
+
+.dropdown-content a {
+  color: #000;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown:hover .dropbtn {
+  background-color: #3e8e41;
+}
+
+</style>
+
+    

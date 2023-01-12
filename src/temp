@@ -1,0 +1,9 @@
+<div style="width: 600px;"><canvas id="chartThree"></canvas></div>
+
+<!-- <script type="module" src="dimensions.js"></script> -->
+<script type="module" src="/src/js/chartThree.js"></script>
+
+<div style="width: 600px;"><canvas id="chartFour"></canvas></div>
+
+<!-- <script type="module" src="dimensions.js"></script> -->
+<script type="module" src="/src/js/chartFour.js"></script>

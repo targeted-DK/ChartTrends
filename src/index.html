@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Chart.js example</title>
+  </head>
+  <body>
+
+    <h1 style="text-align : center">ChartTrends</h1>
+
+    <!-- Categories -->
+    <div class="categoryBtns", style = "height: 300px; text-align: center;">
+      <span class="categoryBtn">All</span>
+      <span class="categoryBtn">Gold</span>
+      <span class="categoryBtn">Stocks</span>
+      <span class="categoryBtn">Bonds</span>
+      <span class="categoryBtn">Real Estate</span>
+      <span class="categoryBtn">Commodities</span>
+      <span class="categoryBtn">Crypto</span>
+    </div>
+    
+    <!-- Dropdown menus to choose two graphs to compare -->
+    <!-- **wrap two divs later -->
+    <div class = "float-container">
+      <div class="dropdown">
+        <button class="dropbtn">Dropdown</button>
+        <div class="dropdown-content">
+          <a href="#">US 10 Year Treasury Bond Yield</a>
+          <a href="#">S&P 500</a>
+          <a href="#">DXY</a>
+        </div>
+      </div>
+
+        <div class="dropdown">
+        <button class="dropbtn">Dropdown</button>
+        <div class="dropdown-content">
+          <a href="#">US 10 Year Treasury Bond Yield</a>
+          <a href="#">S&P 500</a>
+          <a href="#">DXY</a>
+        </div>
+      </div>
+    </div>
+
+    <form>
+      <label for="search"></label>
+      <input type="search" id="search">
+    </form>
+
+    <div class = "content">
+
+    </div>
+
+    <div style = "width:800px; margin-top: 200px;">
+      <div style="width:350px; float:left;"><canvas id="chartOne"></canvas></div>
+
+   
+      <script type="module" src="/src/js/chartOne.js"></script>
+      
+      <div style="width: 350; float:right"><canvas id="chartTwo"></canvas></div>
+      
+     
+      <script type="module" src="/src/js/chartTwo.js"></script>
+    
+    </div>
+    
+    <div style = "width:800px; margin-top: 200px;">
+      <div style="width:350px; float:left;"><canvas id="chartThree"></canvas></div>
+  
+ 
+      <script type="module" src="/src/js/chartThree.js"></script>
+      
+      <div style="width: 350; float:right"><canvas id="chartFour"></canvas></div>
+      
+     
+      <script type="module" src="/src/js/chartFour.js"></script>
+    </div>
+
+  
+    
+   
+  
+  </body>
+</html>
+ 
+
+<style>
+
+  .categoryBtns{
+    border : 100px;
+  }
+
+  .categoryBtn {
+    background-color: tomato;
+    color: white;
+    border: 2px solid black;
+    margin: 20px;
+    padding: 20px;
+  }
+
+  /* Dropdown Button */
+.dropbtn {
+  background-color: #04AA6D;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #ddd;}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {display: block;}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {background-color: #3e8e41;}
+
+
+  </style>
+
+    
