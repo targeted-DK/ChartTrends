@@ -1,9 +1,11 @@
-<div style="width: 600px;"><canvas id="chartThree"></canvas></div>
+<div style = "width:800px">
+    <div style="width:350px; float:left;"><canvas id="chartThree"></canvas></div>
 
-<!-- <script type="module" src="dimensions.js"></script> -->
-<script type="module" src="/src/js/chartThree.js"></script>
-
-<div style="width: 600px;"><canvas id="chartFour"></canvas></div>
-
-<!-- <script type="module" src="dimensions.js"></script> -->
-<script type="module" src="/src/js/chartFour.js"></script>
+    <!-- <script type="module" src="dimensions.js"></script> -->
+    <script type="module" src="/src/js/chartThree.js"></script>
+    
+    <div style="width: 350; float:right"><canvas id="chartFour"></canvas></div>
+    
+    <!-- <script type="module" src="dimensions.js"></script> -->
+    <script type="module" src="/src/js/chartFour.js"></script>
+  </div>

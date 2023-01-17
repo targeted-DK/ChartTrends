@@ -1,10 +1,11 @@
 <!doctype html>
 <html lang="en">
+ 
   <head>
     <title>Chart.js example</title>
   </head>
   <body>
-
+   
     <h1 style="text-align: center">ChartTrends</h1>
 
     <!-- Categories -->
@@ -17,7 +18,7 @@
       <span class="categoryBtn">Commodities</span>
       <span class="categoryBtn">Crypto</span>
     </div>
-    
+   
     <!-- Dropdown menus to choose two graphs to compare -->
     <!-- **wrap two divs later -->
     <div class="float-container">
@@ -40,41 +41,56 @@
       </div>
     </div>
 
-    <form>
+    <!-- Retrieve Data from Fred -->
+    <div class="container">
+      <div class="title">
+        <h1>Making HTTP requests with Axios</h1>
+      </div>
+      <div class="buttons">
+        <button id="category">Category</button>
+        <button id="releases">releases</button>
+        <button id="series">series</button>
+        <button id="sources">sources</button>
+        <button id="tags">tags</button>
+        <!-- <button id="post">POST</button>
+        <button id="concurrent">Concurrent</button> -->
+      </div>
+      <div id="responseDisplay"></div>
+      <script src="/index.14378658.js" defer=""></script>
+      <b id="response">Test</b>
+    </div>
+   
+    <!-- <form>
       <label for="search"></label>
       <input type="search" id="search">
-    </form>
-
-    <div class="content">
-
-    </div>
-
-    <div style="width: 800px; margin-top: 200px">
-      <div style="width: 350px; float: left"><canvas id="chartOne"></canvas></div>
+    </form> -->
+<!-- 
+    <div style = "width:800px; margin-top: 200px;">
+      <div style="width:350px; float:left;"><canvas id="chartOne"></canvas></div>
 
    
-      <script src="/index.61573c24.js" defer=""></script>
+      <script type="module" src="/src/js/chartOne.js"></script>
       
-      <div style="width: 350px; float: right"><canvas id="chartTwo"></canvas></div>
+      <div style="width: 350; float:right"><canvas id="chartTwo"></canvas></div>
       
      
-      <script src="/index.1fbe4aba.js" defer=""></script>
+      <script type="module" src="/src/js/chartTwo.js"></script>
     
     </div>
     
-    <div style="width: 800px; margin-top: 200px">
-      <div style="width: 350px; float: left"><canvas id="chartThree"></canvas></div>
+    <div style = "width:800px; margin-top: 200px;">
+      <div style="width:350px; float:left;"><canvas id="chartThree"></canvas></div>
   
  
-      <script src="/index.ce4d00f3.js" defer=""></script>
+      <script type="module" src="/src/js/chartThree.js"></script>
       
-      <div style="width: 350px; float: right"><canvas id="chartFour"></canvas></div>
+      <div style="width: 350; float:right"><canvas id="chartFour"></canvas></div>
       
      
-      <script src="/index.ab24eb89.js" defer=""></script>
+      <script type="module" src="/src/js/chartFour.js"></script>
     </div>
 
-  
+   -->
     
    
   
