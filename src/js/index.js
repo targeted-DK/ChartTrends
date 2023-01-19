@@ -2,7 +2,7 @@
 import axios from 'axios'
 // import cors from "cors"
 // import express from "express"
-// const app = new express()
+// const anodepp = new express()
 const APIKEY = "c4c4022663dafa850bc174cd583b0579";
 const url = "https://api.stlouisfed.org/fred/category?category_id=125&api_key=$c4c4022663dafa850bc174cd583b0579&file_type=$json)";
 const https = require('https');
@@ -17,29 +17,43 @@ const config = {
  }
 };
 
+
+
+
 function getCategory(){
-const request = https.request(url, (response) => {
-  //  response.headers.origin = "*";
-  let data = '';
-    response.on('data', (chunk) => {
-        data = data + chunk.toString();
-    });
-  
-    response.on('end', () => {
-        const body = JSON.parse(data);
-        console.log(body);
-    });
+
+  axios
+  .get(url, config)
+  .then((response) => {
     document.getElementById("response").innerHTML = response; 
+    console.log(response.data.url);
+    console.log(response.data.explanation);
+    displayOutput(response)
+  })
+  .catch((err) => console.log(err));
+}
+// const request = https.request(url, (response) => {
+//   //  response.headers.origin = "*";
+//   let data = '';
+//     response.on('data', (chunk) => {
+//         data = data + chunk.toString();
+//     });
+  
+//     response.on('end', () => {
+//         const body = JSON.parse(data);
+//         console.log(body);
+//     });
+//     document.getElementById("response").innerHTML = response; 
 
     
-})
+// })
   
-  request.on('error', (error) => {
-      console.log('An error', error);
-  });
+//   request.on('error', (error) => {
+//       console.log('An error', error);
+//   });
   
-request.end() 
-}
+// request.end() 
+
 
 // function getCategory() {
 //   axios

@@ -537,7 +537,7 @@ var _axios = require("axios");
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
 // import cors from "cors"
 // import express from "express"
-// const app = new express()
+// const anodepp = new express()
 const APIKEY = "c4c4022663dafa850bc174cd583b0579";
 const url = "https://api.stlouisfed.org/fred/category?category_id=125&api_key=$c4c4022663dafa850bc174cd583b0579&file_type=$json)";
 const https = require("8971b6dcfa8af041");
@@ -551,23 +551,29 @@ const config = {
     }
 };
 function getCategory() {
-    const request = https.request(url, (response)=>{
-        //  response.headers.origin = "*";
-        let data = "";
-        response.on("data", (chunk)=>{
-            data = data + chunk.toString();
-        });
-        response.on("end", ()=>{
-            const body = JSON.parse(data);
-            console.log(body);
-        });
+    (0, _axiosDefault.default).get(url, config).then((response)=>{
         document.getElementById("response").innerHTML = response;
-    });
-    request.on("error", (error)=>{
-        console.log("An error", error);
-    });
-    request.end();
+        console.log(response.data.url);
+        console.log(response.data.explanation);
+        displayOutput(response);
+    }).catch((err)=>console.log(err));
 }
+// const request = https.request(url, (response) => {
+//   //  response.headers.origin = "*";
+//   let data = '';
+//     response.on('data', (chunk) => {
+//         data = data + chunk.toString();
+//     });
+//     response.on('end', () => {
+//         const body = JSON.parse(data);
+//         console.log(body);
+//     });
+//     document.getElementById("response").innerHTML = response; 
+// })
+//   request.on('error', (error) => {
+//       console.log('An error', error);
+//   });
+// request.end() 
 // function getCategory() {
 //   axios
 //   .get(url)
@@ -4815,9 +4821,9 @@ http.METHODS = [
 ];
 
 },{"ade989c2e85f865b":"csW06","50426bc95b945bee":"47huq","1b61da7243550697":"93zjj","f2ce233698b4cb9a":"iqSVp","3eb258b31cf7c901":"7qjc7"}],"csW06":[function(require,module,exports) {
+var process = require("dd8b59e4a81d4d39");
 var global = arguments[3];
 var Buffer = require("f07894b178e5ecfb").Buffer;
-var process = require("dd8b59e4a81d4d39");
 var capability = require("faee3db1d027e61b");
 var inherits = require("40b23b154eb09b35");
 var response = require("3ff97084ec4af330");
@@ -7267,8 +7273,8 @@ Object.defineProperty(Duplex.prototype, "destroyed", {
 // A bit simpler than readable streams.
 // Implement an async ._write(chunk, encoding, cb), and it'll handle all
 // the drain event emission and buffering.
-var process = require("b0707152c2f2033a");
 var global = arguments[3];
+var process = require("b0707152c2f2033a");
 "use strict";
 module.exports = Writable;
 /* <replacement> */ function WriteReq(chunk, encoding, cb) {
