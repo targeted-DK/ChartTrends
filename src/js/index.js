@@ -25,10 +25,10 @@ function getCategory(){
   axios
   .get(url, config)
   .then((response) => {
-    document.getElementById("response").innerHTML = response; 
     console.log(response.data.url);
     console.log(response.data.explanation);
-    displayOutput(response)
+    document.getElementById("response").innerHTML = response; 
+   
   })
   .catch((err) => console.log(err));
 }
