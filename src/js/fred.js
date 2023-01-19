@@ -5,29 +5,53 @@ const proxy = "https://cryptic-headland-94862.herokuapp.com/";
 axios.defaults.withCredentials = true; 
 import Fred from 'node-fred'
 
-var express = require('express')
-var cors = require('cors')
-var app = express()
+// import {response} from 'express'
+import cors from 'cors';
+// const app = require('express');
 
-app.use(cors())
-
-app.get('/products/:id', function (req, res, next) {
-  res.json({msg: 'This is CORS-enabled for all origins!'})
-})
-
-app.listen(80, function () {
-  console.log('CORS-enabled web server listening on port 80')
-})
+// app.get('/products/:id', cors(), function (req, res, next) {
+//   res.json({msg: 'This is CORS-enabled for a Single Route'})
+// })
+ 
+// app.listen(1234, function () {
+//   console.log('CORS-enabled web server listening on port 1234')
+// })
 
 
+import Fred from 'node-fred'
 const fred = new Fred(APIKEY);
+const express = require('express');
+const app = express();
+const cors = require('cors');
+
+const PORT = 1234;
+
+app.use(cors());
+
+app.get('/', (req, res) => {
+	res.send('Hello, World!');
+});
+
+server.listen(PORT, () => {
+	console.log(`Server running on ${PORT}`);
+});
 
 
-const config =  new Headers({
-  'Content-Type': 'application/json',
-  'Access-Control-Allow-Origin' : '*',
-  'withCredentials' : 'true',
-}); 
+
+function getCategory(categoryID) {
+  fred.categories.getCategory(125)
+    .then((res) => {
+      console.log('Category', res);
+    })
+    .catch((err) => {
+      console.error('Error', err);
+    });
+}
+getCategory(125);
+
+// const fred = new Fred(APIKEY);
+
+
 
 // let response = await fetch('https://api.stlouisfed.org/fred/category?category_id=125&api_key=${APIKEY}&file_type=${FILE_TYPE})', {
 //   method: 'PATCH',
@@ -37,18 +61,19 @@ const config =  new Headers({
 //   }
 // });
 
-function getCategory(categoryID) {
+// function getCategory(categoryID) {
  
-  fetch('https://api.stlouisfed.org/fred/category?category_id=125&api_key=${APIKEY}&file_type=${FILE_TYPE})', {config})
-  .then((res) =>{
-    console.log('Category', res);
-    document.getElementById("response").innerHTML = JSON.stringify(res);
-  })
-  // .then((res) => console.log(res))
-  .catch((err) => {
-      console.error('Error', err);
-    });
-}
+//   fetch('https://api.stlouisfed.org/fred/category?category_id=125&api_key=$c4c4022663dafa850bc174cd583b0579&file_type=$json)')
+//   .then((res) =>{
+//     console.log('Category', res);
+//     document.getElementById("response").innerHTML = JSON.stringify(res);
+//     console.log("fetching success");
+//   })
+//   // .then((res) => console.log(res))
+//   .catch((err) => {
+//       console.error('Error', err);
+//     });
+// }
 
 
 
