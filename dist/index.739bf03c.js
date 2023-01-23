@@ -552,10 +552,9 @@ const config = {
 };
 function getCategory() {
     (0, _axiosDefault.default).get(url, config).then((response)=>{
-        document.getElementById("response").innerHTML = response;
         console.log(response.data.url);
         console.log(response.data.explanation);
-        displayOutput(response);
+        document.getElementById("response").innerHTML = response;
     }).catch((err)=>console.log(err));
 }
 // const request = https.request(url, (response) => {
@@ -609,7 +608,7 @@ document.getElementById("series").addEventListener("click", getCategory);
 document.getElementById("sources").addEventListener("click", getCategory);
 document.getElementById("tags").addEventListener("click", getCategory);
 
-},{"axios":"jo6P5","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","8971b6dcfa8af041":"djrPu"}],"jo6P5":[function(require,module,exports) {
+},{"axios":"jo6P5","8971b6dcfa8af041":"djrPu","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jo6P5":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>(0, _axiosJsDefault.default));
@@ -4821,9 +4820,9 @@ http.METHODS = [
 ];
 
 },{"ade989c2e85f865b":"csW06","50426bc95b945bee":"47huq","1b61da7243550697":"93zjj","f2ce233698b4cb9a":"iqSVp","3eb258b31cf7c901":"7qjc7"}],"csW06":[function(require,module,exports) {
+var Buffer = require("f07894b178e5ecfb").Buffer;
 var process = require("dd8b59e4a81d4d39");
 var global = arguments[3];
-var Buffer = require("f07894b178e5ecfb").Buffer;
 var capability = require("faee3db1d027e61b");
 var inherits = require("40b23b154eb09b35");
 var response = require("3ff97084ec4af330");
@@ -5089,7 +5088,7 @@ var unsafeHeaders = [
     "via"
 ];
 
-},{"dd8b59e4a81d4d39":"d5jf4","f07894b178e5ecfb":"fCgem","faee3db1d027e61b":"jih7t","40b23b154eb09b35":"bRL3M","3ff97084ec4af330":"47huq","e4e10a0ef9c30805":"jXNWE"}],"d5jf4":[function(require,module,exports) {
+},{"f07894b178e5ecfb":"fCgem","dd8b59e4a81d4d39":"d5jf4","faee3db1d027e61b":"jih7t","40b23b154eb09b35":"bRL3M","3ff97084ec4af330":"47huq","e4e10a0ef9c30805":"jXNWE"}],"d5jf4":[function(require,module,exports) {
 // shim for using process in browser
 var process = module.exports = {};
 // cached from whatever global is present so that test runners that stub it
@@ -5312,9 +5311,9 @@ module.exports = function inherits(ctor, superCtor) {
 };
 
 },{}],"47huq":[function(require,module,exports) {
+var process = require("221e7ae6947cf4b6");
 var Buffer = require("846c69e6ff5bef54").Buffer;
 var global = arguments[3];
-var process = require("221e7ae6947cf4b6");
 var capability = require("62e3ee0ba257d7d3");
 var inherits = require("34acc7531a6f19ff");
 var stream = require("f975ad146de40337");

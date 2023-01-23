@@ -3,6 +3,7 @@
  
   <head>
     <title>Chart.js example</title>
+    <!-- <script type = "module" src="./src/app.js"></script> -->
   </head>
   <body>
   
@@ -53,12 +54,14 @@
         <button id="series">series</button>
         <button id="sources">sources</button>
         <button id="tags">tags</button>
-        <!-- <button id="post">POST</button>
-        <button id="concurrent">Concurrent</button> -->
+     
       </div>
       <div id="responseDisplay"></div>
-      <!-- <script type = "module" src="/src/js/proxy.js"></script> -->
-      <script type = "module" src="/src/js/index.js"></script>
+      <script type = "module" src="./index.js"></script>
+      <!-- <script type="module">
+        import { sendRequestToServer } from './index.js';
+        sendRequestToServer(); -->
+      </script>
       <b id="response">Test</b>
     </div>
    

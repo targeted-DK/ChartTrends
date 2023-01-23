@@ -1,5 +1,5 @@
 //Get request
-import { get } from "axios";
+// import { get } from "axios";
 
 get("https://jsonplaceholder.typicode.com/users/1")
     .then((response) => {
