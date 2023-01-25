@@ -142,7 +142,7 @@
       this[globalName] = mainExports;
     }
   }
-})({"ShInH":[function(require,module,exports) {
+})({"jC2qd":[function(require,module,exports) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
@@ -158,7 +158,7 @@ import type {
 interface ParcelRequire {
   (string): mixed;
   cache: {|[string]: ParcelModule|};
-  hotData: mixed;
+  hotData: {|[string]: mixed|};
   Module: any;
   parent: ?ParcelRequire;
   isParcelRequire: true;
@@ -200,7 +200,7 @@ var OldModule = module.bundle.Module;
 function Module(moduleName) {
     OldModule.call(this, moduleName);
     this.hot = {
-        data: module.bundle.hotData,
+        data: module.bundle.hotData[moduleName],
         _acceptCallbacks: [],
         _disposeCallbacks: [],
         accept: function(fn) {
@@ -210,10 +210,11 @@ function Module(moduleName) {
             this._disposeCallbacks.push(fn);
         }
     };
-    module.bundle.hotData = undefined;
+    module.bundle.hotData[moduleName] = undefined;
 }
 module.bundle.Module = Module;
-var checkedAssets, acceptedAssets, assetsToAccept /*: Array<[ParcelRequire, string]> */ ;
+module.bundle.hotData = {};
+var checkedAssets, assetsToDispose, assetsToAccept /*: Array<[ParcelRequire, string]> */ ;
 function getHostname() {
     return HMR_HOST || (location.protocol.indexOf("http") === 0 ? location.hostname : "localhost");
 }
@@ -236,8 +237,8 @@ if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== "undefined") {
     } // $FlowFixMe
     ws.onmessage = async function(event) {
         checkedAssets = {} /*: {|[string]: boolean|} */ ;
-        acceptedAssets = {} /*: {|[string]: boolean|} */ ;
         assetsToAccept = [];
+        assetsToDispose = [];
         var data = JSON.parse(event.data);
         if (data.type === "update") {
             // Remove error overlay if there is one
@@ -249,10 +250,22 @@ if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== "undefined") {
             if (handled) {
                 console.clear(); // Dispatch custom event so other runtimes (e.g React Refresh) are aware.
                 if (typeof window !== "undefined" && typeof CustomEvent !== "undefined") window.dispatchEvent(new CustomEvent("parcelhmraccept"));
-                await hmrApplyUpdates(assets);
-                for(var i = 0; i < assetsToAccept.length; i++){
-                    var id = assetsToAccept[i][1];
-                    if (!acceptedAssets[id]) hmrAcceptRun(assetsToAccept[i][0], id);
+                await hmrApplyUpdates(assets); // Dispose all old assets.
+                let processedAssets = {} /*: {|[string]: boolean|} */ ;
+                for(let i = 0; i < assetsToDispose.length; i++){
+                    let id = assetsToDispose[i][1];
+                    if (!processedAssets[id]) {
+                        hmrDispose(assetsToDispose[i][0], id);
+                        processedAssets[id] = true;
+                    }
+                } // Run accept callbacks. This will also re-execute other disposed assets in topological order.
+                processedAssets = {};
+                for(let i = 0; i < assetsToAccept.length; i++){
+                    let id = assetsToAccept[i][1];
+                    if (!processedAssets[id]) {
+                        hmrAccept(assetsToAccept[i][0], id);
+                        processedAssets[id] = true;
+                    }
                 }
             } else fullReload();
         }
@@ -505,161 +518,73 @@ function hmrAcceptCheckOne(bundle, id, depsByBundle) {
     if (checkedAssets[id]) return true;
     checkedAssets[id] = true;
     var cached = bundle.cache[id];
-    assetsToAccept.push([
+    assetsToDispose.push([
         bundle,
         id
     ]);
-    if (!cached || cached.hot && cached.hot._acceptCallbacks.length) return true;
+    if (!cached || cached.hot && cached.hot._acceptCallbacks.length) {
+        assetsToAccept.push([
+            bundle,
+            id
+        ]);
+        return true;
+    }
 }
-function hmrAcceptRun(bundle, id) {
+function hmrDispose(bundle, id) {
     var cached = bundle.cache[id];
-    bundle.hotData = {};
-    if (cached && cached.hot) cached.hot.data = bundle.hotData;
+    bundle.hotData[id] = {};
+    if (cached && cached.hot) cached.hot.data = bundle.hotData[id];
     if (cached && cached.hot && cached.hot._disposeCallbacks.length) cached.hot._disposeCallbacks.forEach(function(cb) {
-        cb(bundle.hotData);
+        cb(bundle.hotData[id]);
     });
     delete bundle.cache[id];
-    bundle(id);
-    cached = bundle.cache[id];
+}
+function hmrAccept(bundle, id) {
+    // Execute the module.
+    bundle(id); // Run the accept callbacks in the new version of the module.
+    var cached = bundle.cache[id];
     if (cached && cached.hot && cached.hot._acceptCallbacks.length) cached.hot._acceptCallbacks.forEach(function(cb) {
         var assetsToAlsoAccept = cb(function() {
             return getParents(module.bundle.root, id);
         });
-        if (assetsToAlsoAccept && assetsToAccept.length) // $FlowFixMe[method-unbinding]
-        assetsToAccept.push.apply(assetsToAccept, assetsToAlsoAccept);
+        if (assetsToAlsoAccept && assetsToAccept.length) {
+            assetsToAlsoAccept.forEach(function(a) {
+                hmrDispose(a[0], a[1]);
+            }); // $FlowFixMe[method-unbinding]
+            assetsToAccept.push.apply(assetsToAccept, assetsToAlsoAccept);
+        }
     });
-    acceptedAssets[id] = true;
 }
 
 },{}],"8lqZg":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-// const https = require('https');
-// import express, { Router } from 'express';
-// const app = express();
-// import { join } from 'path';
-// const router = express.Router();
-// import cors from 'cors';
-// console.log("Test1");
-// router.get('/',function(req,res){
-//   res.sendFile(join('/Users/dk/Documents/GitHub/ChartTrends/index.html'));
-//   //__dirname : It will resolve to your project folder.
-// });
-// app.use('/', router);
-// app.listen(process.env.port || 1234);
-// app.use(cors())
-// console.log('Running at Port 1234');
-// app.use(function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "http://localhost:1234"); // update to match the domain you will make the request from
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//   next();
-// });
-// app.get('/Users/dk/Documents/GitHub/ChartTrends/index.html', function (req, res, next) {
-//   res.json({msg: 'This is CORS-enabled for all origins!'})
-// })
-// app.get('/index.js', function(req, res, next) {
-//   // Handle the get for this route
-//   console.log()
-// });
-// app.post('/', function(req, res, next) {
-//  // Handle the post for this route
-// });
-// const config = {
-//   headers: {
-//   'Content-Type':  'application/json',
-//   'Access-Control-Allow-Credentials' : 'true',
-//   'Access-Control-Allow-Origin': '*',
-//   'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, PUT, OPTIONS',
-//   'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
-//  }
-// };
-// const fetchData = async (symbol) => {
-//   const response = await fetch(`http://localhost:8000/post-data`, {
-//       method: 'POST',
-//       headers: {
-//           'Content-Type': 'application/json'
-//       },
-//       body: JSON.stringify({ symbol: symbol })
-//   });
-//   const data = await response.json();
-//   console.log(data);
-// }
-// fetchData('AAPL');
 parcelHelpers.export(exports, "sendRequestToServer", ()=>sendRequestToServer);
 var _axios = require("axios");
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
-var _process = require("process");
 const APIKEY = "c4c4022663dafa850bc174cd583b0579";
 const url = "https://api.stlouisfed.org/fred/category?category_id=125?api_key=$c4c4022663dafa850bc174cd583b0579&file_type=$json)";
 const backendURL = "http://localhost:3000/queryRequest";
 function sendRequestToServer(search) {
     console.log("A query request is sent to the server.js");
-    (0, _axiosDefault.default).get("http://localhost:3000/queryRequest").then((response)=>{
+    (0, _axiosDefault.default).get("http://localhost:3000/apiRequest", {
+        params: {
+            data: "10-Year Expected Inflation"
+        }
+    }).then((response)=>{
         console.log("The requested query is executed.");
-        // console.log(response.data.url);
-        document.getElementById("response").innerHTML = response;
+        const data = response.data;
+        console.log(data);
+        document.getElementById("response").innerHTML = data;
     }).catch((err)=>console.log(err));
 }
-// document.getElementById(search).innerHTML = JSON.stringify(data.JSON);
 document.getElementById("category").addEventListener("click", sendRequestToServer);
 document.getElementById("releases").addEventListener("click", sendRequestToServer);
 document.getElementById("series").addEventListener("click", sendRequestToServer);
 document.getElementById("sources").addEventListener("click", sendRequestToServer);
-document.getElementById("tags").addEventListener("click", sendRequestToServer); // const response = await fetch(`http://localhost:3000/`, {
- //       method: 'GET',
- //       headers: {
- //           'Content-Type': 'application/json'
- //       },
- //       body: JSON.stringify({ query: query })
- //   });
- //   const data = await response.json();
- // const request = https.request(url, (response) => {
- //   //  response.headers.origin = "*";
- //   let data = '';
- //     response.on('data', (chunk) => {
- //         data = data + chunk.toString();
- //     });
- //     response.on('end', () => {
- //         const body = JSON.parse(data);
- //         console.log(body);
- //     });
- //     document.getElementById("response").innerHTML = response; 
- // })
- //   request.on('error', (error) => {
- //       console.log('An error', error);
- //   });
- // request.end() 
- // function getCategory() {
- //   axios
- //   .get(url)
- //   .then((response) => {
- //     console.log(response.data.url);
- //     console.log(response.data.explanation);
- //     displayOutput(response)
- //   })
- //   .catch((err) => console.log(err));
- // }
- // app.use(cors())
- // app.get('/products/:id', function (req, res, next) {
- //   res.json({msg: 'This is CORS-enabled for all origins!'})
- // })
- // app.listen(80, function () {
- //   console.log('CORS-enabled web server listening on port 80')
- // })
- // Make a request for a user with a given ID
- // axios.get(url,config)
- // .then((response) => {
- //   // handle success
- //   document.getElementById("response").innerHTML = response;
- //   console.log("fetching success");
- // })
- // .catch((error) => {
- //   // handle error
- //   console.error('Error', error);
- //   document.getElementById("response").innerHTML = "Error";
- // });
+document.getElementById("tags").addEventListener("click", sendRequestToServer);
 
-},{"axios":"jo6P5","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","process":"d5jf4"}],"jo6P5":[function(require,module,exports) {
+},{"axios":"jo6P5","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jo6P5":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>(0, _axiosJsDefault.default));
@@ -1454,8 +1379,8 @@ const validators = (0, _validatorJsDefault.default).validators;
         }
         try {
             promise = (0, _dispatchRequestJsDefault.default).call(this, newConfig);
-        } catch (error1) {
-            return Promise.reject(error1);
+        } catch (error) {
+            return Promise.reject(error);
         }
         i = 0;
         len = responseInterceptorChain.length;
@@ -4780,151 +4705,6 @@ Object.entries(HttpStatusCode).forEach(([key, value])=>{
 });
 exports.default = HttpStatusCode;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"d5jf4":[function(require,module,exports) {
-// shim for using process in browser
-var process = module.exports = {};
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-var cachedSetTimeout;
-var cachedClearTimeout;
-function defaultSetTimout() {
-    throw new Error("setTimeout has not been defined");
-}
-function defaultClearTimeout() {
-    throw new Error("clearTimeout has not been defined");
-}
-(function() {
-    try {
-        if (typeof setTimeout === "function") cachedSetTimeout = setTimeout;
-        else cachedSetTimeout = defaultSetTimout;
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === "function") cachedClearTimeout = clearTimeout;
-        else cachedClearTimeout = defaultClearTimeout;
-    } catch (e1) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-})();
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) //normal enviroments in sane situations
-    return setTimeout(fun, 0);
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch (e1) {
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch (e) {
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) //normal enviroments in sane situations
-    return clearTimeout(marker);
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e1) {
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e) {
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) return;
-    draining = false;
-    if (currentQueue.length) queue = currentQueue.concat(queue);
-    else queueIndex = -1;
-    if (queue.length) drainQueue();
-}
-function drainQueue() {
-    if (draining) return;
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-    var len = queue.length;
-    while(len){
-        currentQueue = queue;
-        queue = [];
-        while(++queueIndex < len)if (currentQueue) currentQueue[queueIndex].run();
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-process.nextTick = function(fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) for(var i = 1; i < arguments.length; i++)args[i - 1] = arguments[i];
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) runTimeout(drainQueue);
-};
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function() {
-    this.fun.apply(null, this.array);
-};
-process.title = "browser";
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ""; // empty string to avoid regexp issues
-process.versions = {};
-function noop() {}
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-process.listeners = function(name) {
-    return [];
-};
-process.binding = function(name) {
-    throw new Error("process.binding is not supported");
-};
-process.cwd = function() {
-    return "/";
-};
-process.chdir = function(dir) {
-    throw new Error("process.chdir is not supported");
-};
-process.umask = function() {
-    return 0;
-};
-
-},{}]},["ShInH","8lqZg"], "8lqZg", "parcelRequire30ab")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["jC2qd","8lqZg"], "8lqZg", "parcelRequire30ab")
 
 //# sourceMappingURL=index.975ef6c8.js.map
