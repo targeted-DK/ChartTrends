@@ -7,12 +7,12 @@ import axios from 'axios';
 export function sendRequestToServer(search){
   console.log("A query request is sent to the server.js");
 
-  axios.get("http://localhost:3000/apiRequest", 
+  axios.get("http://localhost:3000/requests/apiRequest", 
   { 
     params: {
        data : "10-Year Expected Inflation",
        }}
-       )
+    )
   .then((response) => {
     console.log("The requested query is executed.");
     const data = response.data;

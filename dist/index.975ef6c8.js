@@ -567,7 +567,7 @@ const url = "https://api.stlouisfed.org/fred/category?category_id=125?api_key=$c
 const backendURL = "http://localhost:3000/queryRequest";
 function sendRequestToServer(search) {
     console.log("A query request is sent to the server.js");
-    (0, _axiosDefault.default).get("http://localhost:3000/apiRequest", {
+    (0, _axiosDefault.default).get("http://localhost:3000/requests/apiRequest", {
         params: {
             data: "10-Year Expected Inflation"
         }
