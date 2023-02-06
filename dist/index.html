@@ -2,7 +2,12 @@
 <html lang="en">
  
   <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="Donggyu Kim">
+    
     <title>Chart.js example</title>
+
     <!-- <script type = "module" src="./src/app.js"></script> -->
   </head>
   <body>
@@ -11,16 +16,31 @@
     <h1 style="text-align: center">ChartTrends</h1>
 
     <!-- Categories -->
-    <div class="categoryBtns" ,="" style="height: 300px; text-align: center">
-      <span class="categoryBtn">All</span>
-      <span class="categoryBtn">Gold</span>
-      <span class="categoryBtn">Stocks</span>
-      <span class="categoryBtn">Bonds</span>
-      <span class="categoryBtn">Real Estate</span>
-      <span class="categoryBtn">Commodities</span>
-      <span class="categoryBtn">Crypto</span>
+    <!-- Control buttons -->
+    <div id="filterBtnContainer" ,="" style="height: 300px; text-align: center">
+      <button class="filterBtn" onclick="filterSelection('gold')">Gold</button>
+      <button class="filterBtn" onclick="filterSelection('stocks')">Stocks</button>
+      <button class="filterBtn" onclick="filterSelection('bonds')">Bonds</button>
+      <button class="filterBtn" onclick="filterSelection('commodities')">Commodities</button>
+      <button class="filterBtn" onclick="filterSelection('econmomic indicators')">Indicators</button>
     </div>
-   
+
+    <div class="container">
+      <div class="filterDiv cars">BMW</div>
+      <div class="filterDiv colors fruits">Orange</div>
+      <div class="filterDiv cars">Volvo</div>
+      <div class="filterDiv colors">Red</div>
+      <div class="filterDiv cars animals">Mustang</div>
+      <div class="filterDiv colors">Blue</div>
+      <div class="filterDiv animals">Cat</div>
+      <div class="filterDiv animals">Dog</div>
+      <div class="filterDiv fruits">Melon</div>
+      <div class="filterDiv fruits animals">Kiwi</div>
+      <div class="filterDiv fruits">Banana</div>
+      <div class="filterDiv fruits">Lemon</div>
+      <div class="filterDiv animals">Cow</div>
+    </div>
+
     <!-- Dropdown menus to choose two graphs to compare -->
     <!-- **wrap two divs later -->
     <div class="float-container">
@@ -54,60 +74,71 @@
         <button id="series">series</button>
         <button id="sources">sources</button>
         <button id="tags">tags</button>
-     
+        <button id="test">test</button>
       </div>
-      <div id="responseDisplay"></div>
+      <label for="fetchDataFromRDS">Data fetched from database</label>
+
+<textarea id="fetchDataFromRDS" name="fetchDataFromRDS" rows="4" cols="50">
+  TEST
+</textarea>
       <script src="/index.975ef6c8.js" defer=""></script>
-      <!-- <script type="module">
-        import { sendRequestToServer } from './index.js';
-        sendRequestToServer(); -->
-      
-      <b id="response">Test</b>
+    
     </div>
    
-    <!-- <form>
-      <label for="search"></label>
-      <input type="search" id="search">
-    </form> -->
-<!-- 
-    <div style = "width:800px; margin-top: 200px;">
-      <div style="width:350px; float:left;"><canvas id="chartOne"></canvas></div>
-
-   
-      <script type="module" src="/src/js/chartOne.js"></script>
-      
-      <div style="width: 350; float:right"><canvas id="chartTwo"></canvas></div>
-      
-     
-      <script type="module" src="/src/js/chartTwo.js"></script>
-    
-    </div>
-    
-    <div style = "width:800px; margin-top: 200px;">
-      <div style="width:350px; float:left;"><canvas id="chartThree"></canvas></div>
-  
- 
-      <script type="module" src="/src/js/chartThree.js"></script>
-      
-      <div style="width: 350; float:right"><canvas id="chartFour"></canvas></div>
-      
-     
-      <script type="module" src="/src/js/chartFour.js"></script>
-    </div>
-
-   -->
-    
    
   
   </body>
+
+  <footer>
+    <div class="footer">
+      <div class="sec-sec1">
+
+        <div class="long">
+          <a class="navbar-brand footer-brand" href="/">ChartTrends</a>
+        </div>
+        <div class="icons">
+          <a href="https://twitter.com/targeteer9" class="icon twitter" target="_blank">
+            <img src="/twitter.c8f0b56c.svg" alt="Twitter" id="twitter" width="100" height="100">
+     
+           
+          </a>
+        </div>
+      </div>
+
+      <div class="sec-sec2">
+        <a href="/terms-of-use/" class="termsofuse footer-log">Terms of use</a>
+      </div>
+    </div>
+    <!-- FOOTER FOR PHONE -->
+
+
+    <div class="down">
+      <p>Charts powered by Highcharts. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <footer>
+    <div class="container">
+      <p>Copyright &copy; 2023 My Website</p>
+      <nav>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
 </html>
  
 
-<style>.categoryBtns {
+
+
+<style>.filterBtnContainer {
   border: 100px;
 }
 
-.categoryBtn {
+.filterBtn {
   color: #fff;
   background-color: tomato;
   border: 2px solid #000;
@@ -142,6 +173,18 @@
   padding: 12px 16px;
   text-decoration: none;
   display: block;
+}
+
+.sec-sec1 {
+  float: left;
+  width: 50%;
+  text-align: left;
+}
+
+.sec-sec2 {
+  float: right;
+  width: 50%;
+  text-align: right;
 }
 
 .dropdown-content a:hover {

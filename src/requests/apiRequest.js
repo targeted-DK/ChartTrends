@@ -5,43 +5,31 @@
 // const sourcesFunctions = [getSources, getSource, getSourceReleases];
 // const tagsFunctions = [getTags, getRelatedTags, getTagsSeries];
 //two kinds of data source : 
-const Fred = require('node-fred');
-const API_KEY = 'c4c4022663dafa850bc174cd583b0579';
-const fred = new Fred(API_KEY);
-const axios = require('axios');
-const express = require('express');
+import Fred from 'node-fred';
+import APIKeys from '../js/config/APIs/APIkeys.js';
+const fred = new Fred(APIKeys.fredAPIKey);
+import axios from 'axios';
+import express from 'express';
 const router = express.Router();
 const economic_data = {"10-Year Expected Inflation" : "EXPINF10YR"} 
+// Key-Value (Name, fredCode) pairs of data need on the main page.
+// import fredDataCodes from '../js/MainPageCharts/mainPageData.js';
 // const seriesurl = "https://api.stlouisfed.org/fred/series?series_id=EXPINF10YR&api_key=c4c4022663dafa850bc174cd583b0579&file_type=json"
 
 
 var fetchedData = "";
 
-// middleware that is specific to this router
-router.use((req, res, next) => {
-  console.log('Time: ', Date.now())
-  next()
-})
-// define the home page route
-// router.get('/', (req, res) => {
-//   res.send('Birds home page')
-// })
-// define the about route
-// router.get('/about', (req, res) => {
-//   res.send('About birds')
-// })
-
-
 router.get('/apiRequest', (req, routerRes) => {
+  console.log(fredDataCodes);
     console.log("Listening a request from index.js at apiRequest Router");
     const query = req.query.data;
 
     axios.get('https://api.stlouisfed.org/fred/series/observations', {
     params: {
         series_id: 'DGS10',
-        api_key: API_KEY,
-        observation_start : "2021-01-01",
-        observation_end : "2021-02-01",
+        api_key: APIKeys.fredAPIKey,
+        observation_start : "",
+        observation_end : "2022-12-30",
         file_type: 'json'}
     })
     //If get() is successful, check if data exists in the database.
@@ -52,7 +40,9 @@ router.get('/apiRequest', (req, routerRes) => {
       
       // routerRes.send(apiRes.data);
       // console.log()
-      axios.post('http://localhost:3000/requests/mysqlRequest', apiRes.data.observations)
+      // console.log(apiRes.data.observations["date"]);
+      apiRes.data.code = 'DGS10';
+      axios.post('http://localhost:3000/requests/mysqlRequest', apiRes.data)
       .then(response => {
 
 
@@ -61,7 +51,6 @@ router.get('/apiRequest', (req, routerRes) => {
       })
       .catch(error => {
         console.error(error);
-        console.log("ere");
       });
       
       // next();
@@ -82,7 +71,7 @@ router.get('/apiRequest', (req, routerRes) => {
 })
 
 
-function sendDataTomySql(data){
+export function sendDataTomySql(data){
   console.log("1");
   router.post('/', (req, res) => {
     console.log(res);
@@ -106,8 +95,7 @@ function getData(seriesName) {
     });
 }
 
-module.exports = router;
-
+export default router;
 
 
 
