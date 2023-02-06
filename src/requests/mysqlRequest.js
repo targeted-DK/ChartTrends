@@ -111,7 +111,7 @@ export function sendDataToRDS(mappedDataForRds){
 /**
  * 
  * @param {string} tag 
- * @returns {Array<{date, double}>} Data Series
+ * @returns {Array<{date, double}>} a list of (date, value)
  */
 export function getDataFromRDS(tag){
 

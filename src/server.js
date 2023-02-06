@@ -8,8 +8,6 @@ import mysqlRouter from './requests/mysqlRequest.js';
 import database from './js/config/Database/serverConnection.js';
 import { setTimeout } from 'timers/promises';
 import * as refreshData from './js/MainPageCharts/mainPageData.js';
-import readline from 'readline';
-// import loadMainPageData from './js/MainPageCharts/mainPageData
 
 // CORS Configurations
 app.use(cors({
@@ -41,7 +39,8 @@ var nextMidnight = new Date(
 function refreshMainPageEveryMidnight(){
   console.log("Running code at midnight");
   var result = refreshData.refreshDataForMainPage();
-  // console.log(result);
+  console.log("Refreshing data...")
+
 }
 
 /**
