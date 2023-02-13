@@ -7,7 +7,7 @@
     <meta name="author" content="Donggyu Kim">
     
     <title>Chart.js example</title>
-
+    
     <!-- <script type = "module" src="./src/app.js"></script> -->
   </head>
   <body>
@@ -25,25 +25,17 @@
       <button class="filterBtn" onclick="filterSelection('econmomic indicators')">Indicators</button>
     </div>
 
-    <div class="container">
-      <div class="filterDiv cars">BMW</div>
-      <div class="filterDiv colors fruits">Orange</div>
-      <div class="filterDiv cars">Volvo</div>
-      <div class="filterDiv colors">Red</div>
-      <div class="filterDiv cars animals">Mustang</div>
-      <div class="filterDiv colors">Blue</div>
-      <div class="filterDiv animals">Cat</div>
-      <div class="filterDiv animals">Dog</div>
-      <div class="filterDiv fruits">Melon</div>
-      <div class="filterDiv fruits animals">Kiwi</div>
-      <div class="filterDiv fruits">Banana</div>
-      <div class="filterDiv fruits">Lemon</div>
-      <div class="filterDiv animals">Cow</div>
-    </div>
+
+      <div style="width: 800px; height: 400px"><canvas id="mainChart"></canvas></div>     
+   
+    <button id="test">test</button>
+    <!-- <script type = 'module' src = './js/MainPageCharts/drawCharts.js' ></script>  -->
+    
+   
 
     <!-- Dropdown menus to choose two graphs to compare -->
     <!-- **wrap two divs later -->
-    <div class="float-container">
+    <!-- <div class = "float-container">
       <div class="dropdown">
         <button class="dropbtn">Dropdown</button>
         <div class="dropdown-content">
@@ -61,7 +53,7 @@
           <a href="#">DXY</a>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- Retrieve Data from Fred -->
     <div class="container">
@@ -74,15 +66,14 @@
         <button id="series">series</button>
         <button id="sources">sources</button>
         <button id="tags">tags</button>
-        <button id="test">test</button>
+        
       </div>
       <label for="fetchDataFromRDS">Data fetched from database</label>
 
-<textarea id="fetchDataFromRDS" name="fetchDataFromRDS" rows="4" cols="50">
-  TEST
-</textarea>
-      <script src="/index.975ef6c8.js" defer=""></script>
-    
+      <textarea id="fetchDataFromRDS" name="fetchDataFromRDS" rows="4" cols="50">
+        TEST
+      </textarea>
+            <script src="/index.975ef6c8.js" defer=""></script>      
     </div>
    
    
@@ -113,7 +104,7 @@
 
 
     <div class="down">
-      <p>Charts powered by Highcharts. All rights reserved.</p>
+      <p>Charts powered by Chart.js. All rights reserved.</p>
     </div>
   </footer>
 

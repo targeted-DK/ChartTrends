@@ -1,13 +1,17 @@
 import express from 'express';
 import cors from 'cors' ;
 import path from 'path';
+import apiRouter from './js/requests/apiRequest.js';
+import mysqlRouter from './js/requests/mysqlRequest.js';
+import database from './js/config/Database/serverConnection.js';
+import * as mainPageData from './js/MainPageCharts/mainPageData.js';
+import drawCharts from './js/MainPageCharts/drawCharts.js';
 const app = express();
 const router = express.Router();
-import apiRouter from './requests/apiRequest.js';
-import mysqlRouter from './requests/mysqlRequest.js';
-import database from './js/config/Database/serverConnection.js';
+import list from './static/mainDataList.js'
+import { getDataFromRDS } from './js/requests/mysqlRequest.js';
+import { refreshDataForMainPage } from './js/requests/apiRequest.js';
 import { setTimeout } from 'timers/promises';
-import * as refreshData from './js/MainPageCharts/mainPageData.js';
 
 // CORS Configurations
 app.use(cors({
@@ -24,6 +28,40 @@ app.use('/requests', apiRouter); // for handling requests to the root path
 // app.route('/').get(dataSentFromAPI);
 app.use('/requests', mysqlRouter);
 
+/**
+ * This function runs whenever the webpage is loaded
+ * 1) Gets data from mainPageData.js and loads charts on the main webpage using drawCharts.js
+ */
+function main(){
+
+  for (const kv in list) {
+    let fredTag = list[kv];
+
+    getDataFromRDS(fredTag)
+    .then((sqlData)=> 
+      // drawCharts(sqlData)
+      console.log(sqlData)
+    )
+    .catch(error => {
+      console.error(error);
+      return error;
+    })
+    
+
+  
+    //draw chart
+    // drawCharts.createChart(sqlData);
+
+
+    //save as image;
+    // Do something with obj
+  }
+
+};
+  
+  // refreshDataForMainPage();
+  
+
 // Refresh data in the main page every midnight
 var currentDate = new Date();
 var nextMidnight = new Date(
@@ -33,13 +71,15 @@ var nextMidnight = new Date(
   0, 0, 0
 ) - currentDate;
 
+
 /**
  * Runs every midnight to update data on the main page.
  */
 function refreshMainPageEveryMidnight(){
-  console.log("Running code at midnight");
-  var result = refreshData.refreshDataForMainPage();
-  console.log("Refreshing data...")
+  // console.log("Running code at midnight");
+  // var result = mainPageData.refreshDataForMainPage();
+  // console.log("test");
+  // console.log(result);
 
 }
 
@@ -48,7 +88,7 @@ function refreshMainPageEveryMidnight(){
  */
 setInterval(function(){
   console.log("Running code at midnight");
-  var result = refreshData.refreshDataForMainPage();
+  var result = mainPageData.refreshDataForMainPage();
   console.log(result);
 }, nextMidnight);
 
@@ -59,8 +99,9 @@ setInterval(function(){
  */
 app.listen(3000, () => {
   console.log('Server listening on port 3000 using parcel');
-  refreshMainPageEveryMidnight();
+  main();
 
 });
 
 
+// 

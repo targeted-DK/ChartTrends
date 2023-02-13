@@ -11,7 +11,7 @@ import APIKeys from '../config/APIs/APIkeys.js'
  * 
  * @todo add other API functions.
  */
-const fredDataTags = {
+export const fredDataTags = {
     "Market Yield on U.S. Treasury Securities at 10-Year Constant Maturity, Quoted on an Investment Basis" : "DGS10",
     "Nominal Broad U.S. Dollar Index" : "DTWEXBGS",
     "Spot Crude Oil Price: West Texas Intermediate (WTI)" : "WTISPLC",
@@ -27,9 +27,10 @@ const fredDataTags = {
  */
 export async function refreshDataForMainPage(){
     // const snpData = await getSNPDataFromNASDAQ(); 
-    var dataList = getDataFromFRED(fredDataTags);
-    console.log(dataList);
-    
+    // var dataList = getDataFromFRED(fredDataTags);
+    // console.log(dataList);
+  
+    // return dataList;
     // return dataList;
 }
 
@@ -69,8 +70,10 @@ export async function getSNPDataFromNASDAQ(){
  * @todo fix this shit - async issue with foreach.
  */
 export async function getDataFromFRED(fredDataTags){
+    let promises = [];
     let dataList = {};
     Object.entries(fredDataTags).forEach(([key, value]) => {  
+        
         dataList[value] = axios.get('https://api.stlouisfed.org/fred/series/observations', {
             params: {
                 series_id: value,
@@ -79,14 +82,22 @@ export async function getDataFromFRED(fredDataTags){
                 observation_end : "",
                 file_type: 'json'}
             })
-            .then(response =>{
-                return response.data.observations;
-                // dataList[value] = response.data.observations;
+            .then(async response =>{
+                // return response.data.observations;
+                const temp = await response.data;
+
+                axios.post('http://localhost:3000/requests/mysqlRequest',temp)
+                .catch(error => {
+                  console.error(error);
+                });
+                dataList[value] = temp;
             })
             .catch(error => {
                   console.error(error);
             });
         }) 
+
+        // console.log(dataList);
         return dataList;
 }
 

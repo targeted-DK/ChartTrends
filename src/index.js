@@ -8,7 +8,7 @@ import { get } from 'lodash';
 
 /**
  * 
- * @param {{tag : String}} code 
+ * @param {string} code 
  * Send a request to the backend with a FRED tag 
  */
 function sendRequestToServer(code){
@@ -17,7 +17,7 @@ function sendRequestToServer(code){
   axios.get("http://localhost:3000/requests/apiRequest", 
   { 
     params: {
-       data : "10-Year Expected Inflation",
+       data :  "Spot Crude Oil Price: West Texas Intermediate (WTI)"
        }}
     )
   .then((response) => {
@@ -58,7 +58,6 @@ function fetchDatafromDatabase() {
 
     })
     .catch((err) => console.log(err));
-   
     console.log("GET request finished");
 }
 
@@ -68,7 +67,6 @@ document.getElementById("releases").addEventListener("click",fetchDatafromDataba
 document.getElementById("series").addEventListener("click", sendRequestToServer);
 document.getElementById("sources").addEventListener("click", sendRequestToServer);
 document.getElementById("tags").addEventListener("click", sendRequestToServer);
-document.getElementById("test").addEventListener("click", sendRequestToServer);
 
 
  
