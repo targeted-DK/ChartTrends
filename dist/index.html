@@ -1,127 +1,227 @@
 <!doctype html>
 <html lang="en">
- 
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="author" content="Donggyu Kim">
-    
-    <title>Chart.js example</title>
-    
-    <!-- <script type = "module" src="./src/app.js"></script> -->
-  </head>
-  <body>
-  
-   
-    <h1 style="text-align: center">ChartTrends</h1>
 
-    <!-- Categories -->
-    <!-- Control buttons -->
-    <div id="filterBtnContainer" ,="" style="height: 300px; text-align: center">
-      <button class="filterBtn" onclick="filterSelection('gold')">Gold</button>
-      <button class="filterBtn" onclick="filterSelection('stocks')">Stocks</button>
-      <button class="filterBtn" onclick="filterSelection('bonds')">Bonds</button>
-      <button class="filterBtn" onclick="filterSelection('commodities')">Commodities</button>
-      <button class="filterBtn" onclick="filterSelection('econmomic indicators')">Indicators</button>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="author" content="Donggyu Kim">
+  <!-- @todo  - set up goolgle analytics account -->
+  <!-- <script type="text/javascript" async="" src="https://www.google-analytics.com/analytics.js"></script> -->
+  <title>ChartCompare : Find highly correlated charts!</title>
+  <meta name="purpose" content="In pursuit of little-known highly correlated charts to provide robust information to make financial decisions.">
+  <!-- <script type = "module" src="./src/app.js"></script> -->
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <!-- Custom styles for this template -->
+  <link href="/index.f20c0a82.css" rel="stylesheet">
+</head>
+
+<body>
+
+
+  <!-- <h1 style="text-align : center">ChartTrends</h1> -->
+
+  <!-- Categories -->
+  <!-- Control buttons -->
+  <!-- <div id="filterBtnContainer" , style="height:300px; text-align:center;">
+    <button class="filterBtn" onclick="filterSelection('gold')">Gold</button>
+    <button class="filterBtn" onclick="filterSelection('stocks')">Stocks</button>
+    <button class="filterBtn" onclick="filterSelection('bonds')">Bonds</button>
+    <button class="filterBtn" onclick="filterSelection('commodities')">Commodities</button>
+    <button class="filterBtn" onclick="filterSelection('econmomic indicators')">Indicators</button>
+  </div> -->
+
+
+  <header>
+    <div class="collapse bg-dark" id="navbarHeader">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-8 col-md-7 py-4">
+            <h4 class="text-white">ChartCompare</h4>
+            <p class="text-muted">In pursuit of little-known highly correlated charts to provide robust information to make financial decisions.</p>
+          </div>
+          <div class="col-sm-4 offset-md-1 py-4">
+            <h4 class="text-white">Contact</h4>
+            <ul class="list-unstyled">
+              <li><a href="https://twitter.com/targeteer9" class="text-white">Follow on Twitter</a></li>
+              <li><a href="mailto:targeted.dk@gmail.com" class="text-white">Email me</a></li>
+               <li><a href="#" class="text-white">Terms Of Use</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
-
-
-      <div style="width: 800px; height: 400px"><canvas id="mainChart"></canvas></div>     
-   
-    <button id="test">test</button>
-    <!-- <script type = 'module' src = './js/MainPageCharts/drawCharts.js' ></script>  -->
-    
-   
-
-    <!-- Dropdown menus to choose two graphs to compare -->
-    <!-- **wrap two divs later -->
-    <!-- <div class = "float-container">
-      <div class="dropdown">
-        <button class="dropbtn">Dropdown</button>
-        <div class="dropdown-content">
-          <a href="#">US 10 Year Treasury Bond Yield</a>
-          <a href="#">S&P 500</a>
-          <a href="#">DXY</a>
-        </div>
+    <div class="navbar navbar-dark bg-dark box-shadow">
+      <div class="container d-flex justify-content-between">
+        <a href="http://localhost:1234" class="navbar-brand d-flex align-items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+          <strong>ChartCompare</strong>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
       </div>
+    </div>
+  </header>
 
-        <div class="dropdown">
-        <button class="dropbtn">Dropdown</button>
-        <div class="dropdown-content">
-          <a href="#">US 10 Year Treasury Bond Yield</a>
-          <a href="#">S&P 500</a>
-          <a href="#">DXY</a>
-        </div>
+  <main role="main">
+    <section class="jumbotron text-center">
+      <div class="container">
+        <h1 class="jumbotron-heading">ChartCompare</h1>
+        <p class="lead text-muted">In pursuit of little-known highly correlated charts to provide robust information to make financial decisions.</p>
+        <p>
+          <a href="#" class="btn btn-primary my-2">Main call to action</a>
+          <a href="#" class="btn btn-secondary my-2">Secondary action</a>
+        </p>
       </div>
-    </div> -->
+    </section>
 
-    <!-- Retrieve Data from Fred -->
-    <div class="container">
-      <div class="title">
-        <h1>Making HTTP requests with Axios</h1>
-      </div>
-      <div class="buttons">
-        <button id="category">Category</button>
-        <button id="releases">releases</button>
-        <button id="series">series</button>
-        <button id="sources">sources</button>
-        <button id="tags">tags</button>
+    <div class="album py-5 bg-light">
+      <div class="container">
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card mb-4 box-shadow">
+              <a href="sp500-price-earnings-shiller-pe-ratio/">
+              <img class="card-img-top" data-src="./static/images/placeholder.png" src="/main0.0a74761b.png" alt="main-chart-1">
+             </a>
+              <div class="card-body">
+                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                  </div>
+                  <small class="text-muted">9 mins</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card mb-4 box-shadow">
+              <img class="card-img-top" data-src="data-src=&quot;./static/images/placeholder.png&quot;" src="/main1.abcbedbe.png" alt="main-chart-2&quot;">
+              <div class="card-body">
+                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                  </div>
+                  <small class="text-muted">9 mins</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="col-md-4">
+            <div class="card mb-4 box-shadow">
+              <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="Card image cap">
+              <div class="card-body">
+                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                  </div>
+                  <small class="text-muted">9 mins</small>
+                </div>
+              </div>
+            </div>
+          </div> -->
+
+          <div class="col-md-6">
+            <div class="card mb-4 box-shadow">
+              <img class="card-img-top" data-src="./static/images/placeholder.png" src="/main2.a5e1c189.png" alt="main-chart-3">
+              <div class="card-body">
+                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                  </div>
+                  <small class="text-muted">9 mins</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card mb-4 box-shadow">
+              <img class="card-img-top" data-src="./static/images/placeholder.png" src="/main3.06cfff28.png" alt="main-chart-4">
+              <div class="card-body">
+                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                  </div>
+                  <small class="text-muted">9 mins</small>
+                </div>
+              </div>
+            </div>
+          </div>
         
+         
+        </div>
       </div>
-      <label for="fetchDataFromRDS">Data fetched from database</label>
-
-      <textarea id="fetchDataFromRDS" name="fetchDataFromRDS" rows="4" cols="50">
-        TEST
-      </textarea>
-            <script src="/index.975ef6c8.js" defer=""></script>      
     </div>
-   
-   
+  </main>
+
   
-  </body>
 
-  <footer>
-    <div class="footer">
-      <div class="sec-sec1">
 
-        <div class="long">
-          <a class="navbar-brand footer-brand" href="/">ChartTrends</a>
+
+
+      <button id="download">download</button>
+
+
+
+      <!-- Retrieve Data from Fred -->
+      <div class="container">
+        <div class="title">
+          <h1>Making HTTP requests with Axios</h1>
         </div>
-        <div class="icons">
-          <a href="https://twitter.com/targeteer9" class="icon twitter" target="_blank">
-            <img src="/twitter.c8f0b56c.svg" alt="Twitter" id="twitter" width="100" height="100">
-     
-           
-          </a>
+        <div class="buttons">
+          <button id="category">Category</button>
+          <button id="releases">releases</button>
+          <button id="series">series</button>
+          <button id="sources">sources</button>
+          <button id="tags">tags</button>
+
         </div>
       </div>
 
-      <div class="sec-sec2">
-        <a href="/terms-of-use/" class="termsofuse footer-log">Terms of use</a>
-      </div>
-    </div>
-    <!-- FOOTER FOR PHONE -->
+      <script src="/index.739bf03c.js" defer=""></script>
+      <!--Bootstrap css  -->
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+</body>
+
+<footer>
+  <!-- FOOTER FOR PHONE -->
 
 
-    <div class="down">
-      <p>Charts powered by Chart.js. All rights reserved.</p>
-    </div>
-  </footer>
+  <div class="down" style="text-align: center">
+    <p>Charts powered by Chart.js. All rights reserved.</p>
+  </div>
+</footer>
 
-  <footer>
-    <div class="container">
-      <p>Copyright &copy; 2023 My Website</p>
-      <nav>
-        <ul>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Contact</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-        </ul>
-      </nav>
-    </div>
-  </footer>
+<!-- <footer>
+  <div class="container">
+    <p>Copyright &copy; 2023 My Website</p>
+    <nav>
+      <ul>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer> -->
+
 </html>
- 
+
 
 
 
@@ -192,4 +292,25 @@
 
 </style>
 
-    
+
+<!-- Dropdown menus to choose two graphs to compare -->
+<!-- **wrap two divs later -->
+<!-- <div class = "float-container">
+            <div class="dropdown">
+              <button class="dropbtn">Dropdown</button>
+              <div class="dropdown-content">
+                <a href="#">US 10 Year Treasury Bond Yield</a>
+                <a href="#">S&P 500</a>
+                <a href="#">DXY</a>
+              </div>
+            </div>
+
+              <div class="dropdown">
+              <button class="dropbtn">Dropdown</button>
+              <div class="dropdown-content">
+                <a href="#">US 10 Year Treasury Bond Yield</a>
+                <a href="#">S&P 500</a>
+                <a href="#">DXY</a>
+              </div>
+            </div>
+          </div> -->

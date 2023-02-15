@@ -561,6 +561,8 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _axios = require("axios");
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
 var _lodash = require("lodash");
+var _mainDataListJs = require("../src/static/mainDataList.js");
+var _mainDataListJsDefault = parcelHelpers.interopDefault(_mainDataListJs);
 const APIKEY = "c4c4022663dafa850bc174cd583b0579";
 const url = "https://api.stlouisfed.org/fred/category?category_id=125?api_key=$c4c4022663dafa850bc174cd583b0579&file_type=$json)";
 const backendURL = "http://localhost:3000/queryRequest";
@@ -569,17 +571,17 @@ const backendURL = "http://localhost:3000/queryRequest";
  * 
  * @param {string} code 
  * Send a request to the backend with a FRED tag 
- */ function sendRequestToServer(code) {
+ */ function sendRequestToServer(key) {
     console.log("A query request is sent to the server.js");
     (0, _axiosDefault.default).get("http://localhost:3000/requests/apiRequest", {
         params: {
-            data: "Spot Crude Oil Price: West Texas Intermediate (WTI)"
+            data: key
         }
     }).then((response)=>{
         console.log("The requested query is executed.");
-        const data = response.data;
-        console.log(data);
-        document.getElementById("response").innerHTML = data;
+    // const data = response.data;
+    // console.log(data);
+    // document.getElementById("response").innerHTML = data; 
     }).catch((err)=>console.log(err));
 }
 // async function getUser() {
@@ -605,13 +607,18 @@ const backendURL = "http://localhost:3000/queryRequest";
     }).catch((err)=>console.log(err));
     console.log("GET request finished");
 }
+function downloadData() {
+    let list = (0, _mainDataListJsDefault.default);
+    for(const key in list)sendRequestToServer(key);
+}
+document.getElementById("download").addEventListener("click", downloadData);
 document.getElementById("category").addEventListener("click", sendRequestToServer);
 document.getElementById("releases").addEventListener("click", fetchDatafromDatabase);
 document.getElementById("series").addEventListener("click", sendRequestToServer);
 document.getElementById("sources").addEventListener("click", sendRequestToServer);
 document.getElementById("tags").addEventListener("click", sendRequestToServer);
 
-},{"axios":"jo6P5","lodash":"3qBDj","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jo6P5":[function(require,module,exports) {
+},{"axios":"jo6P5","lodash":"3qBDj","../src/static/mainDataList.js":"2VWx8","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jo6P5":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>(0, _axiosJsDefault.default));
@@ -18982,6 +18989,25 @@ var global = arguments[3];
     root._ = _;
 }).call(this);
 
-},{}]},["jC2qd","8lqZg"], "8lqZg", "parcelRequire30ab")
+},{}],"2VWx8":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const mainDataFromFred = {
+    "Market Yield on U.S. Treasury Securities at 10-Year Constant Maturity, Quoted on an Investment Basis": "DGS10",
+    "Nominal Broad U.S. Dollar Index": "DTWEXBGS",
+    "Spot Crude Oil Price: West Texas Intermediate (WTI)": "WTISPLC",
+    "ICE BofA US High Yield Index Option-Adjusted Spread": "BAMLH0A0HYM2",
+    "Real M2 Money Stock": "M2REAL"
+};
+const entireTimeSeriesList = {
+    "Market Yield on U.S. Treasury Securities at 10-Year Constant Maturity, Quoted on an Investment Basis": "DGS10",
+    "Nominal Broad U.S. Dollar Index": "DTWEXBGS",
+    "Spot Crude Oil Price: West Texas Intermediate (WTI)": "WTISPLC",
+    "ICE BofA US High Yield Index Option-Adjusted Spread": "BAMLH0A0HYM2",
+    "Real M2 Money Stock": "M2REAL"
+};
+exports.default = mainDataFromFred;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["jC2qd","8lqZg"], "8lqZg", "parcelRequire30ab")
 
 //# sourceMappingURL=index.975ef6c8.js.map

@@ -135,7 +135,7 @@ export async function getDataFromFRED(fredDataTag){
             params: {
                 series_id: fredDataTag,
                 api_key: APIKeys.fredAPIKey,
-                observation_start : "2023-01-01",
+                observation_start : "2022-08-01",
                 observation_end : "2023-01-31",
                 file_type: 'json'}
             })

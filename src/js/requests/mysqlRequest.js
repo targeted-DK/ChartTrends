@@ -72,29 +72,10 @@ export async function sendDataToRDS(mappedDataForRds) {
   let countQuery = `SELECT id FROM ${table_name} ORDER BY id DESC LIMIT 1`;
   let insertDataQuery = `INSERT INTO ${table_name} (date, value) VALUES ?`;
   
+  let resetQuery = `TRUNCATE TABLE ${table_name}`
   if (database.authorized) {
-    //   database.query(createTableQuery, function (err, results, fields) {
-    //     // Table exists
-    //     let countRows = `SELECT COUNT(*) AS numRows FROM ${table_name}`;
-    //     database.query(countRows, function(err, result) {
-    //       if (err) throw err;
-
-    //       if (result[0].numRows < originalDataSize) {
-    //         // Update new data into table
-    //         console.log("number of rows in the original data is " + result[0].numRows);
-    //         database.query(insertDataQuery, tuples, function(err, result) {
-    //           if (err) throw err;
-    //           console.log('Data is updated to the table');
-    //         });
-    //       } else {
-    //         console.log('The Data is already up-to-date');
-    //       }
-    //     });
-
-
-    // });
-
     // Table does not exist
+    database.query(resetQuery, function (err, result, fields) {
     database.query(createTableQuery, function (err, result, fields) {
 
       //If table does exist
@@ -124,6 +105,7 @@ export async function sendDataToRDS(mappedDataForRds) {
         console.log("Data Inserted");
       });
     });
+  });
     // if (err){
     //   console.log("Table is created but the data is not added to the RDS");
     // }
@@ -163,8 +145,12 @@ export function getDataFromRDS(fredTag) {
     database.query(fetchDataQuery, (error, results) => {
       if (error) {
         reject(error);
+        return;
       }
-      console.log(results);
+      if (!results) {
+        reject(new Error("No results returned from the database query"));
+        return;
+      }
       results.tag = fredTag;
       resolve(results);
     });

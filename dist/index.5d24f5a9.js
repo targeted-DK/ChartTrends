@@ -558,114 +558,70 @@ function hmrAccept(bundle, id) {
 
 },{}],"2vJ2X":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-var _auto = require("chart.js/auto");
-var _autoDefault = parcelHelpers.interopDefault(_auto);
-var test1 = [
-    "1962-01-02",
-    "1962-01-03",
-    "1962-01-04",
-    "1962-01-05",
-    "1962-01-08",
-    "1962-01-09",
-    "1962-01-10",
-    "1962-01-11",
-    "1962-01-12",
-    "1962-01-15",
-    "1962-01-16",
-    "1962-01-17",
-    "1962-01-18",
-    "1962-01-19",
-    "1962-01-22",
-    "1962-01-23",
-    "1962-01-24",
-    "1962-01-25",
-    "1962-01-26",
-    "1962-01-29"
-];
-var test2 = [
-    "4.06",
-    "4.03",
-    "3.99",
-    "4.02",
-    "4.03",
-    "4.05",
-    "4.07",
-    "4.08",
-    "4.08",
-    "4.10",
-    "4.13",
-    "4.12",
-    "4.11",
-    "4.11",
-    "4.09",
-    "4.11",
-    "4.10",
-    "4.11",
-    "4.11",
-    "4.12",
-    "4.11",
-    "4.10",
-    "4.09"
-];
-// async function createChart(data){
-//     console.log("Test Button clicked to draw a chart");
-(async function() {
-    const data = [
-        {
-            year: 2010,
-            count: 10
-        },
-        {
-            year: 2011,
-            count: 20
-        },
-        {
-            year: 2012,
-            count: 15
-        },
-        {
-            year: 2013,
-            count: 25
-        },
-        {
-            year: 2014,
-            count: 22
-        },
-        {
-            year: 2015,
-            count: 30
-        },
-        {
-            year: 2016,
-            count: 28
-        }
-    ];
-    new (0, _autoDefault.default)(document.getElementById("mainChart"), {
-        type: "bar",
+parcelHelpers.defineInteropFlag(exports);
+var _chartJs = require("chart.js");
+var _chartJsDefault = parcelHelpers.interopDefault(_chartJs);
+var _canvas = require("canvas");
+var _canvasDefault = parcelHelpers.interopDefault(_canvas);
+var _fs = require("fs");
+var _fsDefault = parcelHelpers.interopDefault(_fs);
+var _directoriesJs = require("../config/directories.js");
+var _directoriesJsDefault = parcelHelpers.interopDefault(_directoriesJs);
+let count = 0; //number of images in the main page.
+/**
+ * 
+ * @param {} data 
+ * Data is retrieved from the rds, with date, value and fredCode(or names) and saves the chart as an image to the images folder.
+ */ async function createChart(data) {
+    console.log("here");
+    // data = fs.readFileSync('../../../errorlogs/Untitled.csv');
+    var canvas = new (0, _canvasDefault.default).Canvas(800, 600);
+    var ctx = canvas.getContext("2d");
+    var chart = new (0, _chartJsDefault.default)(ctx, {
+        type: "line",
         data: {
-            labels: data.map((row)=>row.year),
+            labels: data.map((row)=>new Date(row["date"]).getDate()),
             datasets: [
                 {
-                    label: "C1",
-                    data: data.map((row)=>row.count)
+                    label: data.tag,
+                    data: data.map((row)=>row.value)
                 }
             ]
         }
     });
-})(); //       console.log("reached the end of drawCharts.js")
+    var stream = canvas.createPNGStream();
+    var out = (0, _fsDefault.default).createWriteStream((0, _directoriesJsDefault.default).__imageDir + count + ".png");
+    count++;
+    stream.pipe(out);
+    out.on("finish", function() {
+        console.log("The chart was saved as an image.");
+    });
+    //image counter (4 max for now)
+    if (count == 3) count = 0;
+}
+exports.default = createChart; // function filterZeros(data){
+ //         var values = data.map(function(row) {
+ //           return row.value;
+ //         });
+ //         values = values.filter(function(d) {
+ //         return d !== null && d !== undefined;
+ //       })
+ //       console.log(data);
+ //       return data;
+ // }
+ /**
+ * 
+ * @param {Chart} chartObject 
+ * Saves Chart object as an image.
+ */  // function saveChartAsImg(chartObject){
+ //         var image = chartObject.toBaseImage();
+ // }
+ //       console.log("reached the end of drawCharts.js")
  // };
  // document.getElementById("test").addEventListener("click", createChart);
  // export default createChart;
 
-},{"chart.js/auto":"d8NN9","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"d8NN9":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _chartJs = require("../dist/chart.js");
-parcelHelpers.exportAll(_chartJs, exports);
-(0, _chartJs.Chart).register(...(0, _chartJs.registerables));
-exports.default = (0, _chartJs.Chart);
-
-},{"../dist/chart.js":"ipU8D","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ipU8D":[function(require,module,exports) {
+},{"chart.js":"ipU8D","canvas":"a9zrl","fs":"jhUEF","../config/directories.js":"iWe3J","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ipU8D":[function(require,module,exports) {
 /*!
  * Chart.js v4.2.1
  * https://www.chartjs.org
@@ -13832,6 +13788,143 @@ class Color {
 function index_esm(input) {
     return new Color(input);
 }
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"a9zrl":[function(require,module,exports) {
+/* globals document, ImageData */ const parseFont = require("3e2412211c1424f5");
+exports.parseFont = parseFont;
+exports.createCanvas = function(width, height) {
+    return Object.assign(document.createElement("canvas"), {
+        width: width,
+        height: height
+    });
+};
+exports.createImageData = function(array, width, height) {
+    // Browser implementation of ImageData looks at the number of arguments passed
+    switch(arguments.length){
+        case 0:
+            return new ImageData();
+        case 1:
+            return new ImageData(array);
+        case 2:
+            return new ImageData(array, width);
+        default:
+            return new ImageData(array, width, height);
+    }
+};
+exports.loadImage = function(src, options) {
+    return new Promise(function(resolve, reject) {
+        const image = Object.assign(document.createElement("img"), options);
+        function cleanup() {
+            image.onload = null;
+            image.onerror = null;
+        }
+        image.onload = function() {
+            cleanup();
+            resolve(image);
+        };
+        image.onerror = function() {
+            cleanup();
+            reject(new Error('Failed to load the image "' + src + '"'));
+        };
+        image.src = src;
+    });
+};
+
+},{"3e2412211c1424f5":"iqVnt"}],"iqVnt":[function(require,module,exports) {
+"use strict";
+/**
+ * Font RegExp helpers.
+ */ const weights = "bold|bolder|lighter|[1-9]00";
+const styles = "italic|oblique";
+const variants = "small-caps";
+const stretches = "ultra-condensed|extra-condensed|condensed|semi-condensed|semi-expanded|expanded|extra-expanded|ultra-expanded";
+const units = "px|pt|pc|in|cm|mm|%|em|ex|ch|rem|q";
+const string = "'([^']+)'|\"([^\"]+)\"|[\\w\\s-]+";
+// [ [ <‘font-style’> || <font-variant-css21> || <‘font-weight’> || <‘font-stretch’> ]?
+//    <‘font-size’> [ / <‘line-height’> ]? <‘font-family’> ]
+// https://drafts.csswg.org/css-fonts-3/#font-prop
+const weightRe = new RegExp(`(${weights}) +`, "i");
+const styleRe = new RegExp(`(${styles}) +`, "i");
+const variantRe = new RegExp(`(${variants}) +`, "i");
+const stretchRe = new RegExp(`(${stretches}) +`, "i");
+const sizeFamilyRe = new RegExp(`([\\d\\.]+)(${units}) *((?:${string})( *, *(?:${string}))*)`);
+/**
+ * Cache font parsing.
+ */ const cache = {};
+const defaultHeight = 16 // pt, common browser default
+;
+/**
+ * Parse font `str`.
+ *
+ * @param {String} str
+ * @return {Object} Parsed font. `size` is in device units. `unit` is the unit
+ *   appearing in the input string.
+ * @api private
+ */ module.exports = (str)=>{
+    // Cached
+    if (cache[str]) return cache[str];
+    // Try for required properties first.
+    const sizeFamily = sizeFamilyRe.exec(str);
+    if (!sizeFamily) return; // invalid
+    // Default values and required properties
+    const font = {
+        weight: "normal",
+        style: "normal",
+        stretch: "normal",
+        variant: "normal",
+        size: parseFloat(sizeFamily[1]),
+        unit: sizeFamily[2],
+        family: sizeFamily[3].replace(/["']/g, "").replace(/ *, */g, ",")
+    };
+    // Optional, unordered properties.
+    let weight, style, variant, stretch;
+    // Stop search at `sizeFamily.index`
+    const substr = str.substring(0, sizeFamily.index);
+    if (weight = weightRe.exec(substr)) font.weight = weight[1];
+    if (style = styleRe.exec(substr)) font.style = style[1];
+    if (variant = variantRe.exec(substr)) font.variant = variant[1];
+    if (stretch = stretchRe.exec(substr)) font.stretch = stretch[1];
+    // Convert to device units. (`font.unit` is the original unit)
+    // TODO: ch, ex
+    switch(font.unit){
+        case "pt":
+            font.size /= 0.75;
+            break;
+        case "pc":
+            font.size *= 16;
+            break;
+        case "in":
+            font.size *= 96;
+            break;
+        case "cm":
+            font.size *= 96.0 / 2.54;
+            break;
+        case "mm":
+            font.size *= 96.0 / 25.4;
+            break;
+        case "%":
+            break;
+        case "em":
+        case "rem":
+            font.size *= defaultHeight / 0.75;
+            break;
+        case "q":
+            font.size *= 96 / 25.4 / 4;
+            break;
+    }
+    return cache[str] = font;
+};
+
+},{}],"jhUEF":[function(require,module,exports) {
+"use strict";
+
+},{}],"iWe3J":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const __imageDir = "/Users/dk/Documents/GitHub/ChartTrends/src/static/images/";
+exports.default = {
+    __imageDir
+};
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["3nzWi","2vJ2X"], "2vJ2X", "parcelRequire30ab")
 
