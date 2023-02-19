@@ -1,12 +1,17 @@
 
 import mysql from 'mysql2';
+// import '../env.mjs';
+// import { db_host } from '../environment.js';
+// import { db_host, db_user , db_pass , db_name , nasdaqAPIKey, fredAPIKey,teAPIKEY } from "../environment.js";
+import dotenv from 'dotenv';
+dotenv.config();
 
 const connection = mysql.createConnection({
-  host: 'rdsdbchartweb.cabtxszlvlkn.ap-northeast-2.rds.amazonaws.com',
-  port: '3306',
-  user: 'admin',
-  password: 'kim76050162',
-  database: 'TEST',
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_TEST,
   // connectTimeout : 10000000
 });
 
@@ -20,7 +25,7 @@ const grantPrivilegesSQL = `GRANT CREATE, SELECT, INSERT, UPDATE, DELETE ON TEST
 
 connection.query(grantPrivilegesSQL, function (error, results, fields) {
   if (error) throw error;
-  // console.log("Privileges granted successfully");
+  console.log("Privileges granted successfully");
 });
 
 export default connection;

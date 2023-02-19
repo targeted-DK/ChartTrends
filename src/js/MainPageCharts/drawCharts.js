@@ -19,7 +19,7 @@ async function createChart(data) {
 
   var stream = canvas.createPNGStream();
 
-  var out = fs.createWriteStream(directory.__imageDir + 'main' + count + '.png');
+  var out = fs.createWriteStream(directory.__imageDir + 'main-' + count + '.png');
   count++;
   stream.pipe(out);
   out.on('finish', function () {
