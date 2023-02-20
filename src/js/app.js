@@ -10,6 +10,7 @@ import session from 'express-session';
 import apiRouter from './routes/requests/apiRequest.js';
 import mysqlRouter from './routes/requests/mysqlRequest.js';
 import chartRouter from './routes/chart.js';
+import thoughtRouter from './routes/thought.js';
 // import database from './js/config/Database/serverConnection.js';
 import * as mainPageData from './MainPageCharts/mainPageData.js';
 import createChart from './MainPageCharts/drawCharts.js';
@@ -55,8 +56,8 @@ app.use(express.static('../public/static/images/'));
 //js files
 app.use(express.static('../js/'));
 //src files
-// app.use(express.static('../css/'));
-//api/mysql requests
+app.use(express.static('../js/MainPageCharts/'));
+//router files
 app.use(express.static('../js/routes/requests'));
 
 //css middleware
@@ -69,6 +70,7 @@ app.set('view engine', 'ejs');
 
 //routers
 app.use('/chart', chartRouter);
+app.use('/thought', thoughtRouter);
 app.post('/apiRequest', apiRouter); // for handling requests to the root path
 app.post('/mysqlRequest', mysqlRouter);
 
@@ -77,6 +79,12 @@ app.post('/mysqlRequest', mysqlRouter);
 app.get('/', function(req, res) {
   res.sendFile('/index.html', {root: path.join(__dirname, '..')});
 });
+
+//404 error
+app.use((req, res, next) => {
+  res.status(404).send('NOT FOUND');
+});
+
 
 // app.get('/css/dashboard.css', function(req, res) {
 //   res.type('text/css');

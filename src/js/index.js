@@ -3,7 +3,8 @@
 // const backendURL = "http://localhost:3000/queryRequest"
 // import axios from 'axios';
 // const axios = require('axios');
-// import mainDataFromFred from '../public/static/mainDataList.js';
+import mainDataFromFred from './MainPageCharts/mainPageData.js';
+
 // //  loadMainPageData = require('./js/MainPageCharts/mainPageData');
 // const response = await window.axios.get('https://api.example.com/data');
 
