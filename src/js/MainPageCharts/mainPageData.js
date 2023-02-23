@@ -1,8 +1,17 @@
 // import axios from "axios";
-import '../config/env.mjs'
+// import '../config/env.mjs'
+import axios from 'axios';
+import Series from '../routes/requests/fredRequest/Series.js'
+import getGraphInfo from '../filterDataForRDS.js';
+import createChart from './createChart.js';
+import { getDataFromRDS } from '../routes/requests/mysqlRequest.js';
+
+const axiosInstance = axios.create({
+    baseURL: 'http://localhost:3000',
+  });
 
 /**
- * Modify this list for FRED data 
+ * Modify this list for FRED data on the main page
  * 
  * Runs only at midnight for data update
  * 
@@ -11,94 +20,75 @@ import '../config/env.mjs'
  * @todo add other API functions.
  */
 export const fredDataTags = {
-    "Market Yield on U.S. Treasury Securities at 10-Year Constant Maturity, Quoted on an Investment Basis" : "DGS10",
-    "Nominal Broad U.S. Dollar Index" : "DTWEXBGS",
-    "Spot Crude Oil Price: West Texas Intermediate (WTI)" : "WTISPLC",
-    "ICE BofA US High Yield Index Option-Adjusted Spread" : "BAMLH0A0HYM2"
+    // "Market Yield on U.S. Treasury Securities at 10-Year Constant Maturity, Quoted on an Investment Basis" : "DGS10",
+    // "Market Yield on U.S. Treasury Securities at 10-/Year Constant Maturity, Quoted on an Investment Basis, Inflation-Indexed" : "DFII10",
+    // "Nominal Broad U.S. Dollar Index" : "DTWEXBGS",
+    // "Spot Crude Oil Price: West Texas Intermediate (WTI)" : "WTISPLC",
+    "ICE BofA US High Yield Index Option-Adjusted Spread" : "BAMLH0A0HYM2",
+    // "Assets: Total Assets: Total Assets: Wednesday Level" : "RESPPANWW",
+    // "Overnight Reverse Repurchase Agreements: Treasury Securities Sold by the Federal Reserve in the Temporary Open Market Operations" : "RRPONTSYD",
+    // "Liabilities and Capital: Liabilities: Deposits with F.R. Banks, Other Than Reserve Balances: U.S. Treasury, General Account: Week Average" : "WTREGEN"
     };
 
-/**
- * S&P500 uses NASDAQ DATA LINK, and the others use FRED.
- * 
- * @returns  {{data1: Array<{date: string, value: number}>, data2: Array<Array<{date: string, value: number}>>}}
- * 
- * S&P500 data series, and four different data series to compare with S&P500
- */
-export async function refreshDataForMainPage(){
-    // const snpData = await getSNPDataFromNASDAQ(); 
-    // var dataList = getDataFromFRED(fredDataTags);
-    // console.log(dataList);
-  
-    // return dataList;
-    // return dataList;
+
+export async function getDataForMainPage() {
+
+  Object.entries(fredDataTags).forEach(([key, value]) => {  
+    const fredRequestInstance = new Series(value);
+        fredRequestInstance.getSeriesObservations(value)
+        .then(response => {
+            let data = response.data.observations;
+            data.code = value;
+            let filteredData = getGraphInfo(data);
+          
+            axiosInstance.post('/mysqlRequest', filteredData)
+            .then(response =>{
+                console.log(value + " " + response.data);
+                
+            })
+            .catch(err => {
+                throw err;
+            });       
+        })  
+    });
+   
 }
 
-/**
- * @returns {{data1: Array<{date: string, value: number}>}} a list of {date, value}
- * 
- * Uses NASDAQ Data Link for historical S&P 500 data dating back 100 years ago. FRED only provides from 2013.
- * 
- * Don't overuse this call - Free account limits 50 calls a day.
- */ 
-export async function getSNPDataFromNASDAQ(){
-   return await axios.get('https://data.nasdaq.com/api/v3/datasets/MULTPL/SP500_REAL_PRICE_MONTH.json?',
-    {
-        params : {
-            API_KEY : APIKeys.nasdaqAPIKey ,
-        }
-    })
-    .then((response) => {
-        //To access NASDAQ DATA LINK data, use response.data.dataset
-        var name = response.data.dataset.name;
-        var description = response.data.dataset.description;
-        var data = response.data.dataset.data;
-        // console.log(data);
-        return data;
-      })
-      .catch((error) => {
-       throw error;
+export async function createChartForMainPage(){
+    Object.entries(fredDataTags).forEach(async ([key, value]) => {
+        await getDataFromRDS(value)
+        .then(data => {
+            createChart(data);
+            console.log(data);
+        })
+        .catch(err => {
+            throw err;
+        });
     });
 }
 
-/**
- * @param {Array<{name: string, tag:string}>} fredDataTags 
- * 
- * @returns {Array<Array<{date: string, value: number}>>} list of series data
- * 
- * @todo modifying params of API call from the client side or using node-fred API
- * @todo fix this shit - async issue with foreach.
- */
-export async function getDataFromFRED(fredDataTags){
-    let promises = [];
-    let dataList = {};
-    Object.entries(fredDataTags).forEach(([key, value]) => {  
-        
-        dataList[value] = axios.get('https://api.stlouisfed.org/fred/series/observations', {
+
+    export async function getTagsFromFRED(){
+        // let promises = [];
+        // let datalist = {};
+        // Object.entries(fredDataTags).forEach(([key, value]) => {  
+        let apiKey = process.env.fredAPIKey;
+        let data = await axios.get('https://api.stlouisfed.org/fred/releases?api_key=' + apiKey ,{
             params: {
-                series_id: value,
-                api_key: APIKeys.fredAPIKey,
-                observation_start : "",
-                observation_end : "",
                 file_type: 'json'}
             })
-            .then(async response =>{
-                // return response.data.observations;
-                const temp = await response.data;
-
-                axios.post('http://localhost:3000/requests/mysqlRequest',temp)
+                .then(async response =>{
+                    console.log('Got data from FRED and saving data to the AWS RDS');
+                    // console.log(response);
+                    console.log(response.data.releases[0].data);
+                })
                 .catch(error => {
-                  console.error(error);
+                  throw error;
+                      // throw error;
                 });
-                dataList[value] = temp;
-            })
-            .catch(error => {
-                  console.error(error);
-            });
-        }) 
+                // console.log(data);
+    }
 
-        // console.log(dataList);
-        return dataList;
-}
 
 
 
@@ -106,3 +96,6 @@ export async function getDataFromTE(){
 
 
 }
+
+
+// export default fredDataTags;

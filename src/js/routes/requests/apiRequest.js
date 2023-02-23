@@ -1,9 +1,3 @@
-// const categoryFunctions = [getCategory, getCategoryChildren, getCategoryRelated, getCategoryTags, getCategoryRelatedTags];
-// const releasesFunctions = [getRelease, getReleasesDates, getRelease, getReleaseDates, getReleaseSeries, getRelatedTags, getReleaseRelatedTags];
-// const seriesFunctions = [getSeires, getSeriesCategories, getSeriesObservations, getSeriesRelease, getSeriesSearch, getSeriesSearchRelatedTags,
-//                         getSeriesTags, getSeriesUpdates, getSeriesVintageDates];
-// const sourcesFunctions = [getSources, getSource, getSourceReleases];
-// const tagsFunctions = [getTags, getRelatedTags, getTagsSeries];
 //two kinds of data source : 
 import Fred from 'node-fred';
 const fred = new Fred(process.env.fredAPIKey);
@@ -12,8 +6,8 @@ import express from 'express';
 const router = express.Router();
 const economic_data = {"10-Year Expected Inflation" : "EXPINF10YR"} 
 // Key-Value (Name, fredCode) pairs of data need on the main page.
-// import fredDataCodes from '../js/MainPageCharts/mainPageData.js';
-// const seriesurl = "https://api.stlouisfed.org/fred/series?series_id=EXPINF10YR&api_key=c4c4022663dafa850bc174cd583b0579&file_type=json"
+
+
 /**
  * Modify this list for FRED data 
  * 
@@ -31,18 +25,22 @@ export const fredDataTags = {
   "Real M2 Money Stock" : "M2REAL",
   };
 
+  const axiosInstance = axios.create({
+    baseURL: 'http://localhost:3000',
+  });
+
 
 var fetchedData = "";
 /**
  * Sends a list of [date, value] and a fred tag mysqlRequst.js
  */ 
-router.post('/apiRequest', (req, routerRes) => {
+router.post('/apiRequest', (req, res) => {
     console.log("Listening a request from index.js at apiRequest Router");
-    const query = req.query.data;
-    
+    const query = req.body.data;
     //index given data name in a fredCodeList
-    console.log(fredDataTags[query]);
+    // console.log(fredDataTags[query]);
     getDataFromFRED(fredDataTags[query]);
+    res.send({ message: "Data fetched and added to the RDS." });
     // axios.get('https://api.stlouisfed.org/fred/series/observations', {
     // params: {
     //     series_id: 'DGS10',
@@ -106,9 +104,9 @@ export async function getSNPDataFromNASDAQ(){
     })
     .then((response) => {
         //To access NASDAQ DATA LINK data, use response.data.dataset
-        var name = response.data.dataset.name;
-        var description = response.data.dataset.description;
-        var data = response.data.dataset.data;
+        var name = response.dataset.name;
+        var description = response.dataset.description;
+        var data = response.dataset.data;
         // console.log(data);
         return data;
       })
@@ -129,7 +127,7 @@ export async function getDataFromFRED(fredDataTag){
     // let promises = [];
     // let datalist = {};
     // Object.entries(fredDataTags).forEach(([key, value]) => {  
-
+    
     let data = await axios.get('https://api.stlouisfed.org/fred/series/observations', {
             params: {
                 series_id: fredDataTag,
@@ -139,12 +137,20 @@ export async function getDataFromFRED(fredDataTag){
                 file_type: 'json'}
             })
             .then(async response =>{
-              
+                console.log('Got data from FRED and saving data to the AWS RDS');
                 const temp = await response.data;
                 temp.code = fredDataTag;
-
-                let postreponse = await axios.post('http://localhost:3000/requests/mysqlRequest',temp);
-                console.log(postreponse.data.message);
+                // console.log(temp);
+                let mysqlRes = await axiosInstance.post('http://localhost:3000/mysqlRequest',temp);
+                // .then(response => {
+                //   console.log(response);
+                // })
+                // .catch(err => {
+                //   // console.log(err);
+                // });
+                // console.log(postresponse);
+                // console.log(postreponse.data.message);
+              
                 // .then(response => {
                 //   // console.log(response.data.message);
                 //   console.log(response.data.message);
@@ -154,13 +160,14 @@ export async function getDataFromFRED(fredDataTag){
                 //   console.error("POST request to mysqlRequest.js failed");
                 // });
                 // dataList[value] = temp;
+             
             })
             .catch(error => {
-              console.log("GET request from the client failed");
+              throw error;
                   // throw error;
             });
         // }) 
-         console.log("getDATAfromFRED() done")
+       
     return data;
         // console.log(data);
         // return dataList;
@@ -185,23 +192,8 @@ export function sendDataTomySql(data){
 }
 
 
-
-function getData(seriesName) {
-  fred.series.getSeries(seriesName)
-    .then((res) => {
-      // console.log('test', res);
-      // **** Compare the data with database / update ****
-    //  console.log(res);
-    console.log("Data From Fred");
-    console.log(res);
-      return res[0]
-    })
-    .catch((err) => {
-      console.error('Error', err);
-    });
-}
-
 export default router;
 
 
 //Things to consider : Should other functions be attributes to router or be separate?
+

@@ -10,44 +10,10 @@ import { exit } from 'process';
 router.use(bodyParser.json());
 
 router.post('/mysqlRequest', (req, res) => {
-  console.log("3");
-
-  // var mappedDataForRds = getGraphInfo(req.body);
-  // console.log(mappedDataForRds);
-  // console.log(mappedDataForRds);
-  // console.log(req.body);
-  // console.log(graphDataForRds);
-  // console.log(mappedDataForRds.code);
-  // Send a response
-  // sendDataToRDS(mappedDataForRds);
-
-  // res.send({ message: "POST request to mysqlRequest.js succeeded" });
+  console.log("processing data at mysqlRequest.js");
+  sendDataToRDS(req.body);
+  res.send({ message: "Fetched data inserted to RDS" });
 });
-
-// router.post('/', (req, res) => {
-  // console.log("router accessed");
-  // var code = req.query.data;
-  // let data = getDataFromRDS(code);
-  // res.send(data);
-
-  // getDataFromRDS(code)
-  // .then(results => {
-  // //  console.log(results);
-  //   // console.log(JSON.stringify(parsedData[0]));
-  //   const data = results;
-
-  //   console.log("Data fetched from RDS");
-  // // console.log(data);
-  //   //  console.log(JSON.stringify(data));
-  //    res.send(JSON.stringify(data));
-  // })
-  // .catch(error => {
-  //   // console.log(error);
-  //   throw error;
-
-  // });
-// })
-
 
 /**
  * 
@@ -159,19 +125,15 @@ export function getDataFromRDS(fredTag) {
   });
 }
 
-/**
- * Converts JSON object into a list of lists.
- * @param {JSON} JSON Object 
- * @returns {Array<{date, value}>} a list of {date, value}
- */
 
-export function getGraphInfo(jsonObject) {
-  var newGraphObj = {};
-  newGraphObj.code = jsonObject.code;
-  newGraphObj.date = jsonObject.observations.map(data => data["date"]);
-  newGraphObj.value = jsonObject.observations.map(data => data["value"]);
-  return newGraphObj;
-}
+
+// export function getGraphInfo(jsonObject) {
+//   var newGraphObj = {};
+//   newGraphObj.code = jsonObject.code;
+//   newGraphObj.date = jsonObject.observations.map(data => data["date"]);
+//   newGraphObj.value = jsonObject.observations.map(data => data["value"]);
+//   return newGraphObj;
+// }
 
 
 // function checkDupInRds(graphData){

@@ -15,8 +15,9 @@
   <!-- bootstrap core css -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <!-- Custom styles for this template -->
-  <link href="./css/album.css" rel="stylesheet">
+  <!-- <link rel="stylesheet" type="text/css" href="./css/album.css"> -->
 </head>
 
 <body>
@@ -56,7 +57,7 @@
     </div>
     <div class="navbar navbar-dark bg-dark box-shadow">
       <div class="container d-flex justify-content-between">
-        <a href="http://localhost:1234" class="navbar-brand d-flex align-items-center">
+        <a href="http://localhost:3000" class="navbar-brand d-flex align-items-center">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
           <strong>ChartCompare</strong>
         </a>
@@ -74,19 +75,39 @@
         <p class="lead text-muted">In pursuit of little-known highly correlated charts to provide robust information to make financial decisions.</p>
         <p>
           <a href="#" class="btn btn-primary my-2">Main call to action</a>
-          <a href="#" class="btn btn-secondary my-2">Secondary action</a>
+          <a href="https://localhost:3000/chart/0" class="btn btn-secondary my-2">Secondary action</a>
         </p>
       </div>
     </section>
 
+   
+    <div class="card" data-category="category1">Card 1</div>
+<div class="card" data-category="category2">Card 2</div>
+<div class="card" data-category="category3">Card 3</div>
+<button data-filter="category1">Filter Category 1</button>
+<button data-filter="category2">Filter Category 2</button>
+<button data-filter="category3">Filter Category 3</button>
+
+
+
+  <div id="filterBtnContainer" , style="height:300px; text-align:center;">
+    <button class="filterBtn" onclick="filterSelection('gold')">Gold</button>
+    <button class="filterBtn" onclick="filterSelection('stocks')">Stocks</button>
+    <button class="filterBtn" onclick="filterSelection('bonds')">Bonds</button>
+    <button class="filterBtn" onclick="filterSelection('commodities')">Commodities</button>
+    <button class="filterBtn" onclick="filterSelection('econmomic indicators')">Indicators</button>
+
+    
+  </div>
+
+<!-- Details of cards that include main charts -->
     <div class="album py-5 bg-light">
       <div class="container">
-
         <div class="row">
           <div class="col-md-6">
             <div class="card mb-4 box-shadow">
-              <a href="sp500-price-earnings-shiller-pe-ratio/">
-              <img class="card-img-top" data-src="./static/images/placeholder.png" src="./static/images/main0.png" alt="main-chart-1">
+              <a href="/chart/0" id="chart-button">
+              <img class="card-img-top" data-src="./static/images/placeholder.png" src="/DGS10.png" alt="main-chart-0">
              </a>
               <div class="card-body">
                 <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
@@ -102,38 +123,7 @@
           </div>
           <div class="col-md-6">
             <div class="card mb-4 box-shadow">
-              <img class="card-img-top" data-src=data-src="./static/images/placeholder.png" src="./static/images/main1.png" alt=main-chart-2">
-              <div class="card-body">
-                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                  </div>
-                  <small class="text-muted">9 mins</small>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- <div class="col-md-4">
-            <div class="card mb-4 box-shadow">
-              <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="Card image cap">
-              <div class="card-body">
-                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                  </div>
-                  <small class="text-muted">9 mins</small>
-                </div>
-              </div>
-            </div>
-          </div> -->
-
-          <div class="col-md-6">
-            <div class="card mb-4 box-shadow">
-              <img class="card-img-top" data-src="./static/images/placeholder.png" src="./static/images/main2.png" alt="main-chart-3">
+              <img class="card-img-top" data-src=data-src="./static/images/placeholder.png" src="/WTISPLC.png" alt="main-chart-1">
               <div class="card-body">
                 <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
                 <div class="d-flex justify-content-between align-items-center">
@@ -148,7 +138,22 @@
           </div>
           <div class="col-md-6">
             <div class="card mb-4 box-shadow">
-              <img class="card-img-top" data-src="./static/images/placeholder.png" src="./static/images/main3.png" alt="main-chart-4">
+              <img class="card-img-top" data-src="./static/images/placeholder.png" src="/DFII10.png" alt="main-chart-2">
+              <div class="card-body">
+                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                  </div>
+                  <small class="text-muted">9 mins</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card mb-4 box-shadow">
+              <img class="card-img-top" data-src="./static/images/placeholder.png" src="/BAMLH0A0HYM2.png" alt="main-chart-3">
               <div class="card-body">
                 <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
                 <div class="d-flex justify-content-between align-items-center">
@@ -164,6 +169,16 @@
         
          
         </div>
+        <!-- <script>
+          // Get all the card elements using their class name
+          const cards = document.querySelectorAll('.card');
+          // Loop through the card elements and add a data attribute to each one
+          cards.forEach(card => {
+            card.setAttribute('data-category', 'category1');
+          });
+          </script> -->
+
+
       </div>
     </div>
   </main>
@@ -192,7 +207,7 @@
         </div>
       </div>
 
-      <script type='module' src="./js/index.js"></script>
+      <script type='module' src="./index.js"></script>
       <!--Bootstrap css  -->
       <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
