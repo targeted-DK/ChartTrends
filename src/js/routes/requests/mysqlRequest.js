@@ -1,19 +1,58 @@
 
 // const database = require('../config/database');
-import express from 'express';
+import express, { query } from 'express';
 const router = express.Router();
 import bodyParser from 'body-parser';
 import database from '../../config/Database/serverConnection.js';
 import json from 'express';
 import lodash from 'lodash';
 import { exit } from 'process';
+
 router.use(bodyParser.json());
 
-router.post('/mysqlRequest', (req, res) => {
-  console.log("processing data at mysqlRequest.js");
-  sendDataToRDS(req.body);
-  res.send({ message: "Fetched data inserted to RDS" });
+router.post('/mysqlRequest', async (req, res) => {
+  if (req.body.use == 'highcharts') {
+    try {
+      const dataFromRds = await getDataFromRDS(req.body.data);
+      // res.status(200).send({ data: dataFromRds, message: 'Data fetched from RDS' });
+      res.status(200).send(dataFromRds);
+    } 
+    catch (error) {
+      res.status(500).send({ message: 'Error fetching data from RDS' });
+    }
+  }
+  if (req.body.use == 'py_analysis') {
+    try {
+      const dataFromRds = await getDataFromRDS(req.body.data);
+      // res.status(200).send({ data: dataFromRds, message: 'Data fetched from RDS' });
+      res.status(200).send(dataFromRds);
+    } 
+    catch (error) {
+      res.status(500).send({ message: 'Error fetching data from RDS' });
+    }
+  }
+
+
+  if(req.body.use == null){
+    // console.log((req.body));
+    try {
+      await sendDataToRDS(req.body);
+      res.status(200).send({ message: "Fetched data inserted to RDS" });
+    } catch (error) {
+      res.status(500).send({ message: 'Error sending data from RDS' });
+    }
+  }
+ 
+  
+ 
 });
+
+// router.use('/mysqlRequest', (req, res) => {
+//   console.log("received request to fetch data from RDS to create highcharts");
+//   console.log(req.query.data);
+//   // getDataFromRDS(req.body)
+//   res.send({ message: "Data feteched from RDS." });
+// });
 
 /**
  * 
@@ -22,11 +61,13 @@ router.post('/mysqlRequest', (req, res) => {
  */
 export async function sendDataToRDS(mappedDataForRds) {
   console.log("Sending data to RDS");
-
+ 
   // SQL statement for the UPSERT operation
   let table_name = mappedDataForRds.code;
   let dateData = mappedDataForRds.date;
   let valueData = mappedDataForRds.value;
+  let unit = mappedDataForRds.unit;
+
   let originalDataSize = dateData.length;
 
   // var checkTableQuery = `CREATE TABLE IF NOT EXISTS TEST3 (date DATE, value DOUBLE)`;
@@ -67,10 +108,10 @@ export async function sendDataToRDS(mappedDataForRds) {
        
       // }
       //if there is some issue with the query OR table exists;
-      console.log("Table created");
+      // console.log("Table created");
       database.query(insertDataQuery, [tuples], function (err, result, fields) {
   
-        console.log("Data Inserted");
+        // console.log("Data Inserted");
       });
     });
   });
@@ -108,6 +149,7 @@ export async function sendDataToRDS(mappedDataForRds) {
  * @returns {Array<{date, double}>} a list of (date, value)
  */
 export function getDataFromRDS(fredTag) {
+ 
   return new Promise((resolve, reject) => {
     var fetchDataQuery = `SELECT * from ${fredTag}`;
     database.query(fetchDataQuery, (error, results) => {

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico" />
+
+    <title>ChartCompare : Personal Thoughts</title>
+    <link
+      rel="canonical"
+      href="https://getbootstrap.com/docs/4.0/examples/dashboard/"
+    />
+    <!-- Bootstrap core CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+  </head>
+
+  <body>
+    <nav class="navbar navbar-dark sticky-top bg-dark">
+      <div class="container">
+        <div class="row w-100">
+          <div class="col-sm-4 col-md-3">
+            <a class="navbar-brand" href="http://localhost:3000/"
+              >Chart Compare</a
+            >
+          </div>
+          <div class="col-sm-5 col-md-7">
+            <input
+              class="form-control"
+              type="text"
+              placeholder="Search"
+              aria-label="Search"
+            />
+          </div>
+          <div class="col-sm-3 col-md-2">
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" type="button">
+                Search
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <main>
+   
+
+      <!-- Create the editor container -->
+      <div class="container">
+        <input type="text" id="title-container" class = "title-container" placeholder="Enter title here">
+        <div class="editor-container" id="editor-container">
+          <div id="editor"></div>
+        </div>
+        <button class="save-button" id="save-button">Save</button>
+      </div>
+
+      <style>
+        .container {
+            /* position : relative; */
+            display: flex; 
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+         
+        }
+        .title-container {
+            margin: 10px;
+            height : 40px;
+            width: 100%;
+            /* align-self:last baseline; */
+        }
+        .editor-container {
+          /* position: relative; */
+          width: 100%;
+          /* margin: 0 auto; */
+          /* display:inline-flex;
+            justify-content: space-between; */
+            margin: 10px;
+       
+        }
+        .ql-editor {
+          height: 800px;
+        }
+        .save-button {
+          /* position: absolute;
+          bottom: -40px; /* position the button 10 pixels from the bottom */
+          /* right: 20px;  */
+          margin-top: 10px;
+          align-self: flex-end;
+          
+          padding: 10px 20px;
+          background-color: #e0e0e0;
+          border: none;
+          border-radius: 5px;
+          color: #2522225e;
+          font-weight: bold;
+          text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+          box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+          transition: all 0.2s ease-in-out;
+        }
+
+        .save-button:hover {
+          background-color: #bdbdbd;
+          box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+          transform: translateY(-1px);
+        }
+      </style>
+    </main>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      window.jQuery ||
+        document.write(
+          '<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>'
+        );
+    </script>
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+    <script>
+      feather.replace();
+    </script>
+
+    <!-- Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.1/dist/Chart.min.js"></script>
+
+    <!-- editor -->
+    <script type="module" src="quill-bundle.js"></script>
+  </body>
+</html>

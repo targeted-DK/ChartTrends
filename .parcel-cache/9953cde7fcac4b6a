@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>chart <%= id %></title>
+  </head>
+  <body>
+    <h1>chart <%= id %></h1>
+    <p>This is the content for chart <%= id %>.</p>
+  </body>
+</html>

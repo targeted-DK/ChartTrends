@@ -3,8 +3,13 @@ import Fred from 'node-fred';
 const fred = new Fred(process.env.fredAPIKey);
 import axios from 'axios';
 import express from 'express';
+import cheerio from 'cheerio';
+import te from 'tradingeconomics'
+import { fredDataList } from '../../data/dataList.js';
 const router = express.Router();
-const economic_data = {"10-Year Expected Inflation" : "EXPINF10YR"} 
+
+const data = fredDataList;
+
 // Key-Value (Name, fredCode) pairs of data need on the main page.
 
 
@@ -17,13 +22,7 @@ const economic_data = {"10-Year Expected Inflation" : "EXPINF10YR"}
  * 
  * @todo add other API functions.
  */
-export const fredDataTags = {
-  "Market Yield on U.S. Treasury Securities at 10-Year Constant Maturity, Quoted on an Investment Basis" : "DGS10",
-  "Nominal Broad U.S. Dollar Index" : "DTWEXBGS",
-  "Spot Crude Oil Price: West Texas Intermediate (WTI)" : "WTISPLC",
-  "ICE BofA US High Yield Index Option-Adjusted Spread" : "BAMLH0A0HYM2",
-  "Real M2 Money Stock" : "M2REAL",
-  };
+
 
   const axiosInstance = axios.create({
     baseURL: 'http://localhost:3000',
@@ -39,7 +38,7 @@ router.post('/apiRequest', (req, res) => {
     const query = req.body.data;
     //index given data name in a fredCodeList
     // console.log(fredDataTags[query]);
-    getDataFromFRED(fredDataTags[query]);
+    getDataFromFRED(data[query]);
     res.send({ message: "Data fetched and added to the RDS." });
     // axios.get('https://api.stlouisfed.org/fred/series/observations', {
     // params: {
@@ -132,14 +131,30 @@ export async function getDataFromFRED(fredDataTag){
             params: {
                 series_id: fredDataTag,
                 api_key: process.env.fredAPIKey,
-                observation_start : "2022-08-01",
-                observation_end : "2023-01-31",
                 file_type: 'json'}
             })
             .then(async response =>{
                 console.log('Got data from FRED and saving data to the AWS RDS');
                 const temp = await response.data;
+                const urlToFetchUnits = 'https://fred.stlouisfed.org/series/' + fredDataTag;
+             
+
+                await axios.get(urlToFetchUnits)
+                .then(response => {
+                    const $ = cheerio.load(response.data);
+                    const unitsElement = $('p.series-meta-label:contains("Units:")').next('span.series-meta-value').find('span.series-meta-value-units');
+                    const unit = unitsElement.text().trim();
+                    console.log(unit);
+             
+                    temp.unit = unit;
+                })
+                .catch(error => {
+                    // Handle errors
+                    console.error(error);
+                  });
+               
                 temp.code = fredDataTag;
+               
                 // console.log(temp);
                 let mysqlRes = await axiosInstance.post('http://localhost:3000/mysqlRequest',temp);
                 // .then(response => {
@@ -176,8 +191,15 @@ export async function getDataFromFRED(fredDataTag){
 
 
 export async function getDataFromTE(){
-
-
+  te.login(process.env.teAPIKey);
+  axios.get(`https://api.tradingeconomics.com/markets/historical-data/${indicatorCode}?c=${process.env.teAPIKey}`)
+  .then((response) => {
+    console.log(response.data);
+  })
+  .catch((error) => {
+    console.error(error);
+  });
+ 
 }
 
 /**

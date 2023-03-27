@@ -8,6 +8,7 @@
 function getGraphInfo(jsonObject) {
     var newGraphObj = {};
     newGraphObj.code = jsonObject.code;
+    // newGraphObj.unit = jsonObject.unit;
     newGraphObj.date = jsonObject.map(data => data["date"]);
     newGraphObj.value = jsonObject.map(data => data["value"]);
     return newGraphObj;
