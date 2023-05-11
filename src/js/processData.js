@@ -3,7 +3,7 @@
 import axios from "axios";
 import Series from "./routes/requests/fredAPI/Series.js";
 import getGraphInfo from "./filterDataForRDS.js";
-import createChart from "./charts/createChart.js";
+// import createChart from "./charts/createChart.js";
 import cheerio from "cheerio";
 import xlsx from "xlsx";
 import {
@@ -334,17 +334,17 @@ export async function updateCFTCDataset() {
 //   return getGraphInfo(data);
 // })
 
-export async function createChartForMainPage() {
-  Object.entries(data).forEach(async ([key, value]) => {
-    await getDataFromRDS(value)
-      .then((data) => {
-        createChart(data);
-      })
-      .catch((err) => {
-        throw err;
-      });
-  });
-}
+// export async function createChartForMainPage() {
+//   Object.entries(data).forEach(async ([key, value]) => {
+//     await getDataFromRDS(value)
+//       .then((data) => {
+//         createChart(data);
+//       })
+//       .catch((err) => {
+//         throw err;
+//       });
+//   });
+// }
 
 export async function getDataFromFred() {
   // let promises = [];

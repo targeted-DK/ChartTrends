@@ -15,7 +15,6 @@ import saveArticleRouter from './src/js/routes/saveArticle.js';
 import articleListRouter from './src/js/routes/articleList.js';
 import runPythonRouter from  './src/js/routes/runPython.js'
 import * as processData from './src/js/processData.js';
-import createChart from './src/js/charts/createChart.js';
 import { setTimeout } from 'timers/promises';
 import { fileURLToPath } from 'url';
 import logger from "./src/js/logger.js";
