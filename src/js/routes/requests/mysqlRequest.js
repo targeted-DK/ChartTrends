@@ -753,6 +753,7 @@ export function getDataFromRDS(json) {
       let indicators;
       let assetType = tag;
       let jsonOilDataArrays = {};
+     
       database.query(
         queries.SELECT_ALL_INDICATOR_ROWS_BY_ASSET_TYPE,
         [source, assetType],

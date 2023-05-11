@@ -21,7 +21,7 @@ import { fileURLToPath } from 'url';
 import logger from "./src/js/logger.js";
 import cookieParser from 'cookie-parser';
 import axios from 'axios';
-
+import schedule from 'node-schedule'
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config();
@@ -115,32 +115,8 @@ app.get('*',function(req, res, next){
  * 1) Gets data from mainPageData.js and loads charts on the main webpage using drawCharts.js
  */
 async function main(){
-  // updateEntireDatabase();
-  // processData.getDUCDataset();
-  // processData.updateFredDatasettemp();
-  // processData.updateNDLDataset();
-  // processData.getShillerDataset();
-  // processData.getBakerHughesDataset();
-  // await processData.updateFredDataset();
-  // await processData.updateEIADataset();
-  // let test = new Series('RRPONTSYD', 'lin', 'd', 'avg');
-  // console.log(test);
-  // await processData.updateCFTCDataset();
-  // const apiKey = process.env.eiaAPIKey;
-  // console.log(apiKey);
-  // axios.get(`https://api.eia.gov/v2/petroleum/crd/drill/data/?frequency=monthly&data[0]=value&facets[series][]=E_ERTRRO_XR0_NUS_C&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000&api_key=${apiKey}`)
-  // .then(response => {
-  //   console.log(response.data.response);
-  // });
+  const job = schedule.scheduleJob('0 0 0,12 * *', updateEntireDatabase);
   
-  // let dd =   await test.getSeriesObservations()
-  // console.log(dd);
-  // runPython();
-
-
-  // processData.updateFredSeriesObservations();
-  // processData.createChartForMainPage();
-  // getDataFromFRED('DGS10');
 };
 
 async function updateEntireDatabase(){
@@ -155,36 +131,12 @@ async function updateEntireDatabase(){
 
 
 /**
- * Timer for daily update
- */
-function runAtTime(hour, minute, second, callback) {
-  const now = new Date();
-  const target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, second);
-  let delay = target - now;
-  if (delay < 0) {
-    delay += 24 * 60 * 60 * 1000;
-  }
-  setTimeout(() => {
-    callback();
-    setInterval(callback, 24 * 60 * 60 * 1000);
-  }, delay);
-}
-
-runAtTime(24, 0, 0, () => {
-  console.log("Running code at midnight");
- 
-});
-
-
-
-/**
  * Client Connection
  */
 app.listen(3000, () => {
   console.log('Server listening on port 3000');
   main();
-  // mainPageData.refreshDataForMainPage();
-  // app.get('/apiRequest')
+  
 });
 
 

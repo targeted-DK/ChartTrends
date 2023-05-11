@@ -62,7 +62,7 @@ let formattedDate =
 //   "cca",
 //   "log",
 // ];
-const transformationOptions = ["lin","pc1"];
+const transformationOptions = ["lin", "pc1"];
 // const frequencyOptions = ["d", "w", "bw", "m", "q", "sa", "a"];
 const frequencyOptions = ["d", "w", "m"];
 // const aggregationOptions = ["avg", "sum", "eop"];
@@ -215,7 +215,6 @@ export async function updateEIADataset() {
 
   //log failed fred API fetches
 }
-
 
 export async function updateCFTCDataset() {
   // + "&cftc_commodity_code=067"
@@ -534,8 +533,6 @@ export async function getDUCDataset() {
 
       let excelAsJson = xlsx.utils.sheet_to_json(sheet);
 
-      // const json_data = xlsx.utils.sheet_to_json(sheet);
-
       // Extract DUC counts by region
       let regions = [
         "Anadarko",
@@ -548,13 +545,7 @@ export async function getDUCDataset() {
         "DPR Regions",
       ];
       const name = "__EMPTY";
-
-      // region["Drilled"] = 0;
-      // region["Completed"] = 0;
-      // region["DUC"] = 0;
-
       let jsonData = {};
-      // console.log(excelAsJson)
       for (let i = 2; i < excelAsJson.length; i++) {
         let column = 0;
         let row = excelAsJson[i];
@@ -569,10 +560,11 @@ export async function getDUCDataset() {
         let day = String(date.getDate()).padStart(2, "0");
 
         let formattedDate = `${year}-${month}-${day}`;
-       
+
         regions.forEach((region) => {
           jsonData[region] = jsonData[region] || {};
-          jsonData[region][formattedDate] = jsonData[region][formattedDate] || {};
+          jsonData[region][formattedDate] =
+            jsonData[region][formattedDate] || {};
           jsonData[region][formattedDate]["drilled"] =
             jsonData[region][formattedDate]["drilled"] || {};
           jsonData[region][formattedDate]["completed"] =
@@ -583,11 +575,13 @@ export async function getDUCDataset() {
           if (column == 0) {
             jsonData[region][formattedDate]["drilled"] = row[name];
           } else {
-            jsonData[region][formattedDate]["drilled"] = row[`${name}_${column}`];
+            jsonData[region][formattedDate]["drilled"] =
+              row[`${name}_${column}`];
           }
 
           column++;
-          jsonData[region][formattedDate]["completed"] = row[`${name}_${column}`];
+          jsonData[region][formattedDate]["completed"] =
+            row[`${name}_${column}`];
           column++;
           jsonData[region][formattedDate]["DUC"] = row[`${name}_${column}`];
           column++;
@@ -597,26 +591,24 @@ export async function getDUCDataset() {
 
       let json = {};
       json["data"] = jsonData;
-      json.frequency = 'm';
-      json.code = 'DUC';
-      json.last_updated_time = Object.keys(jsonData['Anadarko']).pop();
-      json.description = "Wells drilled, completed, and drilled but uncompleted (DUC) inventory";
+      json.frequency = "m";
+      json.code = "DUC";
+      json.last_updated_time = Object.keys(jsonData["Anadarko"]).pop();
+      json.description =
+        "Wells drilled, completed, and drilled but uncompleted (DUC) inventory";
       json.units = "count";
-      json.output_type = '',//use this as a default value for all EIA dataset
-      json.transformation = 'lin', //use this as a default value for all EIA dataset
-      json.aggregation = 'avg',//use this as a default value for all EIA dataset
-      json.source = 'EIA'
-      json.assetType = 'DUC'
+      (json.output_type = ""), //use this as a default value for all EIA dataset
+        (json.transformation = "lin"), //use this as a default value for all EIA dataset
+        (json.aggregation = "avg"), //use this as a default value for all EIA dataset
+        (json.source = "EIA");
+      json.assetType = "DUC";
 
-     
-      await sendDataToRDS(json)
-
+      await sendDataToRDS(json);
     })
     .catch((error) => {
       console.log(error);
     });
 }
-
 
 export async function getShillerDataset() {
   const fileUrl = "http://www.econ.yale.edu/~shiller/data/ie_data.xls";

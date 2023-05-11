@@ -1,4 +1,8 @@
 import express from "express";
+import dataList from "../data/dataList.js"
+import featuredList from "../data/featuredList.js";
+import ratioList from "../data/ratioList.js";
+import bondsList from "../data/bondsList.js";
 
 var router = express.Router();
 
@@ -7,10 +11,17 @@ router.get("/", function (req, res) {
 });
 
 router.get("/featured/:subject", (req, res, next) => {
-
+    
       const featuredSubject = req.params.subject;
       const fileName = "chartFeaturedTemplate";
-      res.render(fileName, {tag: featuredSubject});
+      const list = featuredList.map((item) => item.urlendpoint);
+      if(list.includes(featuredSubject)){
+        res.render(fileName, {tag: featuredSubject});
+      } else {
+        res.status(404).render("404", { error: "Page not found" });
+      }
+
+     
 
 })
 
@@ -18,7 +29,13 @@ router.get("/ratio/:subject", (req, res, next) => {
   const ratioSubject = req.params.subject;
 
   const fileName = "chartRatioTemplate";
-  res.render(fileName, {tag: ratioSubject});
+  const list = ratioList.map((item) => item.urlendpoint);
+  if(list.includes(featuredSubject)){
+    res.render(fileName, {tag: ratioSubject});
+  }else  {
+    res.status(404).render("404", { error: "Page not found" });
+  }
+  
 
 })
 
@@ -26,7 +43,15 @@ router.get("/bonds/:subject", (req, res, next) => {
   const bondsSubject = req.params.subject;
 
   const fileName = "chartBondsTemplate";
-  res.render(fileName, {tag: bondsSubject});
+  const list = bondsList.map((item) => item.urlendpoint)
+
+  if(list.includes(bondsSubject)){
+    res.render(fileName, {tag: bondsSubject});
+  } else {
+    res.status(404).render("404", { error: "Page not found" });
+  }
+ 
+
 
 })
 
@@ -53,11 +78,16 @@ router.get("/:source/:tag", (req, res, next) => {
 
 router.get("/:tag", function (req, res) {
   const tag = req.params.tag;
+  if(Object.values(dataList.fredDataList).includes(tag)){
   try {
     res.render("chartTemplate", { tag: tag });
   } catch (err) {
     res.status(404).render("404", { error: "Page not found" });
   }
+}
+else {
+  res.status(404).render("404", { error: "Page not found" });
+}
 });
 
 
