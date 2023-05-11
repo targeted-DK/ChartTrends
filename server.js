@@ -7,7 +7,7 @@ import ejs from 'ejs';
 import morgan from 'morgan';
 import session from 'express-session';
 import { PythonShell } from 'python-shell';
-import apiRouter, { getDataFromFRED } from './src/js/routes/requests/apiRequest.js';
+import apiRouter, { getDataFromEIA, getDataFromFRED } from './src/js/routes/requests/apiRequest.js';
 import mysqlRouter from './src/js/routes/requests/mysqlRequest.js';
 import chartRouter from './src/js/routes/chart.js';
 import articleRouter from './src/js/routes/articleList.js';
@@ -29,6 +29,8 @@ dotenv.config();
 //testing python on child process
 import {spawn} from 'child_process';
 import bodyParser from 'body-parser';
+import makeRequest from './src/js/makeRequest.js';
+import Series from './src/js/routes/requests/fredAPI/Series.js';
 //testing python
 // let data = [1, 2, 3, 4, 5];
 // CORS Configurations
@@ -85,12 +87,10 @@ app.use('/chart', chartRouter);
 app.use('/article', articleRouter);
 app.use('/saveArticle', saveArticleRouter);
 app.use('/articleList', articleListRouter);
+app.post('/mysqlRequest', mysqlRouter);
 app.get('/mysqlRequest', mysqlRouter);
 app.post('/apiRequest', apiRouter); 
-app.post('/mysqlRequest', mysqlRouter);
 app.use('/runPython', runPythonRouter);
-
-
 
 app.post('/analyze', (req, res) => {
   // handle the POST request here
@@ -115,21 +115,43 @@ app.get('*',function(req, res, next){
  * 1) Gets data from mainPageData.js and loads charts on the main webpage using drawCharts.js
  */
 async function main(){
+  // updateEntireDatabase();
+  // processData.getDUCDataset();
+  // processData.updateFredDatasettemp();
+  // processData.updateNDLDataset();
+  // processData.getShillerDataset();
+  // processData.getBakerHughesDataset();
+  // await processData.updateFredDataset();
+  // await processData.updateEIADataset();
+  // let test = new Series('RRPONTSYD', 'lin', 'd', 'avg');
+  // console.log(test);
+  // await processData.updateCFTCDataset();
+  // const apiKey = process.env.eiaAPIKey;
+  // console.log(apiKey);
+  // axios.get(`https://api.eia.gov/v2/petroleum/crd/drill/data/?frequency=monthly&data[0]=value&facets[series][]=E_ERTRRO_XR0_NUS_C&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000&api_key=${apiKey}`)
+  // .then(response => {
+  //   console.log(response.data.response);
+  // });
+  
+  // let dd =   await test.getSeriesObservations()
+  // console.log(dd);
   // runPython();
-  // processData.updateFredDataset();
-  // (async function() {
-  //   try {
-  //     const result = await runPython();
-  //     console.log(result);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // })();
-// console.log(response);
+
+
   // processData.updateFredSeriesObservations();
   // processData.createChartForMainPage();
   // getDataFromFRED('DGS10');
 };
+
+async function updateEntireDatabase(){
+  await processData.getDUCDataset();
+  // await processData.updateFredDatasettemp();
+  await processData.updateNDLDataset();
+  await processData.getShillerDataset();
+  // await processData.getBakerHughesDataset();
+  await processData.updateFredDataset();
+  await processData.updateEIADataset();
+}
 
 
 /**
@@ -150,7 +172,7 @@ function runAtTime(hour, minute, second, callback) {
 
 runAtTime(24, 0, 0, () => {
   console.log("Running code at midnight");
-  // mainPageData.refreshDataForMainPage();
+ 
 });
 
 
@@ -160,8 +182,9 @@ runAtTime(24, 0, 0, () => {
  */
 app.listen(3000, () => {
   console.log('Server listening on port 3000');
-  // main();
-  
+  main();
+  // mainPageData.refreshDataForMainPage();
+  // app.get('/apiRequest')
 });
 
 

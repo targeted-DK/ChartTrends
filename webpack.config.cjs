@@ -3,12 +3,18 @@ const path = require('path');
 
 module.exports = {
   mode: 'development',
-  entry: './public/static/js/quill-setup.js',
+  entry: {
+    quill : './public/static/js/quill-setup.js',
+//      moment: './public/static/js/chartFeaturedPage-setup.js',
+// },
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'quill-bundle.js',
     // publicPath: './',
   },
+ 
+
   module: {
     rules: [
       {

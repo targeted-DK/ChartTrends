@@ -4,10 +4,10 @@ const fred = new Fred(process.env.fredAPIKey);
 import axios from 'axios';
 import express from 'express';
 import cheerio from 'cheerio';
-import te from 'tradingeconomics'
-import { fredDataList } from '../../data/dataList.js';
+// import te from 'tradingeconomics';
+import {fredDataList } from '../../data/dataList.js';
 const router = express.Router();
-
+import url from 'url'
 const data = fredDataList;
 
 // Key-Value (Name, fredCode) pairs of data need on the main page.
@@ -22,7 +22,6 @@ const data = fredDataList;
  * 
  * @todo add other API functions.
  */
-
 
   const axiosInstance = axios.create({
     baseURL: 'http://localhost:3000',
@@ -126,8 +125,12 @@ export async function getDataFromFRED(fredDataTag){
     // let promises = [];
     // let datalist = {};
     // Object.entries(fredDataTags).forEach(([key, value]) => {  
+
+    const urlString = 'http://api.stlouisfed.org/fred/series/observations';
+    const urlObject = url.parse(urlString);
     
-    let data = await axios.get('https://api.stlouisfed.org/fred/series/observations', {
+    console.log(urlObject);
+    let data = await axios.get('http://api.stlouisfed.org/fred/series/observations', {
             params: {
                 series_id: fredDataTag,
                 api_key: process.env.fredAPIKey,
@@ -157,25 +160,7 @@ export async function getDataFromFRED(fredDataTag){
                
                 // console.log(temp);
                 let mysqlRes = await axiosInstance.post('http://localhost:3000/mysqlRequest',temp);
-                // .then(response => {
-                //   console.log(response);
-                // })
-                // .catch(err => {
-                //   // console.log(err);
-                // });
-                // console.log(postresponse);
-                // console.log(postreponse.data.message);
-              
-                // .then(response => {
-                //   // console.log(response.data.message);
-                //   console.log(response.data.message);
-                //   console.log(fredDataTag + " is saved in RDS");
-                // })
-                // .catch(error => {
-                //   console.error("POST request to mysqlRequest.js failed");
-                // });
-                // dataList[value] = temp;
-             
+            
             })
             .catch(error => {
               throw error;
@@ -187,6 +172,42 @@ export async function getDataFromFRED(fredDataTag){
         // console.log(data);
         // return dataList;
 }
+
+
+
+// Define an asynchronous function to retrieve data from all URLs in the list
+// const fetchAllData = async () => {
+//   const urls = Object.values(eiaDataList);
+//   const results = await Promise.all(urls.map(fetchData));
+//   return results;
+// };
+
+
+export function getDataFromEIA(){
+  // const apiUrl = 'https://api.eia.gov/v2/';
+  const apiKey = process.env.eiaAPIKey;
+  // const id = 'eiaDataTag'
+  // const seriesId = 'PET.RWTC.D';
+
+//add '/data' at the end of API or else will return metadata of the request
+// console.log(eiaDataList['U.S. Ending Stocks of Crude Oil in SPR (Thousand Barrels)']);
+// const url = eiaDataList['U.S. Ending Stocks of Crude Oil in SPR (Thousand Barrels)'] + `&api_key=${apiKey}`;
+
+const fetchData = async (url) => {
+  try {
+    const response = await axios.get(url);
+
+    let eiaTag = response.data.response.data[0]['series'];
+    let description = response.data.response.data[0]['series-description'];
+    let dates = response.data.response.data.map(obj => obj.period);
+    let values = response.data.response.data.map(obj => obj.value);
+    
+  } catch (error) {
+    console.error(error);
+  }
+};
+}
+
 
 
 
@@ -212,6 +233,7 @@ export function sendDataTomySql(data){
     console.log(res);
   });
 }
+
 
 
 export default router;

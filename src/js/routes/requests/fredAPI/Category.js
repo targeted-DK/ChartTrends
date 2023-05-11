@@ -2,6 +2,7 @@ import axios from 'axios';
 import fredUrls from './fredUrls.js'
 
 export class Category {
+    
     constructor(categoryID) {
         this.categoryID = categoryID;
         this.childCategoryID = 0;

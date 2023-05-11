@@ -1,184 +1,836 @@
-
 // const database = require('../config/database');
-import express, { query } from 'express';
+import express from "express";
 const router = express.Router();
-import bodyParser from 'body-parser';
-import database from '../../config/Database/serverConnection.js';
-import json from 'express';
-import lodash from 'lodash';
-import { exit } from 'process';
+import bodyParser from "body-parser";
+import lodash from "lodash";
+import database from "../../config/Database/serverConnection.js";
+import queries from "../../mysqlQueries.js";
+import { eiaDUCList, fredDataList } from "../../data/dataList.js";
+import featuredList from "../../data/featuredList.js";
+import ratioList from "../../data/ratioList.js";
+import bondsList from "../../data/bondsList.js";
 
 router.use(bodyParser.json());
 
-router.post('/mysqlRequest', async (req, res) => {
-  if (req.body.use == 'highcharts') {
+//Request from the client-side : 1) create highcharts 2) show correlation between charts 3) TODO
+router.post("/mysqlRequest", async (req, res) => {
+  if (req.body.use == "FRED") {
+    try {
+      // console.log(req.body);
+
+      const dataFromRds = await getDataFromRDS(req.body);
+      // res.status(200).send({ data: dataFromRds, message: 'Data fetched from RDS' });
+      // console.log(dataFromRds);
+
+      res.status(200).send(dataFromRds);
+    } catch (error) {
+      res.status(500).send({ message: "Error fetching data from RDS" });
+    }
+  }
+
+  if (req.body.use == "py_analysis") {
     try {
       const dataFromRds = await getDataFromRDS(req.body.data);
       // res.status(200).send({ data: dataFromRds, message: 'Data fetched from RDS' });
       res.status(200).send(dataFromRds);
-    } 
-    catch (error) {
-      res.status(500).send({ message: 'Error fetching data from RDS' });
+    } catch (error) {
+      res.status(500).send({ message: "Error fetching data from RDS" });
     }
   }
-  if (req.body.use == 'py_analysis') {
+  //EIA DATA - FIX IT
+  if (req.body.use == "EIA") {
     try {
-      const dataFromRds = await getDataFromRDS(req.body.data);
-      // res.status(200).send({ data: dataFromRds, message: 'Data fetched from RDS' });
-      res.status(200).send(dataFromRds);
-    } 
-    catch (error) {
-      res.status(500).send({ message: 'Error fetching data from RDS' });
+      const results = await getDataFromRDS(req.body);
+      res.status(200).send(results);
+    } catch (error) {
+      res.status(500).send({ message: "Error fetching data from RDS" });
     }
   }
 
+  if (req.body.use == "CFTC") {
+    try {
+      const results = await getDataFromRDS(req.body);
+      res.status(200).send(results);
+    } catch (error) {
+      res.status(500).send({ message: "Error fetching data from RDS" });
+    }
+  }
 
-  if(req.body.use == null){
+  if (req.body.use == "econindicators") {
+    try {
+      const results = await getDataFromRDS(req.body);
+      res.status(200).send(results);
+    } catch (error) {
+      res.status(500).send({ message: "Error fetching data from RDS" });
+    }
+  }
+
+  if (req.body.use == "featured") {
+    try {
+      const results = await getDataFromRDS(req.body);
+      res.status(200).send(results);
+    } catch (error) {
+      res.status(500).send({ message: "Error fetching data from RDS" });
+    }
+  }
+
+  if (req.body.use == "ratio") {
+    try {
+      const results = await getDataFromRDS(req.body);
+      res.status(200).send(results);
+    } catch (error) {
+      res.status(500).send({ message: "Error fetching data from RDS" });
+    }
+  }
+
+  if (req.body.use == "bonds") {
+    try {
+      const results = await getDataFromRDS(req.body);
+      res.status(200).send(results);
+    } catch (error) {
+      res.status(500).send({ message: "Error fetching data from RDS" });
+    }
+  }
+
+  if (req.body.use == null) {
     // console.log((req.body));
     try {
       await sendDataToRDS(req.body);
       res.status(200).send({ message: "Fetched data inserted to RDS" });
     } catch (error) {
-      res.status(500).send({ message: 'Error sending data from RDS' });
+      res.status(500).send({ message: "Error sending data from RDS" });
     }
   }
- 
-  
- 
 });
 
-// router.use('/mysqlRequest', (req, res) => {
-//   console.log("received request to fetch data from RDS to create highcharts");
-//   console.log(req.query.data);
-//   // getDataFromRDS(req.body)
-//   res.send({ message: "Data feteched from RDS." });
-// });
-
 /**
- * 
+ *
  * @param {list} mappedDataForRds - includes a fred tag, and a list of [date, value]
- * 
+ *
  */
 export async function sendDataToRDS(mappedDataForRds) {
   console.log("Sending data to RDS");
- 
-  // SQL statement for the UPSERT operation
-  let table_name = mappedDataForRds.code;
+  //warning : DUC uses different format : data - region - date:values
+  let tag = mappedDataForRds.code;
   let dateData = mappedDataForRds.date;
   let valueData = mappedDataForRds.value;
-  let unit = mappedDataForRds.unit;
+  let outputType = mappedDataForRds.output_type;
+  let lastUpdatedTime = mappedDataForRds.last_updated_time;
+  let description = mappedDataForRds.description;
+  let units = mappedDataForRds.units;
+  let DATABASE_NAME = mappedDataForRds.source; //this equals to the source of data as well.
+  let transformation = mappedDataForRds.transformation;
+  let frequency = mappedDataForRds.frequency;
+  let aggregation = mappedDataForRds.aggregation;
+  let assetType = mappedDataForRds.assetType;
+  console.log(DATABASE_NAME);
 
-  let originalDataSize = dateData.length;
-
-  // var checkTableQuery = `CREATE TABLE IF NOT EXISTS TEST3 (date DATE, value DOUBLE)`;
-  // var tuple = dateData.map((date, value) => [date, value[date]]);
-  let tuples = lodash.zip(dateData, valueData);
-
-  // var insertDataQuery = `INSERT INTO ${table_name} (date, value) VALUES ?;`
-  // const checkAndUpdateTableSql = `CREATE TABLE IF NOT EXISTS ${table_name} (date DATE, value DOUBLE);` +
-  // `SELECT COUNT(*) FROM ${table_name};`
-  let createTableQuery = `CREATE TABLE IF NOT EXISTS ${table_name} (id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY, date DATE, value DOUBLE);`;
-  let countQuery = `SELECT id FROM ${table_name} ORDER BY id DESC LIMIT 1`;
-  let insertDataQuery = `INSERT INTO ${table_name} (date, value) VALUES ?`;
-  
-  let resetQuery = `TRUNCATE TABLE ${table_name}`
+  // TODO : get units and graph description from fred web using cheerio
   if (database.authorized) {
-    // Table does not exist
-    database.query(resetQuery, function (err, result, fields) {
-    database.query(createTableQuery, function (err, result, fields) {
+    console.log("Database Accessed");
 
-      //If table does exist
-      // console.log(result);
-      // if (result.warningStatus != 0) {
-       
-      //   let count;
-      //   database.query(countQuery, function (error, results, fields) {
-      //     // console.log(result);
-      //     console.log("count returned by query" + results[0].id);
-      //     count = results[0].id;
-      //     // console.log(count);
-      //     // console.log('The last auto-incrementing ID is: ', results[0].id);
-      //   });
-      //   console.log("count in rds" + count);
-      //   console.log("tuple length" + tuples.length);
-      //   if (count == tuples.length) {
-      //     console.log("Duplicate table exists");
-      //     return;
-      //   }
-       
-      // }
-      //if there is some issue with the query OR table exists;
-      // console.log("Table created");
-      database.query(insertDataQuery, [tuples], function (err, result, fields) {
-  
-        // console.log("Data Inserted");
+    //DATABASE SET UPS
+    database.query(
+      queries.CREATE_DATABASE,
+      "catalog",
+      function (err, result, field) {
+        if (err) {
+          console.error("ERROR EXECUTING CREATE_DATABASE catalog", err);
+          return;
+        } else {
+          console.log("CREATE_DATABSE catalog executed");
+        }
+      }
+    );
+
+    database.query(
+      queries.CREATE_DATABASE,
+      DATABASE_NAME,
+      function (err, result, field) {
+        if (err) {
+          console.error(
+            `ERROR EXECUTING CREATE_DATABASE ${DATABASE_NAME}`,
+            err
+          );
+          return;
+        } else {
+          console.log(`CRAETE_DATABASE ${DATABASE_NAME} executed`);
+        }
+      }
+    );
+
+    //CATALOG SET UP
+    database.query(
+      queries.CHECK_INDICATOR_TABLE_IF_EXISTS,
+      DATABASE_NAME,
+      function (err, result, field) {
+        if (err) {
+          console.error("ERROR EXECUTING CHECK_INDICATOR_TABLE_IF_EXISTS", err);
+          return;
+        } else {
+          console.log("CHECK_INDICATOR_TABLE_IF_EXISTS executed");
+        }
+      }
+    );
+
+    //SPECIAL CASE FOR DUC EXCEL FILE. FOR OTHER DATA MYSQL REQUEST, GO TO LINE 295
+    if (DATABASE_NAME == "EIA" && tag == "DUC") {
+      let dataset = mappedDataForRds.data;
+      let regions = Object.keys(dataset);
+
+      regions.forEach((region) => {
+        let newTableName = "DUC" + "_" + region;
+
+        database.query(
+          queries.FIND_DUPLICATE_IN_INDICATOR_TABLE,
+          [
+            DATABASE_NAME,
+            tag,
+            frequency,
+            transformation,
+            aggregation,
+            assetType,
+          ],
+          function (err, catalogQueryResult, field) {
+            if (err) {
+              console.error(
+                "ERROR EXECUTING FIND_DUPLICATE_IN_INDICATOR_TABLE",
+                err
+              );
+              return;
+            } else {
+              console.log("FIND_DUPLICATE_IN_INDICATOR_TABLE executed");
+              if (catalogQueryResult[0] == null) {
+                database.query(
+                  queries.ADD_INDICATOR_TO_TABLE,
+                  //newTableName for DUC but tag for other data
+                  [
+                    DATABASE_NAME,
+                    newTableName,
+                    frequency,
+                    description,
+                    units,
+                    transformation,
+                    DATABASE_NAME,
+                    lastUpdatedTime,
+                    aggregation,
+                    assetType,
+                  ],
+                  function (err, result, field) {
+                    if (err) {
+                      console.error(
+                        "ERROR EXECUTING ADD_INDICATOR_TO_TABLE QUERY",
+                        err
+                      );
+                      return;
+                    }
+
+                    let indicator_id = result.insertId;
+
+                    let data = dataset[region];
+                    let dateData = Object.keys(data);
+                    let values = Object.values(data);
+                    const drilledData = values.map((item) => item.drilled);
+                    const completedData = values.map((item) => item.completed);
+                    const DUCData = values.map((item) => item.DUC);
+
+                    let tuples = lodash
+                      .zip(dateData, drilledData, completedData, DUCData)
+                      .map((row) => [
+                        row[0],
+                        row[1],
+                        row[2],
+                        row[3],
+                        indicator_id,
+                      ]);
+
+                    console.log(newTableName);
+
+                    database.query(
+                      queries.CREATE_DATA_TABLE_DUC,
+                      [DATABASE_NAME, newTableName, DATABASE_NAME],
+                      function (err, result, field) {
+                        if (err) {
+                          console.error(
+                            "ERROR EXECUTING CREATE_DATA_TABLE_DUC",
+                            err
+                          );
+                          return;
+                        }
+
+                        database.query(
+                          queries.INSERT_DATA_TO_TABLE_DUC,
+                          [DATABASE_NAME, newTableName, tuples],
+                          function (err, result, field) {
+                            if (err) {
+                              console.error(
+                                "ERROR EXECUTING INSERT_DATA_TO_TABLE_DC",
+                                err
+                              );
+                              return;
+                            } else {
+                              console.log("CREATE_DATA_TABLE_DUC executed");
+                              console.log("INSERT_DATA_TO_TABLE_DUC executed");
+                            }
+                          }
+                        );
+                      }
+                    );
+                  }
+                );
+              }
+            }
+          }
+        );
+
+        //IF DATA DOES NOT EXIST IN CATALOG and , ADD NEW ROW IN CATALOG AND CREATE NEW TABLE
       });
-    });
-  });
-    // if (err){
-    //   console.log("Table is created but the data is not added to the RDS");
-    // }
+      return;
+    }
 
+    //CHECK IF DATA ALREADY EXISTS BY LOOKING AT THE CATALOG.INDICATOR
+    let newTableName;
+    if (DATABASE_NAME == "CFTC") {
+      newTableName = tag;
+    } else {
+      newTableName =
+        tag + "_" + frequency + "_" + transformation + "_" + aggregation;
+    }
+    let newCatalog = [
+      tag,
+      frequency,
+      description,
+      units,
+      transformation,
+      DATABASE_NAME,
+      lastUpdatedTime,
+      aggregation,
+      // source, source is not a column in row but a table name
+      assetType,
+    ];
 
+    database.query(
+      queries.FIND_DUPLICATE_IN_INDICATOR_TABLE,
+      [DATABASE_NAME, tag, frequency, transformation, aggregation, assetType],
+      function (err, catalogQueryResult, field) {
+        if (err) {
+          console.error(
+            "ERROR EXECUTING FIND_DUPLICATE_IN_INDICATOR_TABLE",
+            err
+          );
+          return;
+        } else {
+          console.log("FIND_DUPLICATE_IN_INDICATOR_TABLE executed");
+        }
 
-    // if (err) {
-    //   console.log("Table already exists");
-    //   exit();
-    // }
-    // console.log('Table created');
-    // console.log('Data inserted into table');
-    // database.query(insertDataQuery, [tuples], function(err, result) {
-    //   if (err){
-    //     console.log("Table is created but the data is not added to the RDS");
-    //   }
+        //IF DATA DOES NOT EXIST IN CATALOG and , ADD NEW ROW IN CATALOG AND CREATE NEW TABLE
+        if (catalogQueryResult[0] == null) {
+          database.query(
+            queries.ADD_INDICATOR_TO_TABLE,
+            [
+              DATABASE_NAME,
+              tag,
+              frequency,
+              description,
+              units,
+              transformation,
+              DATABASE_NAME,
+              lastUpdatedTime,
+              aggregation,
+              assetType,
+            ],
+            function (err, result, field) {
+              if (err) {
+                console.error(
+                  "ERROR EXECUTING ADD_INDICATOR_TO_TABLE QUERY",
+                  err
+                );
+                return;
+              }
+              // console.log(result);
+              //result returns this - indicator_id is "insertId"
+              // ResultSetHeader {
+              //   fieldCount: 0,
+              //   affectedRows: 1,
+              //   insertId: 7,
+              //   info: '',
+              //   serverStatus: 2,
+              //   warningStatus: 1
+              // }
+              let indicator_id = result.insertId;
 
-    // });
+              if (DATABASE_NAME == "CFTC") {
+                database.query(
+                  queries.CREATE_DATA_TABLE_CFTC,
+                  [DATABASE_NAME, newTableName, DATABASE_NAME],
+                  function (err, result, field) {
+                    if (err) {
+                      console.error("ERROR EXECUTING CREATE_DATA_TABLE", err);
+                      return;
+                    }
 
-      
+                    const open_interest_all = valueData[0];
+                    const m_money_positions_long_all = valueData[1];
+                    const m_money_positions_short_all = valueData[2];
+                    const change_in_m_money_long_all = valueData[3];
+                    const change_in_m_money_short_all = valueData[4];
+
+                    let tuples = lodash
+                      .zip(
+                        dateData,
+                        open_interest_all,
+                        m_money_positions_long_all,
+                        m_money_positions_short_all,
+                        change_in_m_money_long_all,
+                        change_in_m_money_short_all
+                      )
+                      .map((row) => [
+                        row[0],
+                        row[1],
+                        row[2],
+                        row[3],
+                        row[4],
+                        row[5],
+                        indicator_id,
+                      ]);
+
+                    database.query(
+                      queries.INSERT_DATA_TO_TABLE_CFTC,
+                      [DATABASE_NAME, newTableName, tuples],
+                      function (err, result, field) {
+                        if (err) {
+                          console.error(
+                            "ERROR EXECUTING INSERT_DATA_TO_TABLE",
+                            err
+                          );
+                          return;
+                        } else {
+                          console.log("CREATE_DATA_TABLE executed");
+                          console.log("INSERT_DATA_TO_TABLE executed");
+                        }
+                      }
+                    );
+                  }
+                );
+              } else {
+                database.query(
+                  queries.CREATE_DATA_TABLE,
+                  [DATABASE_NAME, newTableName, DATABASE_NAME],
+                  function (err, result, field) {
+                    if (err) {
+                      console.error("ERROR EXECUTING CREATE_DATA_TABLE", err);
+                      return;
+                    }
+
+                    let tuples = lodash
+                      .zip(dateData, valueData)
+                      .map((row) => [row[0], row[1], indicator_id]);
+
+                    // console.log(tuples);
+
+                    database.query(
+                      queries.INSERT_DATA_TO_TABLE,
+                      [DATABASE_NAME, newTableName, tuples],
+                      function (err, result, field) {
+                        if (err) {
+                          console.error(
+                            "ERROR EXECUTING INSERT_DATA_TO_TABLE",
+                            err
+                          );
+                          return;
+                        } else {
+                          console.log("CREATE_DATA_TABLE executed");
+                          console.log("INSERT_DATA_TO_TABLE executed");
+                        }
+                      }
+                    );
+                  }
+                );
+              }
+            }
+          );
+          //IF EXISTS CHECK UPDATE TIME AND IF NOT MATCH ADD
+          //result[0][4] returns lastUpdatedTime in the existing catalog
+        } else {
+          // console.log("Last Updated :" + catalogQueryResult[0].last_updated_time);
+          // console.log("Today : " +  lastUpdatedTime);
+
+          if (catalogQueryResult[0].last_updated_time != lastUpdatedTime) {
+            database.query(
+              queries.UPDATE_CATALOG,
+              [
+                DATABASE_NAME,
+                lastUpdatedTime,
+                catalogQueryResult[0].indicator_id,
+              ],
+              function (err, result, field) {
+                if (err) {
+                  console.error("ERRER executing UPDATE_CATALOG", err);
+                  return;
+                } else {
+                  console.log("A DUPLICATE DATA EXISTS AND CATALOG IS UPDATED");
+                  database.query(
+                    queries.TRUNCATE_TABLE,
+                    [DATABASE_NAME, newTableName],
+                    function (err, result, field) {
+                      if (err) {
+                        console.error("ERRER executing TRUNCATE_TABLE", err);
+                        return;
+                      } else {
+                        console.log(
+                          "A TABLE IS TRUNCATED AND ADDING NEW TABLE"
+                        );
+
+                        let tuples = lodash
+                          .zip(dateData, valueData)
+                          .map((row) => [
+                            row[0],
+                            row[1],
+                            catalogQueryResult[0].indicator_id,
+                          ]);
+
+                        database.query(
+                          queries.INSERT_DATA_TO_TABLE,
+                          [DATABASE_NAME, newTableName, tuples],
+                          function (err, result, field) {
+                            if (err) {
+                              console.error(
+                                "ERROR executing INSERT_DATA_TO_TABLE",
+                                err
+                              );
+                              return;
+                            } else {
+                              console.log("DATA UPDATED");
+                            }
+                          }
+                        );
+                      }
+                    }
+                  );
+                }
+              }
+            );
+          }
+        }
+      }
+    );
   } else {
     console.log("Does not have access to database");
   }
-  // database.end();
 }
 
-
+export function sendEiaDataToRds() {}
 
 /**
- * 
- * @param {string} tag 
+ *
+ * @param {string} tag
  * @returns {Array<{date, double}>} a list of (date, value)
  */
-export function getDataFromRDS(fredTag) {
- 
-  return new Promise((resolve, reject) => {
-    var fetchDataQuery = `SELECT * from ${fredTag}`;
-    database.query(fetchDataQuery, (error, results) => {
-      if (error) {
-        reject(error);
-        return;
+
+export function getDataFromRDS(json) {
+  const fredTagsArray = Object.values(fredDataList);
+
+  //Modify this code everytime you add source
+  const source = json.use;
+  const tag = json.tag;
+
+  console.log(source);
+  console.log(tag);
+  // /chart/featured, ratio, bonds case
+  if (source == "featured" || source == "ratio" || source == "bonds") {
+    let list = [];
+
+    if (source == "featured") {
+      list = featuredList;
+    } else if (source == "ratio") {
+      list = ratioList;
+    } else {
+      list = bondsList;
+    }
+
+    let result = {};
+    return new Promise((resolve, reject) => {
+      // for (let feature of list) {
+
+      const feature = list.filter(({ urlendpoint }) => urlendpoint === tag)[0];
+
+      let title = feature.title;
+      let tags = feature.tag;
+      let adjustment = feature.adjustment;
+      let comparisonChartName = feature.comparisonChartName;
+      let frequency = feature.frequency;
+      let transformation = feature.transformation;
+      let aggregation = feature.aggregation;
+      let use = feature.use;
+      let chartToCreate = feature.chartToCreate;
+      let units = feature.units;
+      let adjustYaxis = feature.adjustYaxis;
+
+      let chartNames = [];
+      let promises = []; // Array to store the promises
+
+      for (let i = 0; i < Object.keys(tags).length; i++) {
+        let tag_instance = Object.entries(tags).at(i)[0];
+        let source_instance = Object.entries(tags).at(i)[1];
+        let frequency_instance = Object.entries(frequency).at(i)[1];
+        let transformation_instance = Object.entries(transformation).at(i)[1];
+        let aggregation_instance = Object.entries(aggregation).at(i)[1];
+
+        let tableName =
+          tag_instance +
+          "_" +
+          frequency_instance +
+          "_" +
+          transformation_instance +
+          "_" +
+          aggregation_instance;
+        console.log(tableName);
+
+        chartNames.push(tag_instance);
+        let promise = new Promise((resolve, reject) => {
+          database.query(
+            queries.SELECT_ALL_ROWS_FROM_TABLE,
+            [source_instance, tableName],
+            (error, results) => {
+              if (error) {
+                console.log(error);
+                reject(error.stack);
+              } else {
+                resolve(results);
+              }
+            }
+          );
+        });
+
+        promises.push(promise); // Add the promise to the array
       }
-      if (!results) {
-        reject(new Error("No results returned from the database query"));
-        return;
-      }
-      results.tag = fredTag;
-      resolve(results);
+
+      // Await the resolution of all promises using Promise.all()
+      Promise.all(promises)
+        .then((chain) => {
+          //for some reason result.data returns [] on the client side
+          result.values = chain;
+          result.title = title;
+          result.use = use;
+          result.names = chartNames;
+          result.adjustment = adjustment;
+          result.comparisonChart = comparisonChartName;
+          result.frequency = frequency;
+          result.transformation = transformation;
+          result.aggregation = aggregation;
+          result.chartToCreate = chartToCreate;
+          result.units = units;
+          result.adjustYaxis = adjustYaxis;
+
+          // Here, you have an array of resolved results from all the promises
+          resolve(result);
+        })
+        .catch((error) => {
+          reject(error);
+        });
     });
+  }
+
+  //if client is looking for oil page(which needs to fetch all graphs under EIA)
+  //@TODO - fix source in mysqlrequest where it is name is database_name or fix this
+  else if (source == "EIA") {
+    //edge case for DUC, since it has unusual table name in mysql database
+
+   if (tag == "DUC") {
+  return new Promise((resolve, reject) => {
+    // let jsonDUCDataArrays = [];
+
+    // Create an array of promises that fetch the data for each region
+    let promises = eiaDUCList.map((region) => {
+      let tableName = region;
+     
+
+      return new Promise((resolve, reject) => {
+        database.query(
+          queries.SELECT_ALL_ROWS_FROM_TABLE,
+          [source, tableName],
+          (err, rows) => {
+            if (err) {
+              console.log(`Error fetching rows from ${tableName}: ${err.stack}`);
+              reject(err);
+              return;
+            }
+            //rather than putting it in array just return as a promise
+             resolve(rows);
+          }
+        );
+      });
+    });
+
+    // Wait for all promises to resolve before resolving the overall promise
+    Promise.all(promises)
+      .then((promise) => {
+       let result = {};
+       result.values = promise;
+       result.names = eiaDUCList;
+       result.tag = tag;
+
+     
+      //  result.title = title;
+      //  result.use = use;
+      //  result.names = chartNames;
+      //  result.adjustment = adjustment;
+      //  result.comparisonChart = comparisonChartName;
+      //  result.frequency = frequency;
+      //  result.transformation = transformation;
+      //  result.aggregation = aggregation;
+      //  result.chartToCreate = chartToCreate;
+      //  result.units = units;
+      //  result.adjustYaxis = adjustYaxis;
+
+
+        resolve(result);
+      })
+      .catch((error) => {
+        console.log(`Error fetching data: ${error.stack}`);
+        reject(error);
+      });
+  });
+}
+    return new Promise((resolve, reject) => {
+      let indicators;
+      let assetType = tag;
+      let jsonOilDataArrays = {};
+      database.query(
+        queries.SELECT_ALL_INDICATOR_ROWS_BY_ASSET_TYPE,
+        [source, assetType],
+        (error, results) => {
+          if (error) {
+            console.log(error.stack);
+          }
+          indicators = results;
+          // console.log(indicators);
+        }
+      );
+
+      database.query(queries.SHOW_ALL_TABLES, source, (error, tables) => {
+        if (error) {
+          console.error("Error fetching tables: " + error.stack);
+          reject(error);
+          return;
+        }
+        const promises = tables.map((table) => {
+          const tableName = table["Tables_in_EIA"];
+
+          return new Promise((resolve, reject) => {
+            database.query(
+              queries.SELECT_ALL_ROWS_FROM_TABLE,
+              [source, tableName],
+              (err, rows) => {
+                if (err) {
+                  console.log(
+                    `Error fetching rows from ${tableName}: ${err.stack}`
+                  );
+                  reject(err);
+                  return;
+                }
+
+                // Add the rows data to the jsonOilDataArrays object
+                jsonOilDataArrays[tableName.split("_")[0]] = rows;
+                resolve();
+              }
+            );
+          });
+        });
+
+        Promise.all(promises)
+          .then(() => {
+            resolve({ jsonOilDataArrays, indicators });
+          })
+          .catch((error) => {
+            console.log(`Error fetching data: ${error.stack}`);
+            reject(error);
+          });
+      });
+    });
+  } else if (source == "CFTC") {
+    return new Promise((resolve, reject) => {
+      let indicators;
+      let assetType = tag;
+      let jsonOilDataArrays = {};
+      database.query(
+        queries.SELECT_ALL_INDICATOR_ROWS_BY_ASSET_TYPE,
+        [source, assetType],
+        (error, results) => {
+          if (error) {
+            console.log(error.stack);
+          }
+          indicators = results;
+          // console.log(indicators);
+        }
+      );
+
+      database.query(queries.SHOW_ALL_TABLES, source, (error, tables) => {
+        if (error) {
+          console.error("Error fetching tables: " + error.stack);
+          reject(error);
+          return;
+        }
+        const promises = tables.map((table) => {
+          const tableName = table["Tables_in_EIA"];
+
+          return new Promise((resolve, reject) => {
+            database.query(
+              queries.SELECT_ALL_ROWS_FROM_TABLE,
+              [source, tableName],
+              (err, rows) => {
+                if (err) {
+                  console.log(
+                    `Error fetching rows from ${tableName}: ${err.stack}`
+                  );
+                  reject(err);
+                  return;
+                }
+
+                // Add the rows data to the jsonOilDataArrays object
+                jsonOilDataArrays[tableName.split("_")[0]] = rows;
+                resolve();
+              }
+            );
+          });
+        });
+
+        Promise.all(promises)
+          .then(() => {
+            resolve({ jsonOilDataArrays, indicators });
+          })
+          .catch((error) => {
+            console.log(`Error fetching data: ${error.stack}`);
+            reject(error);
+          });
+      });
+    });
+  }
+  //or else just fetch one graph
+  return new Promise((resolve, reject) => {
+    database.query(
+      `SELECT COUNT(*) FROM catalog.${source} WHERE tag = '${json.tag}' AND  frequency = '${json.frequency}' AND transformation = '${json.transformation}' AND aggregation = '${json.aggregation}';`,
+      function (err, result, field) {
+        if (err) {
+          return;
+        }
+
+        if (result[0]["COUNT(*)"] == 1) {
+          var fetchDataQuery = `SELECT * from FRED.${json.tag}_${json.frequency}_${json.transformation}_${json.aggregation}`;
+          database.query(fetchDataQuery, (err, results) => {
+            if (err) {
+              reject(err);
+              return;
+            }
+
+            resolve(results);
+          });
+        } else {
+          reject(new Error("Data does not exists in Catalog table."));
+        }
+      }
+    );
   });
 }
 
-
-
-// export function getGraphInfo(jsonObject) {
-//   var newGraphObj = {};
-//   newGraphObj.code = jsonObject.code;
-//   newGraphObj.date = jsonObject.observations.map(data => data["date"]);
-//   newGraphObj.value = jsonObject.observations.map(data => data["value"]);
-//   return newGraphObj;
-// }
-
-
-// function checkDupInRds(graphData){
-
-// }
 export default router;
