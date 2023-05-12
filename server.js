@@ -6,7 +6,6 @@ import path from 'path';
 import ejs from 'ejs';
 import morgan from 'morgan';
 import session from 'express-session';
-import { PythonShell } from 'python-shell';
 import apiRouter, { getDataFromEIA, getDataFromFRED } from './src/js/routes/requests/apiRequest.js';
 import mysqlRouter from './src/js/routes/requests/mysqlRequest.js';
 import chartRouter from './src/js/routes/chart.js';
@@ -15,11 +14,8 @@ import saveArticleRouter from './src/js/routes/saveArticle.js';
 import articleListRouter from './src/js/routes/articleList.js';
 import runPythonRouter from  './src/js/routes/runPython.js'
 import * as processData from './src/js/processData.js';
-import { setTimeout } from 'timers/promises';
 import { fileURLToPath } from 'url';
-import logger from "./src/js/logger.js";
 import cookieParser from 'cookie-parser';
-import axios from 'axios';
 import schedule from 'node-schedule'
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -115,7 +111,7 @@ app.get('*',function(req, res, next){
  */
 async function main(){
   const job = schedule.scheduleJob('0 0 0,12 * *', updateEntireDatabase);
-  
+  updateEntireDatabase();
 };
 
 async function updateEntireDatabase(){
