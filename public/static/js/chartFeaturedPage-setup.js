@@ -48,7 +48,7 @@ function convertRDSDateFormatToHighCharts(dataFromRds) {
   const convertedData = dataFromRds.map((item, index) => {
     const milliseconds = Date.parse(item.date);
     let result = [milliseconds, item.value];
-  
+
     if (item.value === 0) {
       let sum = 0;
       let count = 0;
@@ -60,7 +60,7 @@ function convertRDSDateFormatToHighCharts(dataFromRds) {
       }
       result[1] = count > 0 ? sum / count : null;
     }
-  
+
     return result;
   });
   //   console.log(convertedData);
@@ -75,21 +75,20 @@ function convertRDSDateFormatToHighCharts(dataFromRds) {
  * Creates highchart with given array
  */
 function createFeaturedHighcharts(jsonData) {
-  console.log(jsonData);
+  
   let title = jsonData.title;
   let names = jsonData.names;
-  let comparisonChart = jsonData.comparisonChart;
-  let frequency = jsonData.frequency;
+  let comparisonChartName = jsonData.comparisonChartName;
+  let frequency = jsonData.frequency[0];
   let chartToCreate = jsonData.chartToCreate;
+  let chartToCreateName = jsonData.chartToCreateName;
   let units = jsonData.units;
   let use = jsonData.use;
   let adjustYaxis = jsonData.adjustYaxis;
-  let comparisonChartIndex = Object.values(names).indexOf(comparisonChart);
+  let comparisonChartNameIndex = Object.values(names).indexOf(comparisonChartName);
   const desiredDay = "Wednesday"; //Used to align timestamp - some weekly data records on friday. Use Wendesday since its default value for many weekly indicators
- 
-  let alignedData = jsonData.values;
 
-  console.log(alignedData);
+  let alignedData = jsonData.values;
 
   //match timestamp for weeklydata
   if (frequency == "w") {
@@ -111,51 +110,95 @@ function createFeaturedHighcharts(jsonData) {
       innerArr[1] * jsonData.adjustment[index],
     ])
   );
-
   let summedData;
   let summedDataArray;
   let comparionChartData;
+
   if (chartToCreate) {
     //if there is a chart to make, combine it
-    summedData = {};
-    adjustedData.forEach((dataset) => {
-      dataset.forEach(([timestamp, value]) => {
-        if (summedData.hasOwnProperty(timestamp)) {
-          summedData[timestamp] += value;
-        } else {
-          summedData[timestamp] = value;
+
+    if(use == "case1"){
+      summedData = {};
+     
+      adjustedData.forEach((dataset) => {
+        dataset.forEach(([timestamp, value]) => {
+          if (summedData.hasOwnProperty(timestamp)) {
+            summedData[timestamp] += value;
+          } else {
+            summedData[timestamp] = value;
+          }
+        });
+      });
+  
+  
+      summedDataArray = Object.entries(summedData).map(([timestamp, value]) => [
+        parseInt(timestamp),
+        value,
+      ]);
+  
+      summedDataArray.sort((a, b) => a[0] - b[0]);
+  
+      //get rid of -
+      adjustedData = adjustedData.map((arr, index) =>
+        arr.map((innerArr) => [innerArr[0], Math.abs(innerArr[1])])
+      );
+  
+      names.unshift(chartToCreateName);
+      adjustedData.unshift(summedDataArray);
+      units.unshift("Million USD");
+      comparisonChartNameIndex++;
+    
+
+    } else if(use == "case3"){
+     
+      // summedData = {};
+      // let gdpDataset = adjustedData[0];
+      // let interestExpDataset = adjustedData[1];
+      const firstDataset = adjustedData[0];
+      const secondDataset = adjustedData[1];
+      
+       summedData = [];
+      
+      firstDataset.forEach(([timestamp, value]) => {
+        const correspondingValue = secondDataset.find(data => data[0] === timestamp)?.[1];
+      
+        if (correspondingValue !== undefined) {
+          const dividedValue = correspondingValue / value;
+          summedData.push([timestamp, dividedValue]);
         }
       });
-    });
-
-    summedDataArray = Object.entries(summedData).map(([timestamp, value]) => [
-      parseInt(timestamp),
-      value,
-    ]);
-
-    //get rid of -
-    adjustedData = adjustedData.map((arr, index) =>
-      arr.map((innerArr) => [innerArr[0], Math.abs(innerArr[1])])
-    );
-
-    //add newly created chart to array
-    names.unshift(title);
-    adjustedData.unshift(summedDataArray);
-    units.unshift("Million USD");
-    comparisonChartIndex++;
-  
+      // summedData = gdpDataset.map((timestamp1, value1, index) => {
+      //   const [timestamp2, value2] = interestExpDataset[index]; // Get the corresponding timestamp and value from dataset2
+      //   const dividedValue = value1 / value2; // Perform the division operation
+      
+      //   return [timestamp1, dividedValue]; // Return the divided value with the original timestamp
+      // });
+      
+      adjustedData.shift();
+      adjustedData.unshift(summedData);
+      units.shift();
+      units.unshift("percent");
+      names.shift();
+      names.unshift(chartToCreateName)
+      use = "compare"
+      // comparisonChartName = 
+      // comparionChartData = summedData;
+      // comparisonChartName = chartToCreateName;
+    
+           
+    }
+   
   }
 
   //if there is a comparison chart, extract it from orignal array if not, skip
-  if(comparisonChart != null){
-    comparionChartData = adjustedData[comparisonChartIndex];
-    adjustedData = adjustedData.slice(0, comparisonChartIndex);
-    names = names.slice(0, comparisonChartIndex);
+  if (comparisonChartName != null) {
+    comparionChartData = adjustedData[comparisonChartNameIndex];
+    adjustedData = adjustedData.slice(0, comparisonChartNameIndex);
+    names = names.slice(0, comparisonChartNameIndex);
   }
-
+  // console.log(names);
 
   //in case where first data is empty
-  // console.log(title);
   const container = document.getElementById("chart-container");
   var newChartContainer = document.createElement("div");
   newChartContainer.className = "chart-container-featured";
@@ -167,10 +210,9 @@ function createFeaturedHighcharts(jsonData) {
   // newChartContainer.style.left = "20%";
 
   container.appendChild(newChartContainer);
-  
-  let chartOptions;
- //special case 1 : SP500_domestic_liquidity_indicator
 
+  let chartOptions;
+  //special case 1 : SP500_domestic_liquidity_indicator
   if (use == "case1") {
     chartOptions = {
       title: {
@@ -185,7 +227,7 @@ function createFeaturedHighcharts(jsonData) {
           yAxis: 0,
         })),
         {
-          name: comparisonChart,
+          name: comparisonChartName,
           data: comparionChartData,
           // Other properties for Series 1
           yAxis: 1,
@@ -206,12 +248,99 @@ function createFeaturedHighcharts(jsonData) {
         },
         {
           title: {
-            text: units[comparisonChartIndex],
+            text: units[comparisonChartNameIndex],
           },
           height: "100%",
           opposite: true, // Position on the right
         },
       ],
+
+      tooltip: {
+        xDateFormat: "%Y-%m-%d",
+      },
+
+    //   navigator: {
+    //     enabled: false
+    // },
+    // scrollbar: {
+    //     enabled: false
+    // },
+      rangeSelector: {
+        selected: 4, // Set the default range (0 = first, 1 = second, etc.)
+        buttons: [
+          {
+            type: "day",
+            count: 1,
+            text: "1d",
+          },
+          {
+            type: "year",
+            count: 1,
+            text: "1y",
+          },
+          {
+            type: "year",
+            count: 1,
+            text: "2y",
+          },
+          {
+            type: "year",
+            count: 2,
+            text: "5y",
+          },
+          {
+            type: "all",
+            text: "All",
+          },
+        ],
+      },
+
+      legend: {
+        enabled: true, // Set enabled to true to show legends
+      },
+    };
+  }
+  // title: "Nominal Comparison of SP500, Oil, Gold",
+  else if (use == "case2") {
+    chartOptions = {
+      title: {
+        text: title,
+      },
+      series: [
+        ...adjustedData.map((dataset, index) => ({
+          name: names[index],
+          data: dataset,
+
+          yAxis: index === 0 ? 0 : 1, // Alternate between the two y-axes
+        })),
+      ],
+      xAxis: {
+        type: "datetime",
+      },
+      yAxis: [
+        {
+          title: {
+            text: units[0],
+          },
+
+          height: "100%",
+          opposite: false, // Position on the left
+        },
+        {
+          title: {
+            text: units[1],
+          },
+          height: "100%",
+          opposite: true, // Position on the right
+        },
+      ],
+
+      // {
+
+      //   height: "100%",
+      //   opposite: false, // Position on the left
+      // },
+      // ],
 
       tooltip: {
         xDateFormat: "%Y-%m-%d",
@@ -251,9 +380,14 @@ function createFeaturedHighcharts(jsonData) {
         enabled: true, // Set enabled to true to show legends
       },
     };
-  } else if (use == "compare") {
-     //case for comparing two graphs with same y-axis
+  }
+  //"US Government Expenditure Interest Rate and % of GDP", -> same as compare tho
+  
+ else if (use == "compare") {
+   
+    //case for comparing two graphs with same y-axis
     if (!adjustYaxis) {
+      
       chartOptions = {
         title: {
           text: title,
@@ -266,7 +400,7 @@ function createFeaturedHighcharts(jsonData) {
             yAxis: 0,
           })),
           {
-            name: comparisonChart,
+            name: comparisonChartName,
             data: comparionChartData,
           },
         ],
@@ -323,7 +457,8 @@ function createFeaturedHighcharts(jsonData) {
         },
       };
     } else {
-     //case for comparing two graphs with different y-axis
+      console.log(adjustedData);
+      //case for comparing two graphs with different y-axis
       chartOptions = {
         title: {
           text: title,
@@ -332,13 +467,12 @@ function createFeaturedHighcharts(jsonData) {
           ...adjustedData.map((dataset, index) => ({
             name: names[index],
             data: dataset,
-
-            yAxis: 0,
+            yAxis: index,
           })),
           {
-            name: comparisonChart,
+            name: comparisonChartName,
             data: comparionChartData,
-            yAxis : 1,
+            yAxis: 1,
           },
         ],
         xAxis: {
@@ -405,82 +539,94 @@ function createFeaturedHighcharts(jsonData) {
       };
     }
     //enumerate case
-  } 
-  else {
-//case for comparing two graphs with different y-axis
-chartOptions = {
-  title: {
-    text: title,
-  },
-  series: [
-    ...adjustedData.map((dataset, index) => ({
-      name: names[index],
-      data: dataset,
-
-      yAxis: 0,
-    })),
-   
-  ],
-  xAxis: {
-    type: "datetime",
-  },
-  // alignTicks: true,
-  yAxis: [
-    {
-      title: {
-        text: units[0],
-      },
-      // alignTicks: false,
-      height: "100%",
-      opposite: false, // Position on the left
-    },
+  } else {
   
-  ],
+    //case for comparing two graphs with different y-axis(or same)
+    chartOptions = {
+      title: {
+        text: title,
+      },
+      series: [
+        ...adjustedData.map((dataset, index) => ({
+          name: names[index],
+          data: dataset,
 
-  tooltip: {
-    xDateFormat: "%Y-%m-%d",
-  },
+          yAxis: 0,
+        })),
+      ],
+      xAxis: {
+        type: "datetime",
+      },
+      // alignTicks: true,
+      yAxis: [
+        {
+          title: {
+            text: units[0],
+          },
+          // alignTicks: false,
+          height: "100%",
+          opposite: false, // Position on the left
+        },
+      ],
 
-  rangeSelector: {
-    selected: 3, // Set the default range (0 = first, 1 = second, etc.)
-    buttons: [
-      {
-        type: "day",
-        count: 1,
-        text: "1d",
+      tooltip: {
+        xDateFormat: "%Y-%m-%d",
       },
-      {
-        type: "week",
-        count: 1,
-        text: "1w",
-      },
-      {
-        type: "month",
-        count: 1,
-        text: "1m",
-      },
-      {
-        type: "year",
-        count: 2,
-        text: "2y",
-      },
-      {
-        type: "all",
-        text: "All",
-      },
-    ],
-  },
 
-  legend: {
-    enabled: true, // Set enabled to true to show legends
-  },
-};
+      rangeSelector: {
+        selected: 3, // Set the default range (0 = first, 1 = second, etc.)
+        buttons: [
+          {
+            type: "day",
+            count: 1,
+            text: "1d",
+          },
+          {
+            type: "week",
+            count: 1,
+            text: "1w",
+          },
+          {
+            type: "month",
+            count: 1,
+            text: "1m",
+          },
+          {
+            type: "year",
+            count: 2,
+            text: "2y",
+          },
+          {
+            type: "all",
+            text: "All",
+          },
+        ],
+      },
 
+      legend: {
+        enabled: true, // Set enabled to true to show legends
+      },
+    };
   }
 
   // Render the chart in the chart container element
-  Highcharts.stockChart(newChartContainer, chartOptions);
-  // }
+ Highcharts.stockChart(newChartContainer, chartOptions);
+
+  // chart.exportChart({
+  //   filename: 'chart-preview',
+  //   type: 'image/png',
+  //   width: 800, // Specify the desired width for the preview
+  //   height : 400,
+  //   // scale: 4, // Adjust the s
+  //   callback: function (base64) {
+  //     // Create an <img> element to display the preview
+  //     var img = document.createElement('img');
+  //     img.src = base64;
+  //     document.body.appendChild(img);
+  //   }
+  // });
+  
+  
 
   // const container = document.getElementById("chart-container");
   // var newChartContainer = document.createElement("div");
@@ -491,4 +637,7 @@ chartOptions = {
   newChartContainer.style.position = "relative";
   newChartContainer.style.right = "20%";
   newChartContainer.style.left = "20%";
+
+  // let exportImage = Highcharts.chart(newChartContainer, chartOptions);
+  // exportImage.exportChart();
 }

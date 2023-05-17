@@ -3,6 +3,7 @@
 import axios from "axios";
 import Series from "./routes/requests/fredAPI/Series.js";
 import getGraphInfo from "./filterDataForRDS.js";
+import csvtojson from "csvtojson";
 // import createChart from "./charts/createChart.js";
 import cheerio from "cheerio";
 import xlsx from "xlsx";
@@ -64,7 +65,7 @@ let formattedDate =
 // ];
 const transformationOptions = ["lin", "pc1"];
 // const frequencyOptions = ["d", "w", "bw", "m", "q", "sa", "a"];
-const frequencyOptions = ["d", "w", "m"];
+const frequencyOptions = ["d", "w", "m", "q"];
 // const aggregationOptions = ["avg", "sum", "eop"];
 const aggregationOptions = ["avg"];
 
@@ -412,7 +413,7 @@ export async function updateNDLDataset() {
 
 // const transformationOptionstemp = ["lin"];
 // const frequencyOptionstemp = ["d", "w", "bw", "m", "q", "sa", "a"];
-const frequencyOptionstemp = ["d"];
+const frequencyOptionstemp = ["d", "w", "m", "q"];
 
 // const frequencyOptionstemp = ["d", "w", "m"];
 // const aggregationOptionstemp = ["avg", "sum", "eop"];
@@ -420,7 +421,7 @@ const aggregationOptionstemp = ["avg"];
 const transformationOptionstemp = [
   "lin",
   // "chg",
-  // "ch1",
+  "ch1",
   // "pch",
 
   // "pca",
@@ -629,6 +630,56 @@ export async function getShillerDataset() {
       console.log(`Downloaded ${downloadedLength} of ${contentLength} bytes`);
     });
   });
+}
+
+export async function convertCopperCSVToJson() {
+  const csvFilePath =
+    "./src/js/data/csv/copper-prices-historical-chart-data.csv"; // Replace with the path to your CSV file
+
+  csvtojson()
+    .fromFile(csvFilePath)
+    .then(async (jsonObj) => {
+      let data = jsonObj.slice(8);
+
+      let extractedData = data.map((row) => {
+        return {
+          date: row["Macrotrends Data Download"],
+          value: row["field2"],
+        };
+      });
+
+      let json = {};
+      json.date = extractedData.map(row => {
+        return row.date;
+      })
+      
+      json.value = extractedData.map(row => {
+        return row.value;
+      })
+      json.frequency = "d";
+      json.code = "copper";
+      json.last_updated_time = extractedData[extractedData.length - 1].date;
+      json.description =
+        "Historical copper price downloaded from www.macrotrends.net";
+      json.units = "dollars";
+      json.output_type = ""; //use this as a default value for all EIA dataset
+      json.transformation = "lin"; //use this as a default value for all EIA dataset
+      json.aggregation = "avg"; //use this as a default value for all EIA dataset
+      json.source = "custom";
+      json.assetType = "copper";
+
+      await sendDataToRDS(json);
+    })
+    .catch((err) => {
+      console.error("Error:", err);
+    });
+}
+
+export async function getDataFromMetalsAPI() {
+  const baseurl = "https://metals-api.com/api/";
+  const test =
+    "https://metals-api.com/api/latest?access_key =" +
+    process.env.getDataFromMetalsAPI;
 }
 
 // export async function getBakerHughesDataset(){

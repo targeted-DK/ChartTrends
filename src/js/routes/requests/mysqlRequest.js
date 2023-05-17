@@ -9,6 +9,7 @@ import { eiaDUCList, fredDataList } from "../../data/dataList.js";
 import featuredList from "../../data/featuredList.js";
 import ratioList from "../../data/ratioList.js";
 import bondsList from "../../data/bondsList.js";
+import macroList from "../../data/macroList.js";
 
 router.use(bodyParser.json());
 
@@ -92,6 +93,16 @@ router.post("/mysqlRequest", async (req, res) => {
     }
   }
 
+
+  if (req.body.use == "macro") {
+    try {
+      const results = await getDataFromRDS(req.body);
+      res.status(200).send(results);
+    } catch (error) {
+      res.status(500).send({ message: "Error fetching data from RDS" });
+    }
+  }
+
   if (req.body.use == null) {
     // console.log((req.body));
     try {
@@ -124,6 +135,9 @@ export async function sendDataToRDS(mappedDataForRds) {
   let aggregation = mappedDataForRds.aggregation;
   let assetType = mappedDataForRds.assetType;
   console.log(DATABASE_NAME);
+
+  console.log(dateData);
+  console.log(valueData);
 
   // TODO : get units and graph description from fred web using cheerio
   if (database.authorized) {
@@ -296,6 +310,8 @@ export async function sendDataToRDS(mappedDataForRds) {
       newTableName =
         tag + "_" + frequency + "_" + transformation + "_" + aggregation;
     }
+
+    
     let newCatalog = [
       tag,
       frequency,
@@ -529,27 +545,29 @@ export function sendEiaDataToRds() {}
 
 export function getDataFromRDS(json) {
   const fredTagsArray = Object.values(fredDataList);
-
   //Modify this code everytime you add source
   const source = json.use;
   const tag = json.tag;
 
-  console.log(source);
-  console.log(tag);
+ 
   // /chart/featured, ratio, bonds case
-  if (source == "featured" || source == "ratio" || source == "bonds") {
+  if (source == "featured" || source == "ratio" || source == "bonds" || source == "macro") {
     let list = [];
 
     if (source == "featured") {
       list = featuredList;
     } else if (source == "ratio") {
       list = ratioList;
-    } else {
+    } else if(source == "bonds") {
       list = bondsList;
+    } else {
+      list = macroList;
     }
 
+   
     let result = {};
     return new Promise((resolve, reject) => {
+    
       // for (let feature of list) {
 
       const feature = list.filter(({ urlendpoint }) => urlendpoint === tag)[0];
@@ -563,12 +581,13 @@ export function getDataFromRDS(json) {
       let aggregation = feature.aggregation;
       let use = feature.use;
       let chartToCreate = feature.chartToCreate;
+      let chartToCreateName = feature.chartToCreateName;
       let units = feature.units;
       let adjustYaxis = feature.adjustYaxis;
 
       let chartNames = [];
       let promises = []; // Array to store the promises
-
+   
       for (let i = 0; i < Object.keys(tags).length; i++) {
         let tag_instance = Object.entries(tags).at(i)[0];
         let source_instance = Object.entries(tags).at(i)[1];
@@ -584,7 +603,10 @@ export function getDataFromRDS(json) {
           transformation_instance +
           "_" +
           aggregation_instance;
-        console.log(tableName);
+        // console.log(tag_instance);
+        // console.log(frequency_instance);
+        // console.log(transformation_instance);
+        // console.log(aggregation_instance);
 
         chartNames.push(tag_instance);
         let promise = new Promise((resolve, reject) => {
@@ -614,11 +636,12 @@ export function getDataFromRDS(json) {
           result.use = use;
           result.names = chartNames;
           result.adjustment = adjustment;
-          result.comparisonChart = comparisonChartName;
+          result.comparisonChartName = comparisonChartName;
           result.frequency = frequency;
           result.transformation = transformation;
           result.aggregation = aggregation;
           result.chartToCreate = chartToCreate;
+          result.chartToCreateName = chartToCreateName;
           result.units = units;
           result.adjustYaxis = adjustYaxis;
 

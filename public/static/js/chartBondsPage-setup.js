@@ -5,6 +5,7 @@
 const path = window.location.pathname;
 // const chartName = path.split("/").pop();
 const bondsSubject = tag;
+let chart;
 
 // let unit;
 
@@ -16,6 +17,7 @@ axios
     tag: bondsSubject,
   })
   .then((response) => {
+    
     let jsonData = Object.assign({}, response.data);
 
     let convertedDataList = [];
@@ -161,7 +163,7 @@ function createFeaturedHighcharts(jsonData) {
     },
 
     rangeSelector: {
-      selected: 3, // Set the default range (0 = first, 1 = second, etc.)
+      selected: 4, // Set the default range (0 = first, 1 = second, etc.)
       buttons: [
         {
           type: "day",
@@ -193,18 +195,27 @@ function createFeaturedHighcharts(jsonData) {
     legend: {
       enabled: true, // Set enabled to true to show legends
     },
+  //   events: {
+  //     events: {
+  //       load: function() {
+  //         this.exportChartLocal({
+  //           type: 'image/png',
+  //           filename: 'chart.png',
+  //           width: 800, // Set the desired width of the exported image
+  //           callback: function() {
+  //             console.log('Chart saved successfully.');
+  //           }
+  //         });
+  //       }
+  //     }
+  // }
 }
- //special case 1 : SP500_domestic_liquidity_indicator
+
  
 
-  // Render the chart in the chart container element
-  Highcharts.stockChart(newChartContainer, chartOptions);
-  // }
+  chart = Highcharts.chart(newChartContainer, chartOptions);
 
-  // const container = document.getElementById("chart-container");
-  // var newChartContainer = document.createElement("div");
-  // newChartContainer.className = "chart-container-" + eiaTableName;
-  // newChartContainer.id = "chart-container-" + eiaTableName;
+
   newChartContainer.style.width = "70%";
   newChartContainer.style.height = "1000px";
   newChartContainer.style.position = "relative";
@@ -212,3 +223,35 @@ function createFeaturedHighcharts(jsonData) {
   newChartContainer.style.left = "20%";
 }
 
+
+// document.addEventListener('DOMContentLoaded', function () {
+  
+
+//   var exportChartInterval = setInterval(function() {
+//     if (chart) {
+//       clearInterval(exportChartInterval);
+//       function () {
+//         // Callback function to handle the image data.
+//         // This function can be used to save the image data to your server.
+      
+//         const imageData = this.dataURL;
+//         console.log(imageData);
+//         axios.post('/saveImage', {
+       
+//           headers: {
+//             'Content-Type': 'application/json'
+//           },
+//           body: JSON.stringify({
+//             imageData: imageData
+//           })
+//         }).then(function (response) {
+//           if (response.ok) {
+//             console.log('Image saved successfully');
+//           } else {
+//             console.error('Error saving image');
+//           }
+//         });
+      
+//     }
+//   }, 1000); // Check every second
+// });

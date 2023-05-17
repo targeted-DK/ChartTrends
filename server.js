@@ -24,8 +24,7 @@ dotenv.config();
 //testing python on child process
 import {spawn} from 'child_process';
 import bodyParser from 'body-parser';
-import makeRequest from './src/js/makeRequest.js';
-import Series from './src/js/routes/requests/fredAPI/Series.js';
+
 //testing python
 // let data = [1, 2, 3, 4, 5];
 // CORS Configurations
@@ -92,6 +91,23 @@ app.post('/analyze', (req, res) => {
   res.send('POST request received');
 });
 
+app.use(express.static('public'));
+
+app.post('/saveImage', (req, res) => {
+  console.log("client side")
+  const imageData = req.body.imageData.replace(/^data:image\/png;base64,/, '');
+  fs.writeFile('./public/static/images/chart.png', imageData, 'base64', (err) => {
+      if (err) {
+          console.log('Error: ', err);
+          res.sendStatus(500);
+      } else {
+          console.log('Successfully saved image');
+          res.sendStatus(200);
+      }
+  });
+});
+
+
 //main page
 app.get('/', function(req, res) {
 console.log(process.env.DB_HOST);
@@ -111,14 +127,17 @@ app.get('*',function(req, res, next){
  */
 async function main(){
   const job = schedule.scheduleJob('0 0 0,12 * *', updateEntireDatabase);
-  updateEntireDatabase();
+  // updateEntireDatabase();
+  processData.convertCopperCSVToJson();
+// await processData.updateFredDatasettemp();
+
 };
 
 async function updateEntireDatabase(){
   await processData.getDUCDataset();
   // await processData.updateFredDatasettemp();
-  await processData.updateNDLDataset();
-  await processData.getShillerDataset();
+  // await processData.updateNDLDataset();
+  // await processData.getShillerDataset();
   // await processData.getBakerHughesDataset();
   await processData.updateFredDataset();
   await processData.updateEIADataset();
@@ -128,8 +147,11 @@ async function updateEntireDatabase(){
 /**
  * Client Connection
  */
-app.listen(3000, () => {
-  console.log('Server listening on port 3000');
+
+const IP_ADDRESS = '0.0.0.0'; // Listen on all IP addresses
+const PORT = 3000; // Port number
+app.listen(PORT, IP_ADDRESS, () => {
+  console.log('Server listening on port ' + PORT);
   main();
   
 });

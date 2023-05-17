@@ -2,9 +2,10 @@
 // I copied code from createChart-setup and added code here
 // import moment from 'moment'
 
+
 const path = window.location.pathname;
 // const chartName = path.split("/").pop();
-const featuredSubject = tag;
+const ratioSubject = tag;
 
 // let unit;
 
@@ -13,7 +14,7 @@ axios
     //mysql
     use: "ratio",
     //eia
-    tag: featuredSubject,
+    tag: ratioSubject,
   })
   .then((response) => {
     // console.log(response);
@@ -29,6 +30,7 @@ axios
     }
 
     jsonData.values = convertedDataList;
+ 
     createRatioHighCharts(jsonData);
 
     const loading = document.getElementById("loading");
@@ -67,14 +69,18 @@ function createRatioHighCharts(jsonData) {
   
   let title = jsonData.title;
   let names = jsonData.names;
-  let comparisonChart = jsonData.comparisonChart;
+  let comparisonChartName = jsonData.comparisonChartName;
+  let frequency  = jsonData.frequency[0];
   let use = jsonData.use;
-  let comparisonChartIndex = Object.values(names).indexOf(comparisonChart);
+  // let comparisonChartIndex = Object.values(names).indexOf(comparisonChart);
   let desiredDay;
   let alignedData;
 
+  console.log(jsonData);
+  
+  console.log("here");
   //if weekly, match end date, if daily, find intersection of dates of dataset
-  if(jsonData.frequency == "w"){
+  if(frequency == "w"){
      desiredDay = "Wednesday"; 
 
      alignedData = jsonData.values.map((dataset) => {
@@ -89,9 +95,11 @@ function createRatioHighCharts(jsonData) {
     });
 
     
-  } else if(jsonData.frequency == "d"){
+  } else if(frequency == "d"){
      desiredDay = "";
 
+     console.log(jsonData);
+     
      const intersection = new Set(jsonData.values[0].filter(entry => jsonData.values[1].map(e => e[0]).includes(entry[0])).map(entry => entry[0]));
      
       const array1 = jsonData.values[0].map(entry => {
@@ -99,7 +107,7 @@ function createRatioHighCharts(jsonData) {
           return entry;
         }
       }).filter(entry => entry !== undefined);
-
+   
       const array2 = jsonData.values[1].map(entry => {
         if (intersection.has(entry[0])) {
           return entry;
@@ -109,11 +117,15 @@ function createRatioHighCharts(jsonData) {
     //  const filteredDataset1 = array1.map(entry => [entry[0], entry[1]]);
     //  const filteredDataset2 = array2.map(entry => [entry[0], entry[1]]);
 
- 
+    array1.sort((a, b) => a[0] - b[0]);
+    array2.sort((a, b) => a[0] - b[0]);
+
+
      alignedData = [array1, array2]
 
     
   }
+  // console.log(alignedData);
 
   //multiply values by adjustment factor
   let adjustedData = alignedData.map((arr, index) =>
@@ -126,7 +138,7 @@ function createRatioHighCharts(jsonData) {
   let ratioData = adjustedData[0].map((_, index) => [alignedData[0][index][0], alignedData[0][index][1] / alignedData[1][index][1]]);
   ratioData.sort((a, b) => a[0] - b[0]);
 
-  console.log(ratioData);
+  // console.log(ratioData);
   // if (use === "ratio") {
   //   let ratioData = alignedData[0].map((_, index) => [alignedData[0][index][0], alignedData[0][index][1] / alignedData[1][index][1]]);
    
