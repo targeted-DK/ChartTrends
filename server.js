@@ -128,7 +128,7 @@ app.get('*',function(req, res, next){
 async function main(){
   const job = schedule.scheduleJob('0 0 0,12 * *', updateEntireDatabase);
   // updateEntireDatabase();
-  processData.convertCopperCSVToJson();
+  // processData.convertCopperCSVToJson();
 // await processData.updateFredDatasettemp();
 
 };
@@ -139,6 +139,7 @@ async function updateEntireDatabase(){
   // await processData.updateNDLDataset();
   // await processData.getShillerDataset();
   // await processData.getBakerHughesDataset();
+  await processData.convertCopperCSVToJson();
   await processData.updateFredDataset();
   await processData.updateEIADataset();
 }
