@@ -16,16 +16,19 @@ axios
     tag: featuredSubject,
   })
   .then((response) => {
+   
     let jsonData = Object.assign({}, response.data);
-
+   
     let convertedDataList = [];
-
     for (let data of jsonData.values) {
+     
       let convertedData = convertRDSDateFormatToHighCharts(data);
       convertedDataList.push(convertedData);
     }
 
     jsonData.values = convertedDataList;
+
+   
     createFeaturedHighcharts(jsonData);
 
     const loading = document.getElementById("loading");
@@ -45,6 +48,7 @@ function convertRDSDateFormatToHighCharts(dataFromRds) {
   if (dataFromRds == []) {
     return [];
   }
+ 
   const convertedData = dataFromRds.map((item, index) => {
     const milliseconds = Date.parse(item.date);
     let result = [milliseconds, item.value];
@@ -60,7 +64,7 @@ function convertRDSDateFormatToHighCharts(dataFromRds) {
       }
       result[1] = count > 0 ? sum / count : null;
     }
-
+   
     return result;
   });
   //   console.log(convertedData);
@@ -75,18 +79,19 @@ function convertRDSDateFormatToHighCharts(dataFromRds) {
  * Creates highchart with given array
  */
 function createFeaturedHighcharts(jsonData) {
-  
   let title = jsonData.title;
   let names = jsonData.names;
   let comparisonChartName = jsonData.comparisonChartName;
   let frequency = jsonData.frequency[0];
   let chartToCreate = jsonData.chartToCreate;
   let chartToCreateName = jsonData.chartToCreateName;
+  let chartMethod = jsonData.chartMethod;
   let units = jsonData.units;
   let use = jsonData.use;
   let adjustYaxis = jsonData.adjustYaxis;
-  let comparisonChartNameIndex = Object.values(names).indexOf(comparisonChartName);
-  const desiredDay = "Wednesday"; //Used to align timestamp - some weekly data records on friday. Use Wendesday since its default value for many weekly indicators
+  let comparisonChartNameIndex =
+    Object.values(names).indexOf(comparisonChartName);
+  let desiredDay = "Wednesday"; //Used to align timestamp - some weekly data records on friday. Use Wendesday since its default value for many weekly indicators
 
   let alignedData = jsonData.values;
 
@@ -103,6 +108,29 @@ function createFeaturedHighcharts(jsonData) {
     });
   }
 
+  //   else if(frequency == "d"){
+  //     desiredDay = "";
+
+  //     const intersection = new Set(jsonData.values[0].filter(entry => jsonData.values[1].map(e => e[0]).includes(entry[0])).map(entry => entry[0]));
+
+  //      const array1 = jsonData.values[0].map(entry => {
+  //        if (intersection.has(entry[0])) {
+  //          return entry;
+  //        }
+  //      }).filter(entry => entry !== undefined);
+
+  //      const array2 = jsonData.values[1].map(entry => {
+  //        if (intersection.has(entry[0])) {
+  //          return entry;
+  //        }
+  //      }).filter(entry => entry !== undefined);
+
+  //    array1.sort((a, b) => a[0] - b[0]);
+  //    array2.sort((a, b) => a[0] - b[0]);
+
+  //     alignedData = [array1, array2]
+  //  }
+
   //multiply values by adjustment factor
   let adjustedData = alignedData.map((arr, index) =>
     arr.map((innerArr) => [
@@ -116,52 +144,91 @@ function createFeaturedHighcharts(jsonData) {
 
   if (chartToCreate) {
     //if there is a chart to make, combine it
-
-    if(use == "case1"){
+    if (use == "case1") {
       summedData = {};
-     
-      adjustedData.forEach((dataset) => {
-        dataset.forEach(([timestamp, value]) => {
-          if (summedData.hasOwnProperty(timestamp)) {
-            summedData[timestamp] += value;
-          } else {
-            summedData[timestamp] = value;
-          }
+
+      //making chart by addition or by division
+      if (chartMethod == "Addition") {
+        adjustedData.forEach((dataset) => {
+          dataset.forEach(([timestamp, value]) => {
+            if (summedData.hasOwnProperty(timestamp)) {
+              summedData[timestamp] += value;
+            } else {
+              summedData[timestamp] = value;
+            }
+          });
         });
-      });
-  
-  
+      } else if (chartMethod == "Division") {
+        let firstDataset = Object.values(adjustedData[0]).sort(
+          (a, b) => a[0] - b[0]
+        );
+        let secondDataset = Object.values(adjustedData[1]).sort(
+          (a, b) => a[0] - b[0]
+        );
+        // console.log(firstDataset);
+
+        //my original code
+        // const dividedData = Object.entries(firstDataset).map(([key1, val1]) => {
+
+        //   const correspondingEntry = Object.entries(secondDataset).find(([key2, val2]) => val1[0] === val2[0]);
+        //   // console.log(correspondingEntry);
+        //   if (correspondingEntry) {
+        //     // console.log(val1);
+        //     // console.log( correspondingEntry[1][1]);
+        //     const dividedValue = val1[1] / correspondingEntry[1][1];
+        //     return [val1[0], dividedValue];
+        //   }
+
+        //   return [val1[0] || Object.values(correspondingEntry[0]), null];
+        // });
+
+        const dividedData = [];
+      
+        for (const [timestamp, value] of firstDataset) {
+          // console.log(timestamp);
+          if (secondDataset.hasOwnProperty(timestamp)) {
+            //  console.log(secondDataset[timestamp]);
+            const dividedValue = value / secondDataset[timestamp];
+            dividedData.push([timestamp, dividedValue]);
+          } else {
+            dividedData.push([timestamp, null]);
+          }
+        }
+
+        summedData = dividedData;
+        // console.log(summedData);
+      }
+
       summedDataArray = Object.entries(summedData).map(([timestamp, value]) => [
         parseInt(timestamp),
         value,
       ]);
-  
+
       summedDataArray.sort((a, b) => a[0] - b[0]);
-  
+
       //get rid of -
       adjustedData = adjustedData.map((arr, index) =>
         arr.map((innerArr) => [innerArr[0], Math.abs(innerArr[1])])
       );
-  
+
       names.unshift(chartToCreateName);
       adjustedData.unshift(summedDataArray);
-      units.unshift("Million USD");
+      units.unshift(units[0]);
       comparisonChartNameIndex++;
-    
-
-    } else if(use == "case3"){
-     
+    } else if (use == "case3") {
       // summedData = {};
       // let gdpDataset = adjustedData[0];
       // let interestExpDataset = adjustedData[1];
       const firstDataset = adjustedData[0];
       const secondDataset = adjustedData[1];
-      
-       summedData = [];
-      
+
+      summedData = [];
+
       firstDataset.forEach(([timestamp, value]) => {
-        const correspondingValue = secondDataset.find(data => data[0] === timestamp)?.[1];
-      
+        const correspondingValue = secondDataset.find(
+          (data) => data[0] === timestamp
+        )?.[1];
+
         if (correspondingValue !== undefined) {
           const dividedValue = correspondingValue / value;
           summedData.push([timestamp, dividedValue]);
@@ -170,33 +237,36 @@ function createFeaturedHighcharts(jsonData) {
       // summedData = gdpDataset.map((timestamp1, value1, index) => {
       //   const [timestamp2, value2] = interestExpDataset[index]; // Get the corresponding timestamp and value from dataset2
       //   const dividedValue = value1 / value2; // Perform the division operation
-      
+
       //   return [timestamp1, dividedValue]; // Return the divided value with the original timestamp
       // });
-      
+
       adjustedData.shift();
-      adjustedData.unshift(summedData);
       units.shift();
-      units.unshift("percent");
       names.shift();
-      names.unshift(chartToCreateName)
-      use = "compare"
-      // comparisonChartName = 
+
+      adjustedData.unshift(summedData);
+      units.unshift("percent");
+      names.unshift(chartToCreateName);
+      use = "compare";
+      // comparisonChartName =
       // comparionChartData = summedData;
       // comparisonChartName = chartToCreateName;
-    
-           
     }
-   
   }
 
   //if there is a comparison chart, extract it from orignal array if not, skip
+  //this is due to different units
+ 
   if (comparisonChartName != null) {
     comparionChartData = adjustedData[comparisonChartNameIndex];
     adjustedData = adjustedData.slice(0, comparisonChartNameIndex);
     names = names.slice(0, comparisonChartNameIndex);
   }
   // console.log(names);
+  // console.log(adjustedData);
+  // console.log(names);
+  // console.log(comparionChartData);
 
   //in case where first data is empty
   const container = document.getElementById("chart-container");
@@ -259,12 +329,12 @@ function createFeaturedHighcharts(jsonData) {
         xDateFormat: "%Y-%m-%d",
       },
 
-    //   navigator: {
-    //     enabled: false
-    // },
-    // scrollbar: {
-    //     enabled: false
-    // },
+      //   navigator: {
+      //     enabled: false
+      // },
+      // scrollbar: {
+      //     enabled: false
+      // },
       rangeSelector: {
         selected: 4, // Set the default range (0 = first, 1 = second, etc.)
         buttons: [
@@ -382,12 +452,9 @@ function createFeaturedHighcharts(jsonData) {
     };
   }
   //"US Government Expenditure Interest Rate and % of GDP", -> same as compare tho
-  
- else if (use == "compare") {
-   
+  else if (use == "compare") {
     //case for comparing two graphs with same y-axis
     if (!adjustYaxis) {
-      
       chartOptions = {
         title: {
           text: title,
@@ -540,7 +607,6 @@ function createFeaturedHighcharts(jsonData) {
     }
     //enumerate case
   } else {
-  
     //case for comparing two graphs with different y-axis(or same)
     chartOptions = {
       title: {
@@ -578,22 +644,22 @@ function createFeaturedHighcharts(jsonData) {
         buttons: [
           {
             type: "day",
-            count: 1,
+            count: 10,
             text: "1d",
           },
           {
             type: "week",
-            count: 1,
+            count: 10,
             text: "1w",
           },
           {
             type: "month",
-            count: 1,
+            count: 10,
             text: "1m",
           },
           {
             type: "year",
-            count: 2,
+            count: 5,
             text: "2y",
           },
           {
@@ -610,7 +676,7 @@ function createFeaturedHighcharts(jsonData) {
   }
 
   // Render the chart in the chart container element
- Highcharts.stockChart(newChartContainer, chartOptions);
+  Highcharts.stockChart(newChartContainer, chartOptions);
 
   // chart.exportChart({
   //   filename: 'chart-preview',
@@ -625,8 +691,6 @@ function createFeaturedHighcharts(jsonData) {
   //     document.body.appendChild(img);
   //   }
   // });
-  
-  
 
   // const container = document.getElementById("chart-container");
   // var newChartContainer = document.createElement("div");

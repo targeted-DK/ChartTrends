@@ -1,10 +1,9 @@
-//case1 : create a chart using graphs and compare with the last one
-//case2: three charts -todo
+//case1 : create a chart(addition) and compare with the last one
+//case2: three charts - todo
+//case3: create a chart(division) and compare the two
 //compare : compare two charts with different units
 //enmerate : compare multiple charts with same units
-//  case2, compare, enumerate
 
-//always add the chartToCreate at data[0]
 //for 2-chart graphs, we need comparisonChartName in case of different units
 let featuredList = [
   {
@@ -43,6 +42,7 @@ let featuredList = [
     use: "case1",
     chartToCreate: true,
     chartToCreateName : "Domestic Liquidity Indicator",
+    chartMethod : "Addition",
     adjustYaxis: true,
     tag: { WALCL: "FRED", WTREGEN: "FRED", RRPONTSYD: "FRED", WILL5000PR: "FRED" },
     frequency: ["w", "w", "w", "w"],
@@ -51,6 +51,23 @@ let featuredList = [
     adjustment: [1, -1000, -1000, 1],
     units: ["Million USD", "Billion USD", "Billion USD", "Points"],
     comparisonChartName: "WILL5000PR",
+  },
+
+  {
+    title: "Copper Gold Ratio vs. US10YR Yield",
+    urlendpoint: "CGR_us10yr",
+    use: "case1",
+    chartToCreate: true,
+    chartToCreateName : "Copper-Gold Ratio",
+    chartMethod : "Division",
+    adjustYaxis: true,
+    tag: {"copper" : "custom", "GOLD" : "NDL", "DGS10" : "FRED"},
+    frequency : ["d", "d", "d"],
+    transformation : ["lin","lin", "lin"],
+    aggregation :[ "avg","avg","avg"],
+    adjustment: [1,1,1],
+    units : ["", "", "percent"],
+    comparisonChartName : "DGS10"
   },
   //three charts
   {
@@ -67,6 +84,22 @@ let featuredList = [
     units: ["points", "dollars", "dollars"],
     comparisonChartName: null
   },
+
+  //@todo - issue with cftc data as it has multiple values in a row
+  // {
+  //   title: "WTI Price vs. Manged Money Positions",
+  //   urlendpoint: "WTI_cftcpositions",
+  //   use: "compare",
+  //   chartToCreate: false,
+  //   adjustYaxis: true,
+  //   tag: { "WTISPLC": "FRED", "WTI-PHYSICAL": "CFTC"},
+  //   frequency: ["m", ""],
+  //   transformation: ["lin", ""],
+  //   aggregation: ["avg", ""],
+  //   adjustment: [1, 1],
+  //   units: ["dollars", "contract"],
+  //   comparisonChartName: "WTI-PHYSICAL"
+  // },
   {
     title: "Real Interest Rates",
     urlendpoint: "realinterestrates",
@@ -128,9 +161,6 @@ let featuredList = [
     units: ["percent", "percent", "percent", "percent", "percent", "percent"],
     comparisonChartName: null,
   },
-
-  //federal government expenditure - todo
-
   {
     title: "US Government Expenditure Interest Rate and % of GDP",
     urlendpoint: "usgovexp",
@@ -142,10 +172,11 @@ let featuredList = [
     frequency: ["q", "q"],
     transformation: ["lin", "lin"],
     aggregation: ["avg", "avg"],
-    adjustment: [1, 100],
+    adjustment: [1/100, 1],
     units: ["Billions of Dollars", "Billions of Dollars"],
-    comparisonChartName: null,
+    comparisonChartName: "A091RC1Q027SBEA",
   },
+
 
   {
     title: "CPI vs. Michigan Inflation Expectations survey",
@@ -162,6 +193,59 @@ let featuredList = [
     units: ["percent", "percent"],
     comparisonChartName: null,
   },
+
+
+//   //@todo - needs test
+//   {
+//     title: "Corporate Debt / GDP and Fed Funds Rate",
+//     urlendpoint: "corpdebtgdp_ffer",
+//     use: "case3",
+//     chartToCreate: true,
+//     chartToCreateName : "Corporate Debt as a % of GDP",
+//     adjustYaxis: true,
+//     tag: {"BCNSDODNS" : "FRED",  "GDP": "FRED", "FEDFUNDS": "FRED" },
+//     frequency: ["q", "q", "q"],
+//     transformation: ["lin", "lin","lin"],
+//     aggregation: ["avg", "avg", "avg"],
+//     adjustment: [1,1, 1],
+//     units: ["Billions of Dollars", "Billions of Dollars", "percent"],
+//     comparisonChartName: "FEDFUNDS",
+//   },
+// //@todo - needs test
+//   {
+//     title: "Total US Debt / GDP and Fed Funds Rate",
+//     urlendpoint: "usdebtGDP_ffer",
+//     use: "case3",
+//     chartToCreate: true,
+//     chartToCreateName : "Total Debt as a % of GDP",
+//     adjustYaxis: true,
+//     tag: {"GFDEBTN" : "FRED",  "GDP": "FRED", "FEDFUNDS": "FRED" },
+//     frequency: ["q", "q", "q"],
+//     transformation: ["lin", "lin","lin"],
+//     aggregation: ["avg", "avg", "avg"],
+//     adjustment: [1,1, 1],
+//     units: ["Billions of Dollars", "Billions of Dollars", "percent"],
+//     comparisonChartName: "FEDFUNDS",
+//   },
+//   //@todo - needs test
+//   {
+//     title: "Total US Debt / M2 and Fed Funds Rate",
+//     urlendpoint: "usdebtM2_ffer",
+//     use: "case3",
+//     chartToCreate: true,
+//     chartToCreateName : "Total Debt as a % of M2",
+//     adjustYaxis: true,
+//     tag: {"GFDEBTN" : "FRED",  "WM2NS": "FRED", "FEDFUNDS": "FRED" },
+//     frequency: ["q", "q", "q"],
+//     transformation: ["lin", "lin","lin"],
+//     aggregation: ["avg", "avg", "avg"],
+//     adjustment: [100,1, 1],
+//     units: ["Billions of Dollars", "Billions of Dollars", "percent"],
+//     comparisonChartName: "FEDFUNDS",
+//   },
+
+
+  
 
   
 

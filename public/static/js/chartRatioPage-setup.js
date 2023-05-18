@@ -114,9 +114,7 @@ function createRatioHighCharts(jsonData) {
         }
       }).filter(entry => entry !== undefined);
       
-    //  const filteredDataset1 = array1.map(entry => [entry[0], entry[1]]);
-    //  const filteredDataset2 = array2.map(entry => [entry[0], entry[1]]);
-
+  
     array1.sort((a, b) => a[0] - b[0]);
     array2.sort((a, b) => a[0] - b[0]);
 

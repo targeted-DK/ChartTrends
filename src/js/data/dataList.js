@@ -1,30 +1,32 @@
 export const fredDataList = {
   //Index stuff
-  "Wilshire 5000 Price Index" : "WILL5000PR",
-  "S&P 500" : "SP500",
+  "Wilshire 5000 Price Index": "WILL5000PR",
+  "S&P 500": "SP500",
   // S&P/Case-Shiller U.S. National Home Price Index (CSUSHPINSA),
 
   //interest rate
-  "1-Month Real Interest Rate" : "REAINTRATREARAT1MO",
-  "1-Year Real Interest Rate" : "REAINTRATREARAT1YE",
-  "10-Year Real Interest Rate" : "REAINTRATREARAT10Y",
+  "1-Month Real Interest Rate": "REAINTRATREARAT1MO",
+  "1-Year Real Interest Rate": "REAINTRATREARAT1YE",
+  "10-Year Real Interest Rate": "REAINTRATREARAT10Y",
+  
 
   //bonds
-  "10-Year Treasury Constant Maturity Minus 3-Month Treasury Constant Maturity" : "T10Y3M",
- 
-  //inflation stuff
-  "5-Year Breakeven Inflation Rate" : "T5YIE",
-  "7-year Breakeven Inflation Rate" :"T7YIEM",
-  "10-Year Breakeven Inflation Rate": "T10YIE",
-  "20-year Breakeven Inflation Rate" :"T20YIEM",
-  "30-year Breakeven Inflation Rate" :"T30YIEM",
+  "10-Year Treasury Constant Maturity Minus 3-Month Treasury Constant Maturity":
+    "T10Y3M",
 
-  "1-Year Expected Inflation" : "EXPINF1YR",
-  "5-Year Expected Inflation" : "EXPINF5YR",
-  "10-Year Expected Inflation" :"EXPINF10YR",
-  "20-Year Expected Inflation" :"EXPINF20YR",
-  "30-Year Expected Inflation" :"EXPINF30YR",
-  "University of Michigan: Inflation Expectation" : "MICH",
+  //inflation stuff
+  "5-Year Breakeven Inflation Rate": "T5YIE",
+  "7-year Breakeven Inflation Rate": "T7YIEM",
+  "10-Year Breakeven Inflation Rate": "T10YIE",
+  "20-year Breakeven Inflation Rate": "T20YIEM",
+  "30-year Breakeven Inflation Rate": "T30YIEM",
+
+  "1-Year Expected Inflation": "EXPINF1YR",
+  "5-Year Expected Inflation": "EXPINF5YR",
+  "10-Year Expected Inflation": "EXPINF10YR",
+  "20-Year Expected Inflation": "EXPINF20YR",
+  "30-Year Expected Inflation": "EXPINF30YR",
+  "University of Michigan: Inflation Expectation": "MICH",
 
   //Macro Stuff
   "Market Yield on U.S. Treasury Securities at 10-Year Constant Maturity, Quoted on an Investment Basis":
@@ -39,7 +41,7 @@ export const fredDataList = {
   "Liabilities and Capital: Liabilities: Deposits with F.R. Banks, Other Than Reserve Balances: U.S. Treasury, General Account: Week Average":
     "WTREGEN",
   "Gross Domestic Product": "GDP",
-  "M2" : "WM2NS",
+  M2: "WM2NS",
   "Sticky Price Consumer Price Index less Food and Energy":
     "CORESTICKM159SFRBATL",
   "Consumer Price Index for All Urban Consumers: All Items in U.S. City Average":
@@ -97,6 +99,9 @@ export const fredDataList = {
   "Cash Assets, Small Domestically Chartered Commercial Banks":
     "CASSCBW027SBOG",
 
+  //Corporate Stuff
+  "Nonfinancial Corporate Business; Debt Securities and Loans; Liability, Level" : "BCNSDODNS",
+
   //Investment
   "U.S. Net International Investment Position": "IIPUSNETIQ", //Can you find this one with longer observation period?
 
@@ -105,8 +110,9 @@ export const fredDataList = {
   //Manufacturing PMI
 
   //OIL STUFF
-  "Crude Oil Prices: West Texas Intermediate (WTI) - Cushing, Oklahoma" : "DCOILWTICO",
-  "Crude Oil Prices: Brent - Europe" : "DCOILBRENTEU",
+  "Crude Oil Prices: West Texas Intermediate (WTI) - Cushing, Oklahoma":
+    "DCOILWTICO",
+  "Crude Oil Prices: Brent - Europe": "DCOILBRENTEU",
 
   //commodity(monthly)
   // Global price of Copper (PCOPPUSDM)
@@ -124,7 +130,7 @@ export const fredDataList = {
   // Global price of WTI Crude (POILWTIUSDM)
 
   //Labor Market
-  "Population" : "POPTHM",
+  Population: "POPTHM",
   "Employment-Population Ratio": "EMRATIO",
   "Employment Rate: Aged 15-64: All Persons for the United States":
     "LREM64TTUSM156S",
@@ -264,27 +270,30 @@ export const eiaDUCList = [
   "DUC_Haynesville",
   "DUC_Niobrara",
   "DUC_Permian",
-  "DUC_DPR Regions"
-]
-const eiaDataElectricityList = {
-
-
-}
+  "DUC_DPR Regions",
+];
+const eiaDataElectricityList = {};
 
 export const cftcList = [
-"WTI-PHYSICAL",
-"PALLADIUM",
-"PLATINUM",
-"SILVER",
-"GOLD",
-"COPPER- #1",
-]
-
+  "WTI-PHYSICAL",
+  "PALLADIUM",
+  "PLATINUM",
+  "SILVER",
+  "GOLD",
+  "COPPER- #1",
+];
 
 //database/dataset
 export const nasdaqDataLinkList = {
-  "Gold Price: London Fixing" :  "LBMA/GOLD",
-  "Silver Price: London Fixing" : "LBMA/SILVER",
-}
+  "Gold Price: London Fixing": "LBMA/GOLD",
+  "Silver Price: London Fixing": "LBMA/SILVER",
+};
 
-export default { fredDataList, eiaDataOilList, eiaDataPetroleumList, eiaDataNGList, eiaDUCList, cftcList };
+export default {
+  fredDataList,
+  eiaDataOilList,
+  eiaDataPetroleumList,
+  eiaDataNGList,
+  eiaDUCList,
+  cftcList,
+};

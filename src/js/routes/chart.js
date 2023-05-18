@@ -98,6 +98,16 @@ router.get("/macro/:subject", (req, res, next) => {
   }
 });
 
+router.get("/CFTC", (req, res, next) => {
+  const source = req.params.source;
+  // const tag = req.params.tag;
+
+  const fileName = "chart" + CFTC + "Template";
+
+  res.render(fileName);
+});
+
+
 router.get("/:source/:tag", (req, res, next) => {
   const source = req.params.source;
   const tag = req.params.tag;
