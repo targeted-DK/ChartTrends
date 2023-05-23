@@ -1,7 +1,12 @@
 export const fredDataList = {
+
+  //Recession Indicator
+  "NBER based Recession Indicators for the United States from the Period following the Peak through the Trough"  : "USREC",
   //Index stuff
   "Wilshire 5000 Price Index": "WILL5000PR",
   "S&P 500": "SP500",
+  "NASDAQ Composite Index" : "NASDAQCOM",
+  "Nikkei Stock Average, Nikkei 225" : "NIKKEI225",
   // S&P/Case-Shiller U.S. National Home Price Index (CSUSHPINSA),
 
   //interest rate
@@ -41,7 +46,8 @@ export const fredDataList = {
   "Liabilities and Capital: Liabilities: Deposits with F.R. Banks, Other Than Reserve Balances: U.S. Treasury, General Account: Week Average":
     "WTREGEN",
   "Gross Domestic Product": "GDP",
-  M2: "WM2NS",
+  "M2": "WM2NS",
+  "Real M2 Money Stock" : "M2REAL",
   "Sticky Price Consumer Price Index less Food and Energy":
     "CORESTICKM159SFRBATL",
   "Consumer Price Index for All Urban Consumers: All Items in U.S. City Average":
@@ -77,6 +83,7 @@ export const fredDataList = {
   "Federal government current tax receipts": "W006RC1Q027SBEA",
   "Federal Surplus or Deficit [-]": "MTSDS133FMS",
   "Real Government Consumption Expenditures and Gross Investment": "GCEC1",
+  "All Sectors; Debt Securities and Loans; Liability, Level" : "TCMDO",
 
   //US Bank Stuff
   "Total Assets, All Commercial Banks": "TLAACBW027SBOG",
@@ -98,6 +105,15 @@ export const fredDataList = {
     "CASLCBW027SBOG",
   "Cash Assets, Small Domestically Chartered Commercial Banks":
     "CASSCBW027SBOG",
+  "Total Assets, All Commercial Banks" : "TLAACBW027SBOG",
+  "Total Assets, Large Domestically Chartered Commercial Banks" :  "TLALCBM027SBOG",
+  "Total Assets, Small Domestically Chartered Commercial Banks" : "TLASCBM027SBOG",
+ 
+  //households
+  "Personal Saving Rate" : "PSAVERT",
+  "Average Hourly Earnings of All Employees, Total Private" : "CES0500000003",
+
+
 
   //Corporate Stuff
   "Nonfinancial Corporate Business; Debt Securities and Loans; Liability, Level" : "BCNSDODNS",
@@ -107,7 +123,9 @@ export const fredDataList = {
 
   //The MOVE Index is the bond market equivalent of the VIX Index. It measures the implied volatility of 1-month options from the 2-year note to the 30-year bond.
 
-  //Manufacturing PMI
+  //Manufacturing
+  "Manufacturers' New Orders: Total Manufacturing" :  "AMTMNO",
+  "Retailers: Inventories to Sales Ratio" : "RETAILIRSA",
 
   //OIL STUFF
   "Crude Oil Prices: West Texas Intermediate (WTI) - Cushing, Oklahoma":
@@ -129,8 +147,16 @@ export const fredDataList = {
   // Global price of Agr. Raw Material Index (PRAWMINDEXM)
   // Global price of WTI Crude (POILWTIUSDM)
 
+  //japan/korea
+  "Residential Property Prices for Japan" : "QJPN368BIS",
+  "Nikkei Stock Average, Nikkei 225" : "NIKKEI225",
+  "Consumer Price Index of All Items in Japan" : "JPNCPIALLMINMEI",
+  "Real Residential Property Prices for Republic of Korea" :"QKRR628BIS",
+
+  // "M2 for Japan" :  "MYAGM2JPM189S", - discontinued
+
   //Labor Market
-  Population: "POPTHM",
+  "Population" : "POPTHM",
   "Employment-Population Ratio": "EMRATIO",
   "Employment Rate: Aged 15-64: All Persons for the United States":
     "LREM64TTUSM156S",

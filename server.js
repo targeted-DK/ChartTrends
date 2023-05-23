@@ -25,6 +25,13 @@ dotenv.config();
 import {spawn} from 'child_process';
 import bodyParser from 'body-parser';
 
+
+//disable cache
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  next();
+});
+
 //testing python
 // let data = [1, 2, 3, 4, 5];
 // CORS Configurations
@@ -47,6 +54,9 @@ app.use(session ({
   },
   name : 'session-cookie',
 }));
+
+//cache
+
 //react
 // app.use(express.static(path.join(__dirname,'/react-app/build')));
 //main page images
@@ -137,8 +147,8 @@ async function updateEntireDatabase(){
   // await processData.getDUCDataset();
   // await processData.updateFredDatasettemp();
   // await processData.updateNDLDataset();
-  // await processData.getShillerDataset();
-  // await processData.getBakerHughesDataset();
+  // // await processData.getShillerDataset();
+  // // await processData.getBakerHughesDataset();
   // await processData.convertCopperCSVToJson();
   // await processData.updateFredDataset();
   // await processData.updateCFTCDataset();

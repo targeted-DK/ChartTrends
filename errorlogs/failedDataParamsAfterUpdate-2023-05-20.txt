@@ -1,0 +1,6 @@
+FRED,RSXFS,lin,d,avg
+FRED,RSXFS,lin,w,avg
+FRED,RSXFS,ch1,d,avg
+FRED,RSXFS,ch1,w,avg
+FRED,RSXFS,pc1,d,avg
+FRED,RSXFS,pc1,w,avg

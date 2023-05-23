@@ -10,7 +10,8 @@ let macroList = [
       urlendpoint : "gdp_unemployment",
       use : "enumerate",
       chartToCreate : false,
-      tag: {"GDP" : "FRED", "UNRATE" : "FRED" },
+      tag: ["GDP", "UNRATE"],
+      source :  ["FRED", "FRED"],
       frequency : ["q", "q"],
       transformation :["pc1", "lin"],
       aggregation : ["avg","avg"],
@@ -24,7 +25,8 @@ let macroList = [
         urlendpoint : "ffer_unemployment_cpi",
         use : "enumerate",
         chartToCreate : false,
-        tag: {"FEDFUNDS" : "FRED", "UNRATE" : "FRED", "CPIAUCSL" : "FRED"  },
+        tag: ["FEDFUNDS" , "UNRATE" , "CPIAUCSL" ],
+        source :  ["FRED", "FRED", "FRED"],
         frequency : ["q", "q", "q"],
         transformation :["lin", "lin", "pc1"],
         aggregation :["avg", "avg", "avg"],
@@ -32,7 +34,24 @@ let macroList = [
         units : ["percent","percent", "percent"],
         comparisonChartName : null
       },
+ 
   
+  {
+    title: "M2 total, yoy",
+    urlendpoint: "m2",
+    use : "diff_format",
+    chartToCreate : false,
+    adjustYaxis: true,
+    tag: [ "M2REAL", "M2REAL"],
+    source :  ["FRED", "FRED"],
+    frequency :[ "m", "m"],
+    transformation : ["lin", "pc1"],
+    aggregation : ["avg","avg"],
+    adjustment: [1,1],
+    units : ["Billions of Dollars", "percent"],
+    comparisonChartName :  null,
+
+  },
   ];
   
   

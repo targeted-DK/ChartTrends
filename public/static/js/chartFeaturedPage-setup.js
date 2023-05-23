@@ -27,7 +27,8 @@ axios
     }
 
     jsonData.values = convertedDataList;
-
+    
+    
    
     createFeaturedHighcharts(jsonData);
 
@@ -64,11 +65,11 @@ function convertRDSDateFormatToHighCharts(dataFromRds) {
       }
       result[1] = count > 0 ? sum / count : null;
     }
-   
+    
     return result;
   });
   //   console.log(convertedData);
-  convertedData.sort((a, b) => a[0] - b[0]);
+  // convertedData.sort((a, b) => a[0] - b[0]);
 
   return convertedData;
 }
@@ -94,6 +95,24 @@ function createFeaturedHighcharts(jsonData) {
   let desiredDay = "Wednesday"; //Used to align timestamp - some weekly data records on friday. Use Wendesday since its default value for many weekly indicators
 
   let alignedData = jsonData.values;
+
+  //framework
+  //1) For weekly data, match timestamp and adjust values by adjustment factor
+  //2) case 1
+  //  2-1)addition
+  //  2-2)division
+  //3) case 3, 4,5
+      // 3-1) get rid of a first graph
+      // 3-2) get rid of two graphs
+  //     3-3) make two charts from four graphs or 3 from 6 ... and compare
+  //4) chartoptions
+  //  4-1) case 1
+  //  4-2) case 2
+  //  4-1) "compare" : compare two charts
+        // 4-1-1 : use same y-axis
+        // 4-1-2 : use two differnt y-axis
+  //  4-1) "enumerate" :  compare multiple charts with same units
+
 
   //match timestamp for weeklydata
   if (frequency == "w") {
@@ -159,6 +178,7 @@ function createFeaturedHighcharts(jsonData) {
           });
         });
       } else if (chartMethod == "Division") {
+      
         let firstDataset = Object.values(adjustedData[0]).sort(
           (a, b) => a[0] - b[0]
         );
@@ -188,6 +208,8 @@ function createFeaturedHighcharts(jsonData) {
           // console.log(timestamp);
           if (secondDataset.hasOwnProperty(timestamp)) {
             //  console.log(secondDataset[timestamp]);
+            console.log(value);
+            console.log(secondDataset[timestamp]);
             const dividedValue = value / secondDataset[timestamp];
             dividedData.push([timestamp, dividedValue]);
           } else {
@@ -204,6 +226,7 @@ function createFeaturedHighcharts(jsonData) {
         value,
       ]);
 
+      //sort
       summedDataArray.sort((a, b) => a[0] - b[0]);
 
       //get rid of -
@@ -215,58 +238,117 @@ function createFeaturedHighcharts(jsonData) {
       adjustedData.unshift(summedDataArray);
       units.unshift(units[0]);
       comparisonChartNameIndex++;
-    } else if (use == "case3") {
-      // summedData = {};
-      // let gdpDataset = adjustedData[0];
-      // let interestExpDataset = adjustedData[1];
+    } else if (use == "case3" || use == "case4" ) {
+  
+     
+      
       const firstDataset = adjustedData[0];
       const secondDataset = adjustedData[1];
 
+          
       summedData = [];
-
       firstDataset.forEach(([timestamp, value]) => {
         const correspondingValue = secondDataset.find(
           (data) => data[0] === timestamp
         )?.[1];
 
         if (correspondingValue !== undefined) {
-          const dividedValue = correspondingValue / value;
+       
+          const dividedValue = value / correspondingValue;
+      
           summedData.push([timestamp, dividedValue]);
         }
       });
-      // summedData = gdpDataset.map((timestamp1, value1, index) => {
-      //   const [timestamp2, value2] = interestExpDataset[index]; // Get the corresponding timestamp and value from dataset2
-      //   const dividedValue = value1 / value2; // Perform the division operation
+   
+    } 
+    
+    // else if(use == "case5"){
+        
+    //   // const firstDataset = adjustedData[0];
+    //   // const secondDataset = adjustedData[1];
+    //   // const thirdDataset = adjustedData[2];
+    //   // const fourthDataset = adjustedData[3];
 
-      //   return [timestamp1, dividedValue]; // Return the divided value with the original timestamp
-      // });
+          
+    //   summedData = [];
+    //   let j;
+    //   for(let i = 0; i < adjustedData.length; i = i + 2){
+       
+    //   j = i + 1;
+    //   adjustedData[i].forEach(([timestamp, value]) => {
+    //     const correspondingValue = adjustedData[j].find(
+    //       (data) => data[0] === timestamp
+    //     )?.[1];
 
-      adjustedData.shift();
-      units.shift();
-      names.shift();
-
-      adjustedData.unshift(summedData);
-      units.unshift("percent");
-      names.unshift(chartToCreateName);
-      use = "compare";
-      // comparisonChartName =
-      // comparionChartData = summedData;
-      // comparisonChartName = chartToCreateName;
-    }
+    //     if (correspondingValue !== undefined) {
+       
+    //       const dividedValue = value / correspondingValue;
+      
+    //       summedData.push([timestamp, dividedValue]);
+    //     }
+    //   });
+    // }
+    // }
   }
-
+ 
   //if there is a comparison chart, extract it from orignal array if not, skip
   //this is due to different units
- 
+
   if (comparisonChartName != null) {
     comparionChartData = adjustedData[comparisonChartNameIndex];
     adjustedData = adjustedData.slice(0, comparisonChartNameIndex);
     names = names.slice(0, comparisonChartNameIndex);
+    comparionChartData.sort((a, b) => a[0] - b[0]);
   }
-  // console.log(names);
-  // console.log(adjustedData);
-  // console.log(names);
-  // console.log(comparionChartData);
+
+
+  if(use == "case3"){
+    adjustedData.shift();
+    units.shift();
+    names.shift();
+
+    adjustedData.unshift(summedData);
+    units.unshift("percent");
+    names.unshift(chartToCreateName);
+    use = "compare";
+
+  } else if(use == "case4"){
+    adjustedData.shift();
+    units.shift();
+    names.shift(); 
+    adjustedData.shift();
+    units.shift();
+    names.shift();
+
+    adjustedData.unshift(summedData);
+    units.unshift("percent");
+    names.unshift(chartToCreateName);
+    use = "compare";
+  } 
+  
+  // else if (use == "case5"){
+  //   for(let i = 0; i < adjustedData.length; i++){
+
+      
+  //     adjustedData.shift();
+  //     units.shift();
+  //     names.shift();
+  //   }
+
+  //   for(let j = 0; j < summedData.length; j ++ ){
+     
+
+  //     adjustedData.unshift(summedData);
+  //     units.unshift("percent");
+    
+  //     names.unshift(chartToCreateName[j]);
+
+
+  //   }
+  //   use = "compare";
+  // }
+  
+  
 
   //in case where first data is empty
   const container = document.getElementById("chart-container");
@@ -524,7 +606,7 @@ function createFeaturedHighcharts(jsonData) {
         },
       };
     } else {
-      console.log(adjustedData);
+    
       //case for comparing two graphs with different y-axis
       chartOptions = {
         title: {
@@ -606,6 +688,82 @@ function createFeaturedHighcharts(jsonData) {
       };
     }
     //enumerate case
+  }else if(use == "diff_format"){
+  
+    chartOptions = {
+      title: {
+        text: title,
+      },
+      series: [
+        ...adjustedData.map((dataset, index) => ({
+          name: names[index],
+          data: dataset,
+          yAxis: index,
+        })),
+        
+      ],
+      xAxis: {
+        type: "datetime",
+      },
+      // alignTicks: true,
+      yAxis: [
+        {
+          title: {
+            text: units[0],
+          },
+          // alignTicks: false,
+          height: "100%",
+          opposite: false, // Position on the left
+        },
+        {
+          title: {
+            text: units[1],
+          },
+          // linkedTo : 0,
+          height: "100%",
+          // alignTicks : false,
+          opposite: true, // Position on the left
+        },
+      ],
+
+      tooltip: {
+        xDateFormat: "%Y-%m-%d",
+      },
+
+      rangeSelector: {
+        selected: 3, // Set the default range (0 = first, 1 = second, etc.)
+        buttons: [
+          {
+            type: "day",
+            count: 1,
+            text: "1d",
+          },
+          {
+            type: "week",
+            count: 1,
+            text: "1w",
+          },
+          {
+            type: "month",
+            count: 1,
+            text: "1m",
+          },
+          {
+            type: "year",
+            count: 2,
+            text: "2y",
+          },
+          {
+            type: "all",
+            text: "All",
+          },
+        ],
+      },
+
+      legend: {
+        enabled: true, // Set enabled to true to show legends
+      },
+    };
   } else {
     //case for comparing two graphs with different y-axis(or same)
     chartOptions = {

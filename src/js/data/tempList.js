@@ -1,4 +1,6 @@
 export const tempList = {
    //interest rate
-   "Unemployment Rate"  : "UNRATE",   
+   "Retailers: Inventories to Sales Ratio" : "RETAILIRSA",
+   "NASDAQ Composite Index" : "NASDAQCOM",
+   "Nikkei Stock Average, Nikkei 225" : "NIKKEI225"
 };

@@ -570,11 +570,12 @@ export function getDataFromRDS(json) {
     let result = {};
     return new Promise((resolve, reject) => {
       // for (let feature of list) {
-
+      
       const feature = list.filter(({ urlendpoint }) => urlendpoint === tag)[0];
-
+      
       let title = feature.title;
       let tags = feature.tag;
+      let source = feature.source
       let adjustment = feature.adjustment;
       let comparisonChartName = feature.comparisonChartName;
       let frequency = feature.frequency;
@@ -590,14 +591,23 @@ export function getDataFromRDS(json) {
       let chartNames = [];
       let promises = []; // Array to store the promises
 
-      for (let i = 0; i < Object.keys(tags).length; i++) {
-        let tag_instance = Object.entries(tags).at(i)[0];
-        let source_instance = Object.entries(tags).at(i)[1];
+      for (let i = 0; i < Object.keys(frequency).length; i++) {
+        //When you use same data but with different format etc,
+        // tag object in list.js does not allow duplicate 
+
+       
+        let j = i;
+        // if(Object.keys(tags).length < Object.keys(frequency).length){
+        //   j = 0;
+        // }
+        let tag_instance = Object.entries(tags).at(i)[1];
+        let source_instance = Object.entries(source).at(i)[1];
         let frequency_instance = Object.entries(frequency).at(i)[1];
         let transformation_instance = Object.entries(transformation).at(i)[1];
         let aggregation_instance = Object.entries(aggregation).at(i)[1];
-
+     
         let tableName;
+       
         //CFTC data does not use "w_lin_avg format"
         if(source_instance != "CFTC"){
          tableName =
@@ -611,7 +621,7 @@ export function getDataFromRDS(json) {
         } else {
           tableName = tag_instance
         }
-      
+        console.log(tableName);
         // console.log(tag_instance);
         // console.log(frequency_instance);
         // console.log(transformation_instance);
