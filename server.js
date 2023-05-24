@@ -145,7 +145,7 @@ async function main(){
 
 async function updateEntireDatabase(){
   // await processData.getDUCDataset();
-  // await processData.updateFredDatasettemp();
+  await processData.updateFredDatasettemp();
   // await processData.updateNDLDataset();
   // // await processData.getShillerDataset();
   // // await processData.getBakerHughesDataset();

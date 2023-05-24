@@ -447,6 +447,44 @@ let featuredList = [
   },
 
 
+  {
+    title: "Wilshire 5000 Index vs. 10-2 Year Yield",
+    urlendpoint: "wilshire_yield_diff1",
+    use: "compare",
+    chartToCreate: false,
+    // chartToCreateName :  "% of cash assets in all commercial banks",
+    adjustYaxis: true,
+    // chartMethod : "Division",
+    tag: ["WILL5000PR", "T10Y2YM"],
+    source :  ["FRED", "FRED"],
+    frequency: ["m", "m"],
+    transformation: ["lin", "lin"],
+    aggregation: ["avg", "avg"],
+    adjustment: [1, 1],
+    units: ["points", "percent"],
+    comparisonChartName: "T10Y2YM",
+  },
+
+  {
+    title: "Wilshire 5000 Index vs. 10yr-3mo Yield",
+    urlendpoint: "wilshire_yield_diff2",
+    use: "compare",
+    chartToCreate: false,
+    // chartToCreateName :  "% of cash assets in all commercial banks",
+    adjustYaxis: true,
+    // chartMethod : "Division",
+    tag: ["WILL5000PR", "T10Y3M"],
+    source :  ["FRED", "FRED"],
+    frequency: ["m", "m"],
+    transformation: ["lin", "lin"],
+    aggregation: ["avg", "avg"],
+    adjustment: [1, 1],
+    units: ["points", "percent"],
+    comparisonChartName: "T10Y3M",
+  },
+
+
+
   
 
   

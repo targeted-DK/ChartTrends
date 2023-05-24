@@ -98,7 +98,7 @@ router.get("/macro/:subject", (req, res, next) => {
   }
 });
 
-router.get("/CFTC", (req, res, next) => {
+router.get("/CFTC/ALL", (req, res, next) => {
   const source = req.params.source;
   // const tag = req.params.tag;
 

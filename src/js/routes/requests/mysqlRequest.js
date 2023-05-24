@@ -600,11 +600,12 @@ export function getDataFromRDS(json) {
         // if(Object.keys(tags).length < Object.keys(frequency).length){
         //   j = 0;
         // }
-        let tag_instance = Object.entries(tags).at(i)[1];
-        let source_instance = Object.entries(source).at(i)[1];
-        let frequency_instance = Object.entries(frequency).at(i)[1];
-        let transformation_instance = Object.entries(transformation).at(i)[1];
-        let aggregation_instance = Object.entries(aggregation).at(i)[1];
+        let tag_instance = tags[i]
+       
+        let source_instance = source[i]
+        let frequency_instance = frequency[i]
+        let transformation_instance =transformation[i];
+        let aggregation_instance = aggregation[i];
      
         let tableName;
        
