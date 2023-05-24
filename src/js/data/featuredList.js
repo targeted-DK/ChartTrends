@@ -23,6 +23,23 @@ let featuredList = [
     units: ["percent", "percent"],
     comparisonChartName: "CPIAUCSL",
   },
+
+  {
+    title: "Overnight RRP Agreements vs. Rate",
+    urlendpoint: "rrp_rates",
+    use: "compare",
+    chartToCreate: false,
+    adjustYaxis: true,
+    tag: [ "RRPONTSYD", "RRPONTSYAWARD"],
+    source :  ["FRED", "FRED"],
+    frequency: ["d", "d"],
+    transformation: ["lin", "lin"],
+    aggregation: ["avg", "avg"],
+    adjustment: [1, 1],
+    units: ["Billions of Dollars", "percent"],
+    comparisonChartName: "RRPONTSYAWARD",
+  },
+
   {
     title: "Retail Sales and yoy",
     urlendpoint: "retailsales",
@@ -482,13 +499,6 @@ let featuredList = [
     units: ["points", "percent"],
     comparisonChartName: "T10Y3M",
   },
-
-
-
-  
-
-  
-
 ];
  
   //   const frequencyOptionstemp = ["d", "w", "bw", "m", "q", "sa", "a"];

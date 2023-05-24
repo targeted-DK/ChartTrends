@@ -1,6 +1,6 @@
 export const fredDataList = {
 
-  //Recession Indicator
+  //@TODO - Recession Indicator
   "NBER based Recession Indicators for the United States from the Period following the Peak through the Trough"  : "USREC",
   //Index stuff
   "Wilshire 5000 Price Index": "WILL5000PR",
@@ -42,8 +42,7 @@ export const fredDataList = {
   "Nominal Broad U.S. Dollar Index": "DTWEXBGS",
   "Spot Crude Oil Price: West Texas Intermediate (WTI)": "WTISPLC",
   "ICE BofA US High Yield Index Option-Adjusted Spread": "BAMLH0A0HYM2",
-  "Overnight Reverse Repurchase Agreements: Treasury Securities Sold by the Federal Reserve in the Temporary Open Market Operations":
-    "RRPONTSYD",
+ 
   "Liabilities and Capital: Liabilities: Deposits with F.R. Banks, Other Than Reserve Balances: U.S. Treasury, General Account: Week Average":
     "WTREGEN",
   "Gross Domestic Product": "GDP",
@@ -71,6 +70,10 @@ export const fredDataList = {
   "Assets: Central Bank Liquidity Swaps: Central Bank Liquidity Swaps: Wednesday Level":
     "SWPT",
   "Secured Overnight Financing Rate": "SOFR",
+  "Overnight Reverse Repurchase Agreements: Treasury Securities Sold by the Federal Reserve in the Temporary Open Market Operations":
+  "RRPONTSYD",
+  "Overnight Reverse Repurchase Agreements Award Rate: Treasury Securities Sold by the Federal Reserve in the Temporary Open Market Operations" :"RRPONTSYAWARD",
+
 
   //Government Debt Stuff
   "Federal Debt: Total Public Debt": "GFDEBTN",

@@ -6,6 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
+    <link rel="stylesheet" href="/style-setup.css" />
 
     <title>Dashboard Template for Bootstrap</title>
 
@@ -37,16 +38,42 @@
           </div>
           <div class="col-sm-5 col-md-7">
             
-            <input class="form-control" type="text" placeholder="Search" aria-label="Search">
+            <form action="" autocomplete="off" class="search-form">
+              <div id="autocomplete-wrapper" class="autocomplete-wrapper">
+                <input
+                  id="autocomplete-input"
+                  class="autocomplete-input"
+                  type="text"
+                  placeholder="Search..."
+                />
+              </div>
+              <button type="button" id="btn-submit" class="btn-submit">Go</button>
+              <!-- <script type="module" src="autocomplete.js"></script> -->
+              <script type="module" src="/searchBar.js"></script>
           </div>
           <div class="col-sm-3 col-md-2">
             <div class="input-group-append">
-              <button class="btn btn-outline-secondary" type="button">Search</button>
+              <!-- <button class="btn btn-outline-secondary" type="button">Search</button> -->
             </div>
           </div>
         </div>
       </div>
     </nav>
+
+
+    <!-- <form action="" autocomplete="off" class="search-form">
+      <div id="autocomplete-wrapper" class="autocomplete-wrapper">
+        <input
+          id="autocomplete-input"
+          class="autocomplete-input"
+          type="text"
+          placeholder="Search..."
+        />
+      </div>
+      <button type="button" id="btn-submit" class="btn-submit">Go</button>
+      <script type="module" src="autocomplete.js"></script>
+    </form> -->
+
     <style>
       /* .navbar {
         height: 60px;

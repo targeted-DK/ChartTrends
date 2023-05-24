@@ -24,6 +24,11 @@ dotenv.config();
 //testing python on child process
 import {spawn} from 'child_process';
 import bodyParser from 'body-parser';
+import bondsList from './src/js/data/bondsList.js';
+import ratioList from './src/js/data/ratioList.js';
+import macroList from './src/js/data/macroList.js';
+import dataList, { cftcList, eiaDUCList, eiaDataNGList, eiaDataOilList, eiaDataPetroleumList, fredDataList } from './src/js/data/dataList.js';
+import featuredList from './src/js/data/featuredList.js';
 
 
 //disable cache
@@ -117,6 +122,22 @@ app.post('/saveImage', (req, res) => {
   });
 });
 
+app.get('/getSearchBarList', (req, res) => {
+  console.log("getting data from backend");
+
+  const filteredNames = {
+    fredDataList: dataList.fredDataList,
+    featuredList : featuredList.map(({ title, urlendpoint }) => ({ title, urlendpoint })),
+    macroList : macroList.map(({ title, urlendpoint }) => ({ title, urlendpoint })),
+    ratioList :ratioList.map(({ title, urlendpoint }) => ({ title, urlendpoint })),
+    bondsList : bondsList.map(({ title, urlendpoint }) => ({ title, urlendpoint })),
+}
+  
+  res.status(200).send(filteredNames);
+
+
+})
+
 
 //main page
 app.get('/', function(req, res) {
@@ -145,7 +166,7 @@ async function main(){
 
 async function updateEntireDatabase(){
   // await processData.getDUCDataset();
-  await processData.updateFredDatasettemp();
+  // await processData.updateFredDatasettemp();
   // await processData.updateNDLDataset();
   // // await processData.getShillerDataset();
   // // await processData.getBakerHughesDataset();

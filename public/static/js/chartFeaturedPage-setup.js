@@ -64,6 +64,7 @@ function convertRDSDateFormatToHighCharts(dataFromRds) {
         }
       }
       result[1] = count > 0 ? sum / count : null;
+      // result[1] = null; //connectnulls in highcharts options
     }
     
     return result;
@@ -547,10 +548,12 @@ function createFeaturedHighcharts(jsonData) {
             data: dataset,
 
             yAxis: 0,
+            // connectNulls: false
           })),
           {
             name: comparisonChartName,
             data: comparionChartData,
+            // connectNulls: false
           },
         ],
         xAxis: {
@@ -617,11 +620,13 @@ function createFeaturedHighcharts(jsonData) {
             name: names[index],
             data: dataset,
             yAxis: index,
+            // connectNulls: false
           })),
           {
             name: comparisonChartName,
             data: comparionChartData,
             yAxis: 1,
+            // connectNulls: false
           },
         ],
         xAxis: {
