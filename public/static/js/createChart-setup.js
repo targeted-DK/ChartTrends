@@ -30,8 +30,12 @@ export function convertRDSDateFormatToHighCharts(dataFromRds){
  * Creates highchart with given array
  */
 export function createHighcharts(convertedData) {
-   
-        Highcharts.stockChart('chart-container', {
+
+ 
+
+    let newChartContainer = document.getElementById("chart-container");
+    
+        Highcharts.stockChart(newChartContainer, {
             rangeSelector: {
                 selected: 1
             },
@@ -79,6 +83,12 @@ export function createHighcharts(convertedData) {
              
             }]
         });
+
+        newChartContainer.style.width = "70%";
+        newChartContainer.style.height = "1000px";
+        newChartContainer.style.position = "relative";
+        newChartContainer.style.right = "20%";
+        newChartContainer.style.left = "20%";
     
 
     

@@ -47,25 +47,9 @@ json_data[main_data_index] = main_trimmed_data
 main_data_last_date = json_data[main_data_index][-1]['date']
 main_data_size = len(json_data[main_data_index])
 
-# print(d['date'] for d in main_trimmed_data)
-# print(d['value'] for d in main_trimmed_data)
-
-
-# print(json_data[main_data_index][-1]['date']);
-# print(json_data[4][-1]['date']);
-
 # Trim dates for monthly, quarterly, semi-annual and annual
-
-
 for i in range(len(json_data)):
-    # if(tag == json_tag[i]):
-    #     continue;
-    # checking dates for debugging process
-    # if(json_tag[i] == 'RESPPANWW') :
-    #     print(json_data[i][0]);
-    #     print(json_data[i][-1]);
-    #     print(json_data[0][0]);
-    #     print(json_data[0][-1]);
+   
     sub_data_size = len(json_data[i])
     main_data = 0
     sub_data = 0
@@ -98,80 +82,27 @@ for i in range(len(json_data)):
     sub_data_normalized = calc_functions.normalize(sub_data_imputed)
 
     # linearity, non-linearity, non-linearity
-    pearson_corr = stats.pearsonr(
-        main_data_normalized, sub_data_normalized)[0]
-    spearman_corr = stats.spearmanr(
-        main_data_normalized, sub_data_normalized)[0]
-    kendall_corr = stats.kendalltau(
-        main_data_normalized, sub_data_normalized)[0]
+    # uncomment these lines and output if you wanna use different stats
+    # pearson_corr = stats.pearsonr(
+    #     main_data_normalized, sub_data_normalized)[0]
+    # spearman_corr = stats.spearmanr(
+    #     main_data_normalized, sub_data_normalized)[0]
+    # kendall_corr = stats.kendalltau(
+    #     main_data_normalized, sub_data_normalized)[0]
     
    
     dtwresult = fastdtw.fastdtw(np.array([main_data_normalized]), np.array([sub_data_normalized]), dist = euclidean)[0]; 
-    # print(dtwresult[0])
-    # print(dtwresult)
-    # causality test
-    # df = pd.DataFrame( {'sub' : sub_data_normalized, 'main' : main_data_normalized } );
-    # granger_test = grangercausalitytests(df, 2)
-    # print(granger_test)
-    # print(pearson_corr)
-    # print(spearman_corr)
-    # print(kendall_corr)
-    # print("0----0----0----0----0----0----0----0----0----0----0----0----")
-    output[json_tag[i]] = {"pearson": pearson_corr,
-                           "spearman": spearman_corr,
-                           "kendall": kendall_corr,
-                           "dtw" : dtwresult}
-                         
+    
+    # output[json_tag[i]] = {"pearson": pearson_corr,
+    #                        "spearman": spearman_corr,
+    #                        "kendall": kendall_corr,
+    #                        "dtw" : dtwresult}
 
-    # else:
-    #     output[json_tag[i]] = {"pearson": 0,
-    #                            "spearman": 0,
-    #                            "kendall": 0,
-    #                            "error": "Something is wrong with the dataset"}
+    output[json_tag[i]] = {"dtw" : dtwresult}
+                        
 
 #DONT FUCKING DELETE THIS PRINT - SENDS DATA BACK TO NODE.JS
 print(output)
 sys.stdout.flush()
 print("Python end.")
 
-
-# # mainDataEarliestDate = datetime.strptime(mainDataEarliestDate, '%Y-%m-%d ')
-# mainDataEarliestDate = mainDataEarliestDate[:10]
-# mainDataEarliestDate = datetime.strptime(mainDataEarliestDate, '%Y-%m-%d')
-
-# for every data
-# for json in jsonData :
-#     subDataDates = json[0]['date'];
-# # find the common earliest time
-#     closest_date = min(date_list, key=lambda d: abs(d - m))
-
-# sanitize data
-# and run corrleation
-
-# print(jsonData)
-# # df = pd.read_json(jsonData[0]);
-# data = jsonData
-# list = data[0][0]
-# print(list['value'])
-# print(df['date'].tolist())
-# print(df)
-# column = [s.stdin.read()
-# print(data_received)
-# data_received = sys.stdin.read()
-# print(sys.executable)
-# # Process the received data
-# print(f"Data received: {data_received}")
-# try:
-#     import numpy as np;
-#     pass
-# except Exception as e:
-#     print(f"Error occurred: {e}")
-
-# tag = sys.argv[0];
-# jsonData = sys.argv[2];
-# os.
-# print(sys.path);
-# sys.exit(1)
-
-
-# Wait for 3 seconds

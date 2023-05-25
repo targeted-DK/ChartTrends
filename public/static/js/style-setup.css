@@ -1,24 +1,27 @@
 * {
     box-sizing: border-box;
-    
 }
 
 
 
-
-.autocomplete-input {
-    width: 800px;
-}
-.btn-submit {
-  border: unset;
-  background : #808080;
-  color:#ffffff;
-  cursor: pointer;
-}
 
 .autocomplete-wrapper{
     display:inline-block;
     position:relative;
+    height: 100%;
+    width: 100%;
+}
+
+.search-form {
+    position:relative;
+    height: 100%;
+    width: 100%;
+}
+
+.autocomplete-input {
+    position:absolute;
+    height: 100%;
+    width: 100%;
 }
 .autocomplete-list {
     list-style : none;
@@ -49,6 +52,13 @@
 
 .autocomplete-list button:hover {
     background-color: yellow;
+  }
+
+  .btn-submit {
+    border: unset;
+    background : #808080;
+    color:#ffffff;
+    cursor: pointer;
   }
 /* 
 button {

@@ -114,7 +114,7 @@ function sendToPyshell(
       pyshell.on("message", (message) => {
         correlations = message;
         //If you want to check python print messages on js console, un-comment below line :
-        console.log(message);
+        // console.log(message);
         resolve(correlations);
       });
     });

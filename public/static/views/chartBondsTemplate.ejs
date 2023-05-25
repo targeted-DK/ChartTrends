@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="/style-setup.css" />
 
     <title>Dashboard Template for Bootstrap</title>
 
@@ -35,35 +35,33 @@
     <nav class="navbar navbar-dark sticky-top bg-dark">
       <div class="container">
         <div class="row w-100">
-          <div class="col-sm-4 col-md-3">
+          <div class="col-sm-4 col-md-3" >
             <a class="navbar-brand" href="http://ec2-15-164-99-255.ap-northeast-2.compute.amazonaws.com:3000/">Chart Compare</a>
           </div>
-          <div class="col-sm-5 col-md-7">
-            
-            <input class="form-control" type="text" placeholder="Search" aria-label="Search">
-          </div>
-          <div class="col-sm-3 col-md-2">
-            <div class="input-group-append">
-              <button class="btn btn-outline-secondary" type="button">Search</button>
+
+          <div class="col-sm-4 col-md-8">
+            <div id="autocomplete-wrapper" class="autocomplete-wrapper">
+              <form action="" autocomplete="off" class="search-form" id="search-form">
+                <div class="d-flex">
+                  <input
+                    id="autocomplete-input"
+                    class="autocomplete-input flex-grow-1"
+                    type="text"
+                    placeholder="Search..."
+                  />
+                </div>
+              </form>
             </div>
+
+            <script type="module" src="/searchBar.js"></script>
+         
           </div>
+          <button class="btn btn-outline-secondary" id="btn-submit" type="button">Search</button>
+        
         </div>
       </div>
     </nav>
-    <style>
-      /* .navbar {
-        height: 60px;
-      } */
-      .container {
-        min-height: 100%;
-      }
-      </style>
-      <style>
-      .chart-container{
-        height: 400px;
-        min-width: 310px;
-      }
-      </style>
+   
 
 <!-- Two containers merged into one, to make 'tag' accessible from both js files -->
 <div id="container">
