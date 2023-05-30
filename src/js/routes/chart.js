@@ -4,6 +4,8 @@ import featuredList from "../data/featuredList.js";
 import ratioList from "../data/ratioList.js";
 import bondsList from "../data/bondsList.js";
 import macroList from "../data/macroList.js";
+import bankList from "../data/bankList.js";
+
 
 var router = express.Router();
 
@@ -98,6 +100,19 @@ router.get("/macro/:subject", (req, res, next) => {
   }
 });
 
+router.get("/bank/:subject", (req, res, next) => {
+  const bankSubject = req.params.subject;
+  
+  const fileName = "chartBankTemplate";
+  const list = bankList.map((item) => item.urlendpoint);
+  
+  if (list.includes(bankSubject)) {
+    res.render(fileName, { tag: bankSubject });
+  } else {
+    res.status(404).render("404", { error: "Page not found" });
+  }
+});
+
 router.get("/CFTC/ALL", (req, res, next) => {
   const source = req.params.source;
   // const tag = req.params.tag;
@@ -106,6 +121,8 @@ router.get("/CFTC/ALL", (req, res, next) => {
 
   res.render(fileName);
 });
+
+
 
 
 router.get("/:source/:tag", (req, res, next) => {

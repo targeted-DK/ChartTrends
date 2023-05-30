@@ -73,7 +73,21 @@ export const fredDataList = {
   "Overnight Reverse Repurchase Agreements: Treasury Securities Sold by the Federal Reserve in the Temporary Open Market Operations":
   "RRPONTSYD",
   "Overnight Reverse Repurchase Agreements Award Rate: Treasury Securities Sold by the Federal Reserve in the Temporary Open Market Operations" :"RRPONTSYAWARD",
+//FIMA
+"Assets: Other: Repurchase Agreements - Foreign Official: Wednesday Level" : "H41RESPPALGTRFNWW",
+//재할인 창구
+"Assets: Liquidity and Credit Facilities: Loans: Primary Credit: Wednesday Level" : "WLCFLPCL",
+//Bank Term Funding Program
+"Assets: Liquidity and Credit Facilities: Loans: Bank Term Funding Program, Net: Wednesday Level" : "H41RESPPALDKNWW",
+//Bridge Bank Loan
+"Assets: Liquidity and Credit Facilities: Loans: Other Credit Extensions: Wednesday Level" : "WLCFOCEL",
+//지급 준비금
+   //최소안정수준 지급준비금(LCLoR) = 8%
+   //9월 TGA목표 확인할것
+   "Liabilities and Capital: Other Factors Draining Reserve Balances: Reserve Balances with Federal Reserve Banks: Wednesday Level" : "WRBWFRBL",
 
+//mmf
+"Retail Money Market Funds" : "RMFSL",
 
   //Government Debt Stuff
   "Federal Debt: Total Public Debt": "GFDEBTN",
@@ -104,6 +118,9 @@ export const fredDataList = {
     "WRESBAL",
 
   //Bank Crisis
+  "Securities in Bank Credit, All Commercial Banks" : "SBCACBW027SBOG",
+  "Loans and Leases in Bank Credit, All Commercial Banks" : "TOTLL",
+
   "Cash Assets, All Commercial Banks": "CASACBW027SBOG",
   "Cash Assets, Large Domestically Chartered Commercial Banks":
     "CASLCBW027SBOG",
@@ -112,11 +129,17 @@ export const fredDataList = {
   "Total Assets, All Commercial Banks" : "TLAACBW027SBOG",
   "Total Assets, Large Domestically Chartered Commercial Banks" :  "TLALCBM027SBOG",
   "Total Assets, Small Domestically Chartered Commercial Banks" : "TLASCBM027SBOG",
+  "Deposits, All Commercial Banks" : "DPSACBW027SBOG",
+  "Deposits, Large Domestically Chartered Commercial Banks" : "DPSLCBW027SBOG",
+  "Deposits, Small Domestically Chartered Commercial Banks"  : "DPSSCBW027SBOG",
+  "Real Estate Loans: Commercial Real Estate Loans, All Commercial Banks" : "CREACBW027SBOG",
+   "Real Estate Loans: Commercial Real Estate Loans, Large Domestically Chartered Commercial Banks" : "CRELCBW027SBOG",
+   "Real Estate Loans: Commercial Real Estate Loans, Small Domestically Chartered Commercial Banks" : "CRESCBM027NBOG",
+
  
   //households
   "Personal Saving Rate" : "PSAVERT",
   "Average Hourly Earnings of All Employees, Total Private" : "CES0500000003",
-
 
 
   //Corporate Stuff

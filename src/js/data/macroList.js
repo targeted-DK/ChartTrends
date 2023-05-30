@@ -52,6 +52,24 @@ let macroList = [
     comparisonChartName :  null,
 
   },
+
+  {
+    title: "WTI vs. Dollar Index",
+    urlendpoint: "wti_dollaridx",
+    use: "compare",
+    chartToCreate: false,
+    // chartToCreateName :  "% of cash assets in all commercial banks",
+    adjustYaxis: true,
+    // chartMethod : "Division",
+    tag: ["WTISPLC", "DTWEXBGS"],
+    source :  ["FRED", "FRED"],
+    frequency: ["m", "m"],
+    transformation: ["lin", "lin"],
+    aggregation: ["avg", "avg"],
+    adjustment: [1, 1],
+    units: ["dollars", ""],
+    comparisonChartName: "DTWEXBGS",
+  },
   ];
   
   

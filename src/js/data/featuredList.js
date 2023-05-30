@@ -499,6 +499,8 @@ let featuredList = [
     units: ["points", "percent"],
     comparisonChartName: "T10Y3M",
   },
+
+  
 ];
  
   //   const frequencyOptionstemp = ["d", "w", "bw", "m", "q", "sa", "a"];

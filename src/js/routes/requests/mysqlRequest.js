@@ -10,6 +10,7 @@ import featuredList from "../../data/featuredList.js";
 import ratioList from "../../data/ratioList.js";
 import bondsList from "../../data/bondsList.js";
 import macroList from "../../data/macroList.js";
+import bankList from "../../data/bankList.js";
 
 router.use(bodyParser.json());
 
@@ -94,6 +95,16 @@ router.post("/mysqlRequest", async (req, res) => {
   }
 
   if (req.body.use == "macro") {
+    try {
+      const results = await getDataFromRDS(req.body);
+      res.status(200).send(results);
+    } catch (error) {
+      res.status(500).send({ message: "Error fetching data from RDS" });
+    }
+  }
+
+  if (req.body.use == "bank") {
+    
     try {
       const results = await getDataFromRDS(req.body);
       res.status(200).send(results);
@@ -553,7 +564,8 @@ export function getDataFromRDS(json) {
     source == "featured" ||
     source == "ratio" ||
     source == "bonds" ||
-    source == "macro"
+    source == "macro" ||
+    source == "bank"
   ) {
     let list = [];
 
@@ -565,6 +577,8 @@ export function getDataFromRDS(json) {
       list = bondsList;
     } else if( source == "macro"){
       list = macroList;
+    } else if( source == "bank"){
+      list = bankList;
     } 
 
     let result = {};

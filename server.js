@@ -28,6 +28,7 @@ import bondsList from './src/js/data/bondsList.js';
 import ratioList from './src/js/data/ratioList.js';
 import macroList from './src/js/data/macroList.js';
 import dataList, { cftcList, eiaDUCList, eiaDataNGList, eiaDataOilList, eiaDataPetroleumList, fredDataList } from './src/js/data/dataList.js';
+import bankList from './src/js/data/bankList.js';
 import featuredList from './src/js/data/featuredList.js';
 
 
@@ -131,6 +132,7 @@ app.get('/getSearchBarList', (req, res) => {
     macroList : macroList.map(({ title, urlendpoint }) => ({ title, urlendpoint })),
     ratioList :ratioList.map(({ title, urlendpoint }) => ({ title, urlendpoint })),
     bondsList : bondsList.map(({ title, urlendpoint }) => ({ title, urlendpoint })),
+    bankList : bankList.map(({ title, urlendpoint }) => ({ title, urlendpoint })),
 }
   
   res.status(200).send(filteredNames);
@@ -165,15 +167,15 @@ async function main(){
 };
 
 async function updateEntireDatabase(){
-  await processData.getDUCDataset();
-  await processData.updateFredDatasettemp();
-  await processData.updateNDLDataset();
-  // await processData.getShillerDataset();
-  // await processData.getBakerHughesDataset();
-  await processData.convertCopperCSVToJson();
-  await processData.updateFredDataset();
-  await processData.updateCFTCDataset();
-  await processData.updateEIADataset();
+  // await processData.getDUCDataset();
+  // await processData.updateFredDatasettemp();
+  // await processData.updateNDLDataset();
+  // // await processData.getShillerDataset();
+  // // await processData.getBakerHughesDataset();
+  // await processData.convertCopperCSVToJson();
+  // await processData.updateFredDataset();
+  // await processData.updateCFTCDataset();
+  // await processData.updateEIADataset();
 }
 
 
