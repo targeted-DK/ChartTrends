@@ -4,4 +4,5 @@ bootstrap-4.0.0
 .env
 requirements.txt
 venv/
+.cache
 
