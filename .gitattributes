@@ -1,0 +1,2 @@
+.parcel-cache/data.mdb filter=lfs diff=lfs merge=lfs -text
+myenv/bin/numpy/.dylibs/libopenblas64_.0.dylib filter=lfs diff=lfs merge=lfs -text

@@ -1,0 +1,12 @@
+{
+    "python.analysis.extraPaths": [
+        "./src/python",
+        "./myenv/lib/python3.8/site-packages/",
+        "/Users/dk/Documents/GitHub/ChartTrends/myenv/bin/python"
+    ],
+    "python.analysis.typeCheckingMode": "basic",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.autopep8"
+    },
+    "python.formatting.provider": "none"
+}
