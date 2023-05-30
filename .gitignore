@@ -1,6 +1,7 @@
 node_modules/
 myenv/
 bootstrap-4.0.0
-/env
+.env
 requirements.txt
+venv/
 
