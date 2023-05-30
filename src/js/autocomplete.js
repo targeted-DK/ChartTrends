@@ -1,3 +1,4 @@
+import bankList from "./data/bankList.js";
 import bondsList from "./data/bondsList.js";
 import featuredList from "./data/featuredList.js";
 import macroList from "./data/macroList.js";
@@ -27,7 +28,7 @@ inputElement.addEventListener("keydown", function (event) {
     // Programmatically submit the form
     submitButtonElement.click();
 
-    var dropdownMenu = document.getElementById("autocomplete-list");
+    var dropdownMenu = documentw.getElementById("autocomplete-list");
   
     var listItems = dropdownMenu.getElementsByTagName("li");
 
@@ -128,6 +129,12 @@ function onInputChange() {
   });
 
   bondsList.forEach((obj) => {
+    if (obj.title.substr(0, key.length).toLowerCase() === key) {
+      filteredNames.push(obj.title);
+    }
+  });
+
+  bankList.forEach((obj) => {
     if (obj.title.substr(0, key.length).toLowerCase() === key) {
       filteredNames.push(obj.title);
     }
