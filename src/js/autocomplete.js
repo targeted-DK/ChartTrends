@@ -242,11 +242,22 @@ function onSubmitButtonClick() {
     bondsList.map((obj) => {
       if (obj.title === key) {
         urlendpoint = obj.urlendpoint;
-        listType = "featured"
+        listType = "bonds"
         sendRequestAndNavigateCustomChart(listType, urlendpoint);
       } 
       return;
     });
+
+    bankList.map((obj) => {
+      if (obj.title === key) {
+        urlendpoint = obj.urlendpoint;
+        listType = "bank"
+        sendRequestAndNavigateCustomChart(listType, urlendpoint);
+      } 
+      return;
+    });
+
+
 
   }
 
