@@ -96,7 +96,7 @@ function sendToPyshell(
       mode: "text",
       // pythonPath : '/usr/bin/python3',
       // pythonPath : '/Library/Frameworks/Python.framework/Versions/3.10/bin/python3',
-      pythonPath: "./myenv/bin/python3",
+      pythonPath: "./venv/bin/python3",
       pythonOptions: ["-u"],
       scriptPath: "./src/python/",
       // args : [tag, jsonDataString],
