@@ -70,6 +70,25 @@ let macroList = [
     units: ["dollars", ""],
     comparisonChartName: "DTWEXBGS",
   },
+
+  {
+    title: "Yields, Inversions and High Yield Spread",
+    urlendpoint: "yields_spreads",
+    use: "enumerate",
+    chartToCreate: false,
+    // chartToCreateName :  "% of cash assets in all commercial banks",
+    adjustYaxis: false,
+    // chartMethod : "Division",
+    tag: [ "DGS10", "T10Y3M","BAMLH0A0HYM2"],
+    source :  ["FRED", "FRED", "FRED"],
+    frequency: ["d", "d", "d"],
+    transformation: ["lin", "lin","lin"],
+    aggregation: ["avg", "avg", "avg"],
+    adjustment: [1, 1,1],
+    units: ["percent", "percent", "percent"],
+    comparisonChartName: null,
+    description : "Recession indicators from bond market"
+  },
   ];
   
   
