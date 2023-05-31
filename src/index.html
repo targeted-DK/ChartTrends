@@ -129,7 +129,7 @@
           <ul class="menu">
             <li><a href="#Featured" data-tab="Featured">Featured</a></li>
             <li><a href="#Macro" data-tab="Macro">Macro</a></li>
-            <li><a href="#Petroleum" data-tab="Petroleum">Petroleum</a></li>
+            <li><a href="#Bank" data-tab="Bank">Bank</a></li>
           </ul>
         </nav>
 
@@ -144,7 +144,7 @@
             <div class="container"></div>
           </div>
           
-          <div id="Petroleum" class="tab-content">
+          <div id="Bank" class="tab-content">
             <div class="container"></div>
           </div>
         </div>
@@ -153,7 +153,7 @@
             $(".menu a").click(function (e) {
               e.preventDefault();
               var tabId = $(this).data("tab");
-              console.log(tabId);
+              // console.log(tabId);
 
               $(".content-container > .tab-content").removeClass("active");
               $("#" + tabId).addClass("active");

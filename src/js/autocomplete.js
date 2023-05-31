@@ -28,7 +28,7 @@ inputElement.addEventListener("keydown", function (event) {
     // Programmatically submit the form
     submitButtonElement.click();
 
-    var dropdownMenu = documentw.getElementById("autocomplete-list");
+    var dropdownMenu = document.getElementById("autocomplete-list");
   
     var listItems = dropdownMenu.getElementsByTagName("li");
 
