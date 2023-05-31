@@ -21,8 +21,12 @@ var menuImageSources = {
   ],
 
   Bank : [
-
-
+    "fedshorttermliquidity",
+    "tga_lor",
+    "loans_securities_bank",
+    "securities_ratio_bank",
+    "cre_loan_ratio",
+    "cashreserves_banks"
   ]
   // Petroleum: [
   //   "petroleum-image-1.png",
