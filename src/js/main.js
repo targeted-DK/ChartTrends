@@ -39,7 +39,7 @@ var menuImageSources = {
 // Get the containers for each menu
 var featuredContainer = document.querySelector("#Featured .container");
 var macroContainer = document.querySelector("#Macro .container");
-var bankContainer = document.getElementById("#Bank .container");
+var bankContainer = document.querySelector("#Bank .container");
 
 // Function to create and append cards to the container
 function createCards(container, imageSources) {
@@ -54,7 +54,7 @@ function createCards(container, imageSources) {
     || findSubjectInList(ratioList, src) 
     || findSubjectInList(bondsList, src)
     || findSubjectInList(bankList, src)
-    
+
     if (index % 2 === 0) {
       row = document.createElement("div");
       row.style.display = "flex"
