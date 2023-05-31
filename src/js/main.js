@@ -38,7 +38,7 @@ var menuImageSources = {
 // Get the containers for each menu
 var featuredContainer = document.querySelector("#Featured .container");
 var macroContainer = document.querySelector("#Macro .container");
-// var petroleumContainer = document.getElementById("#Petroleum .container");
+var bankContainer = document.getElementById("#Bank .container");
 
 // Function to create and append cards to the container
 function createCards(container, imageSources) {
@@ -125,4 +125,4 @@ function findSubjectInList(list, source) {
 // Call the function to create cards for each menu
 createCards(featuredContainer, menuImageSources.Featured);
   createCards(macroContainer, menuImageSources.Macro);
-  // createCards(petroleumContainer, menuImageSources.Petroleum);
+  createCards(bankContainer, menuImageSources.Bank);
