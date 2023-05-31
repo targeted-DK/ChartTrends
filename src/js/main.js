@@ -2,6 +2,7 @@ import bondsList from "./data/bondsList.js";
 import featuredList from "./data/featuredList.js";
 import macroList from "./data/macroList.js";
 import ratioList from "./data/ratioList.js";
+import bankList from "./data/bankList.js";
 
 var menuImageSources = {
   Featured: [
@@ -48,8 +49,12 @@ function createCards(container, imageSources) {
   imageSources.forEach(function (src, index) {
     // Create the necessary elements
 
-    var subject = findSubjectInList(featuredList, src) || findSubjectInList(macroList, src) || findSubjectInList(ratioList, src) || findSubjectInList(bondsList, src)
-
+    var subject = findSubjectInList(featuredList, src) 
+    || findSubjectInList(macroList, src) 
+    || findSubjectInList(ratioList, src) 
+    || findSubjectInList(bondsList, src)
+    || findSubjectInList(bankList, src)
+    
     if (index % 2 === 0) {
       row = document.createElement("div");
       row.style.display = "flex"
