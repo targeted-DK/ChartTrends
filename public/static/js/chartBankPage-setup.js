@@ -16,6 +16,7 @@ axios
     tag: bankSubject,
   })
   .then((response) => {
+   
     let jsonData = Object.assign({}, response.data);
    
     let convertedDataList = [];
@@ -26,6 +27,7 @@ axios
     }
 
     jsonData.values = convertedDataList;
+    
     
    
     createFeaturedHighcharts(jsonData);
@@ -89,6 +91,7 @@ function createFeaturedHighcharts(jsonData) {
   let units = jsonData.units;
   let use = jsonData.use;
   let adjustYaxis = jsonData.adjustYaxis;
+  let newUnits = jsonData.newUnits;
   let comparisonChartNameIndex =
     Object.values(names).indexOf(comparisonChartName);
   let desiredDay = "Wednesday"; //Used to align timestamp - some weekly data records on friday. Use Wendesday since its default value for many weekly indicators
@@ -100,17 +103,17 @@ function createFeaturedHighcharts(jsonData) {
   //2) case 1
   //  2-1)addition
   //  2-2)division
-  //3) case 3, 4,5
+  //3) case 3, 4
       // 3-1) get rid of a first graph
       // 3-2) get rid of two graphs
-  //     3-3) make two charts from four graphs or 3 from 6 ... and compare
-  //4) chartoptions
-  //  4-1) case 1
-  //  4-2) case 2
-  //  4-1) "compare" : compare two charts
-        // 4-1-1 : use same y-axis
-        // 4-1-2 : use two differnt y-axis
-  //  4-1) "enumerate" :  compare multiple charts with same units
+  //4) case 5 : create new charts by division ex) cash assets/gdp and enumerate -> 5-4
+  //5) chartoptions
+  //  5-1) case 1
+  //  5-2) case 2
+  //  5-3) "compare" : compare two charts
+        // 5-3-1 : use same y-axis
+        // 5-3-2 : use two differnt y-axis
+  //  5-4) "enumerate" :  compare multiple charts with same units
 
 
   //match timestamp for weeklydata
@@ -259,35 +262,49 @@ function createFeaturedHighcharts(jsonData) {
         }
       });
    
-    } 
+    } else if(use == "case5"){
+
+      let numberOfCharts = adjustedData.length;
+  
+     
+      let newCharts = [];
+
+      for(let i = 0, j = 1; i < numberOfCharts; i += 2, j += 2){
+     
+        let nominatorData = adjustedData[i];
+        let denominatorData = adjustedData[j];
+
+        let newChart = [];
+        nominatorData.forEach(datapoint1 => {
+          const timestamp1 = datapoint1[0];
+          const value1 = datapoint1[1];
+
+          const matchingDataPoint2 = denominatorData.find(datapoint2 => datapoint2[0] == timestamp1);
+          if(matchingDataPoint2){
+            const value2 = matchingDataPoint2[1];
+
+            const result = value1 / value2;
+
+            const newDataPoint = [timestamp1, result];
+            
+
+            newChart.push(newDataPoint);
+
+          }
+
+        })
+        newCharts.push(newChart);
+
+    }
+
+    adjustedData = newCharts;
+    units = newUnits;
+    names = chartToCreateName;
+    use = "enumerate";
+
+  }
     
-    // else if(use == "case5"){
-        
-    //   // const firstDataset = adjustedData[0];
-    //   // const secondDataset = adjustedData[1];
-    //   // const thirdDataset = adjustedData[2];
-    //   // const fourthDataset = adjustedData[3];
-
-          
-    //   summedData = [];
-    //   let j;
-    //   for(let i = 0; i < adjustedData.length; i = i + 2){
-       
-    //   j = i + 1;
-    //   adjustedData[i].forEach(([timestamp, value]) => {
-    //     const correspondingValue = adjustedData[j].find(
-    //       (data) => data[0] === timestamp
-    //     )?.[1];
-
-    //     if (correspondingValue !== undefined) {
-       
-    //       const dividedValue = value / correspondingValue;
-      
-    //       summedData.push([timestamp, dividedValue]);
-    //     }
-    //   });
-    // }
-    // }
+ 
   }
  
   //if there is a comparison chart, extract it from orignal array if not, skip

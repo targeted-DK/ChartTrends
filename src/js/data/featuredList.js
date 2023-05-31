@@ -500,6 +500,25 @@ let featuredList = [
     comparisonChartName: "T10Y3M",
   },
 
+  {
+    title: "Ratio of Commercial Real Estate (CRE) Loans in Small and Large Commercial Banks",
+    urlendpoint : "cre_loan_ratio",
+    use : "case5",
+    chartToCreate : true,
+    chartToCreateName : ["CRE Ratio in Small Banks", "CRE Ratio in Large Banks"],
+    chartMethod : "Division",
+    adjustYaxis: false,
+    tag: ["CRESCBW027SBOG", "LLBSCBW027SBOG","CRELCBW027SBOG", "LLBLCBW027NBOG"],
+    source :  ["FRED", "FRED","FRED", "FRED"],
+    frequency : ["w", "w", "w", "w"],
+    transformation :["lin", "lin","lin", "lin"],
+    aggregation : ["avg","avg","avg", "avg"],
+    adjustment: [1,1,1, 1],
+    units : ["Billions of dollars","Billions of dollars","Billions of dollars", "Billions of dollars"],
+    newUnits : ["percent", "percent"],
+    comparisonChartName : null,
+  },
+
   
 ];
  

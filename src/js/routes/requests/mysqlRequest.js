@@ -5,7 +5,7 @@ import bodyParser from "body-parser";
 import lodash from "lodash";
 import database from "../../config/Database/serverConnection.js";
 import queries from "../../mysqlQueries.js";
-import { cftcList, eiaDUCList, fredDataList } from "../../data/dataList.js";
+import dataList, { cftcList, eiaDUCList, fredDataList } from "../../data/dataList.js";
 import featuredList from "../../data/featuredList.js";
 import ratioList from "../../data/ratioList.js";
 import bondsList from "../../data/bondsList.js";
@@ -320,7 +320,7 @@ export async function sendDataToRDS(mappedDataForRds) {
       newTableName =
         tag + "_" + frequency + "_" + transformation + "_" + aggregation;
     }
-   
+    
     let newCatalog = [
       tag,
       frequency,
@@ -554,7 +554,7 @@ export function sendEiaDataToRds() {}
  */
 
 export function getDataFromRDS(json) {
-  const fredTagsArray = Object.values(fredDataList);
+  // const fredTagsArray = Object.values(fredDataList);
   //Modify this code everytime you add source
   const source = json.use;
   const tag = json.tag;
@@ -581,29 +581,44 @@ export function getDataFromRDS(json) {
       list = bankList;
     } 
 
-    let result = {};
+    
+
+   
+
     return new Promise((resolve, reject) => {
       // for (let feature of list) {
-      
+
+  
+       
+
       const feature = list.filter(({ urlendpoint }) => urlendpoint === tag)[0];
       
       let title = feature.title;
       let tags = feature.tag;
+      let use = feature.use;
       let source = feature.source
       let adjustment = feature.adjustment;
-      let comparisonChartName = feature.comparisonChartName;
+      let chartToCreate = feature.chartToCreate;
+      let chartToCreateName = feature.chartToCreateName;
       let frequency = feature.frequency;
       let transformation = feature.transformation;
       let aggregation = feature.aggregation;
-      let use = feature.use;
-      let chartToCreate = feature.chartToCreate;
-      let chartToCreateName = feature.chartToCreateName;
       let chartMethod = feature.chartMethod;
       let units = feature.units;
+      let newUnits = feature.newUnits;
       let adjustYaxis = feature.adjustYaxis;
-
+      let comparisonChartName = feature.comparisonChartName;
       let chartNames = [];
       let promises = []; // Array to store the promises
+      let result = {};
+   
+     
+      
+
+      // console.log(namesForTag);
+      
+     
+
 
       for (let i = 0; i < Object.keys(frequency).length; i++) {
         //When you use same data but with different format etc,
@@ -636,19 +651,21 @@ export function getDataFromRDS(json) {
         } else {
           tableName = tag_instance
         }
-        console.log(tableName);
+        // console.log(tableName);
         // console.log(tag_instance);
         // console.log(frequency_instance);
         // console.log(transformation_instance);
         // console.log(aggregation_instance);
-
+      
         chartNames.push(tag_instance);
+      
         let promise = new Promise((resolve, reject) => {
           database.query(
             queries.SELECT_ALL_ROWS_FROM_TABLE,
             [source_instance, tableName],
             (error, results) => {
               if (error) {
+               
                 console.log(error);
                 reject(error.stack);
               } else {
@@ -662,6 +679,24 @@ export function getDataFromRDS(json) {
         promises.push(promise); // Add the promise to the array
       }
 
+      let namesForTag = [];
+      for(let i = 0; i < tags.length; i++){
+
+        if(source[i] == "FRED"){
+          let tag = tags[i];
+          const nameForTag = Object.entries(fredDataList)
+          .filter(([key, value]) => value === tag);
+         
+          namesForTag.push(nameForTag[0][0]);
+        } else {
+          namesForTag.push(tags[i]);
+          
+        }
+      }
+
+      // console.log(namesForTag.length);
+      // console.log("here");
+
       // Await the resolution of all promises using Promise.all()
       Promise.all(promises)
         .then((chain) => {
@@ -670,17 +705,22 @@ export function getDataFromRDS(json) {
           result.values = chain;
           result.title = title;
           result.use = use;
-          result.names = chartNames;
-          result.adjustment = adjustment;
-          result.comparisonChartName = comparisonChartName;
+          // result.names = chartNames;
+          result.names = tags;
+          result.namesForTag = namesForTag;
+          result.chartToCreateName = chartToCreateName;
+          result.chartMethod = chartMethod;
+          result.adjustYaxis = adjustYaxis;
           result.frequency = frequency;
           result.transformation = transformation;
           result.aggregation = aggregation;
           result.chartToCreate = chartToCreate;
-          result.chartToCreateName = chartToCreateName;
-          result.chartMethod = chartMethod;
+          result.adjustment = adjustment;
           result.units = units;
-          result.adjustYaxis = adjustYaxis;
+          result.newUnits = newUnits;
+          result.comparisonChartName = comparisonChartName;
+
+        
 
           // Here, you have an array of resolved results from all the promises
           resolve(result);

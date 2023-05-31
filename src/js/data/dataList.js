@@ -1,24 +1,24 @@
 export const fredDataList = {
-
   //@TODO - Recession Indicator
-  "NBER based Recession Indicators for the United States from the Period following the Peak through the Trough"  : "USREC",
+  "NBER based Recession Indicators for the United States from the Period following the Peak through the Trough":
+    "USREC",
   //Index stuff
   "Wilshire 5000 Price Index": "WILL5000PR",
   "S&P 500": "SP500",
-  "NASDAQ Composite Index" : "NASDAQCOM",
-  "Nikkei Stock Average, Nikkei 225" : "NIKKEI225",
+  "NASDAQ Composite Index": "NASDAQCOM",
+  "Nikkei Stock Average, Nikkei 225": "NIKKEI225",
   // S&P/Case-Shiller U.S. National Home Price Index (CSUSHPINSA),
 
   //interest rate
   "1-Month Real Interest Rate": "REAINTRATREARAT1MO",
   "1-Year Real Interest Rate": "REAINTRATREARAT1YE",
   "10-Year Real Interest Rate": "REAINTRATREARAT10Y",
-  
 
   //bonds
   "10-Year Treasury Constant Maturity Minus 3-Month Treasury Constant Maturity":
     "T10Y3M",
-  "10-Year Treasury Constant Maturity Minus 2-Year Treasury Constant Maturity" : "T10Y2YM",
+  "10-Year Treasury Constant Maturity Minus 2-Year Treasury Constant Maturity":
+    "T10Y2YM",
 
   //inflation stuff
   "5-Year Breakeven Inflation Rate": "T5YIE",
@@ -42,12 +42,12 @@ export const fredDataList = {
   "Nominal Broad U.S. Dollar Index": "DTWEXBGS",
   "Spot Crude Oil Price: West Texas Intermediate (WTI)": "WTISPLC",
   "ICE BofA US High Yield Index Option-Adjusted Spread": "BAMLH0A0HYM2",
- 
+
   "Liabilities and Capital: Liabilities: Deposits with F.R. Banks, Other Than Reserve Balances: U.S. Treasury, General Account: Week Average":
     "WTREGEN",
   "Gross Domestic Product": "GDP",
-  "M2": "WM2NS",
-  "Real M2 Money Stock" : "M2REAL",
+  M2: "WM2NS",
+  "Real M2 Money Stock": "M2REAL",
   "Sticky Price Consumer Price Index less Food and Energy":
     "CORESTICKM159SFRBATL",
   "Consumer Price Index for All Urban Consumers: All Items in U.S. City Average":
@@ -71,23 +71,29 @@ export const fredDataList = {
     "SWPT",
   "Secured Overnight Financing Rate": "SOFR",
   "Overnight Reverse Repurchase Agreements: Treasury Securities Sold by the Federal Reserve in the Temporary Open Market Operations":
-  "RRPONTSYD",
-  "Overnight Reverse Repurchase Agreements Award Rate: Treasury Securities Sold by the Federal Reserve in the Temporary Open Market Operations" :"RRPONTSYAWARD",
-//FIMA
-"Assets: Other: Repurchase Agreements - Foreign Official: Wednesday Level" : "H41RESPPALGTRFNWW",
-//재할인 창구
-"Assets: Liquidity and Credit Facilities: Loans: Primary Credit: Wednesday Level" : "WLCFLPCL",
-//Bank Term Funding Program
-"Assets: Liquidity and Credit Facilities: Loans: Bank Term Funding Program, Net: Wednesday Level" : "H41RESPPALDKNWW",
-//Bridge Bank Loan
-"Assets: Liquidity and Credit Facilities: Loans: Other Credit Extensions: Wednesday Level" : "WLCFOCEL",
-//지급 준비금
-   //최소안정수준 지급준비금(LCLoR) = 8%
-   //9월 TGA목표 확인할것
-   "Liabilities and Capital: Other Factors Draining Reserve Balances: Reserve Balances with Federal Reserve Banks: Wednesday Level" : "WRBWFRBL",
+    "RRPONTSYD",
+  "Overnight Reverse Repurchase Agreements Award Rate: Treasury Securities Sold by the Federal Reserve in the Temporary Open Market Operations":
+    "RRPONTSYAWARD",
+  //FIMA
+  "Assets: Other: Repurchase Agreements - Foreign Official: Wednesday Level":
+    "H41RESPPALGTRFNWW",
+  //재할인 창구
+  "Assets: Liquidity and Credit Facilities: Loans: Primary Credit: Wednesday Level":
+    "WLCFLPCL",
+  //Bank Term Funding Program
+  "Assets: Liquidity and Credit Facilities: Loans: Bank Term Funding Program, Net: Wednesday Level":
+    "H41RESPPALDKNWW",
+  //Bridge Bank Loan
+  "Assets: Liquidity and Credit Facilities: Loans: Other Credit Extensions: Wednesday Level":
+    "WLCFOCEL",
+  //지급 준비금
+  //최소안정수준 지급준비금(LCLoR) = 8%
+  //9월 TGA목표 확인할것
+  "Liabilities and Capital: Other Factors Draining Reserve Balances: Reserve Balances with Federal Reserve Banks: Wednesday Level":
+    "WRBWFRBL",
 
-//mmf
-"Retail Money Market Funds" : "RMFSL",
+  //mmf
+  "Retail Money Market Funds": "RMFSL",
 
   //Government Debt Stuff
   "Federal Debt: Total Public Debt": "GFDEBTN",
@@ -101,7 +107,7 @@ export const fredDataList = {
   "Federal government current tax receipts": "W006RC1Q027SBEA",
   "Federal Surplus or Deficit [-]": "MTSDS133FMS",
   "Real Government Consumption Expenditures and Gross Investment": "GCEC1",
-  "All Sectors; Debt Securities and Loans; Liability, Level" : "TCMDO",
+  "All Sectors; Debt Securities and Loans; Liability, Level": "TCMDO",
 
   //US Bank Stuff
   "Total Assets, All Commercial Banks": "TLAACBW027SBOG",
@@ -118,32 +124,54 @@ export const fredDataList = {
     "WRESBAL",
 
   //Bank Crisis
-  "Securities in Bank Credit, All Commercial Banks" : "SBCACBW027SBOG",
-  "Loans and Leases in Bank Credit, All Commercial Banks" : "TOTLL",
 
+  "Bank Credit, All Commercial Banks": "TOTBKCR",
+  "Bank Credit, Small Domestically Chartered Commercial Banks":
+    "BC0SCBW027SBOG",
+  "Bank Credit, Large Domestically Chartered Commercial Banks":
+    "BC0LCBW027SBOG",
+  "Securities in Bank Credit, All Commercial Banks": "SBCACBW027SBOG",
+  "Securities in Bank Credit, Small Domestically Chartered Commercial Banks":
+    "SBCSCBW027SBOG",
+  "Securities in Bank Credit, Large Domestically Chartered Commercial Banks":
+    "SBCLCBW027SBOG",
   "Cash Assets, All Commercial Banks": "CASACBW027SBOG",
   "Cash Assets, Large Domestically Chartered Commercial Banks":
     "CASLCBW027SBOG",
   "Cash Assets, Small Domestically Chartered Commercial Banks":
     "CASSCBW027SBOG",
-  "Total Assets, All Commercial Banks" : "TLAACBW027SBOG",
-  "Total Assets, Large Domestically Chartered Commercial Banks" :  "TLALCBM027SBOG",
-  "Total Assets, Small Domestically Chartered Commercial Banks" : "TLASCBM027SBOG",
-  "Deposits, All Commercial Banks" : "DPSACBW027SBOG",
-  "Deposits, Large Domestically Chartered Commercial Banks" : "DPSLCBW027SBOG",
-  "Deposits, Small Domestically Chartered Commercial Banks"  : "DPSSCBW027SBOG",
-  "Real Estate Loans: Commercial Real Estate Loans, All Commercial Banks" : "CREACBW027SBOG",
-   "Real Estate Loans: Commercial Real Estate Loans, Large Domestically Chartered Commercial Banks" : "CRELCBW027SBOG",
-   "Real Estate Loans: Commercial Real Estate Loans, Small Domestically Chartered Commercial Banks" : "CRESCBM027NBOG",
+  "Total Assets, All Commercial Banks": "TLAACBW027SBOG",
+  "Total Assets, Large Domestically Chartered Commercial Banks":
+    "TLALCBM027SBOG",
+  "Total Assets, Small Domestically Chartered Commercial Banks":
+    "TLASCBM027SBOG",
+  "Deposits, All Commercial Banks": "DPSACBW027SBOG",
+  "Deposits, Large Domestically Chartered Commercial Banks": "DPSLCBW027SBOG",
+  "Deposits, Small Domestically Chartered Commercial Banks": "DPSSCBW027SBOG",
+  "Real Estate Loans: Commercial Real Estate Loans, All Commercial Banks":
+    "CREACBW027SBOG",
+  "Real Estate Loans: Commercial Real Estate Loans, Small Domestically Chartered Commercial Banks":
+    "CRESCBW027SBOG",
 
- 
+  "Real Estate Loans: Commercial Real Estate Loans, Large Domestically Chartered Commercial Banks":
+    "CRELCBW027SBOG",
+
+  "Loans and Leases in Bank Credit, All Commercial Banks": "TOTLL",
+  "Loans and Leases in Bank Credit, Large Domestically Chartered Commercial Banks":
+    "LLBLCBW027NBOG",
+  "Loans and Leases in Bank Credit, Small Domestically Chartered Commercial Banks":
+    "LLBSCBW027SBOG",
+
+  "National Deposit Rates: 12-Month CD": "NDR12MCD",
+  "National Deposit Rates: Savings": "SNDR",
+
   //households
-  "Personal Saving Rate" : "PSAVERT",
-  "Average Hourly Earnings of All Employees, Total Private" : "CES0500000003",
-
+  "Personal Saving Rate": "PSAVERT",
+  "Average Hourly Earnings of All Employees, Total Private": "CES0500000003",
 
   //Corporate Stuff
-  "Nonfinancial Corporate Business; Debt Securities and Loans; Liability, Level" : "BCNSDODNS",
+  "Nonfinancial Corporate Business; Debt Securities and Loans; Liability, Level":
+    "BCNSDODNS",
 
   //Investment
   "U.S. Net International Investment Position": "IIPUSNETIQ", //Can you find this one with longer observation period?
@@ -151,8 +179,8 @@ export const fredDataList = {
   //The MOVE Index is the bond market equivalent of the VIX Index. It measures the implied volatility of 1-month options from the 2-year note to the 30-year bond.
 
   //Manufacturing
-  "Manufacturers' New Orders: Total Manufacturing" :  "AMTMNO",
-  "Retailers: Inventories to Sales Ratio" : "RETAILIRSA",
+  "Manufacturers' New Orders: Total Manufacturing": "AMTMNO",
+  "Retailers: Inventories to Sales Ratio": "RETAILIRSA",
 
   //OIL STUFF
   "Crude Oil Prices: West Texas Intermediate (WTI) - Cushing, Oklahoma":
@@ -175,15 +203,15 @@ export const fredDataList = {
   // Global price of WTI Crude (POILWTIUSDM)
 
   //japan/korea
-  "Residential Property Prices for Japan" : "QJPN368BIS",
-  "Nikkei Stock Average, Nikkei 225" : "NIKKEI225",
-  "Consumer Price Index of All Items in Japan" : "JPNCPIALLMINMEI",
-  "Real Residential Property Prices for Republic of Korea" :"QKRR628BIS",
+  "Residential Property Prices for Japan": "QJPN368BIS",
+  "Nikkei Stock Average, Nikkei 225": "NIKKEI225",
+  "Consumer Price Index of All Items in Japan": "JPNCPIALLMINMEI",
+  "Real Residential Property Prices for Republic of Korea": "QKRR628BIS",
 
   // "M2 for Japan" :  "MYAGM2JPM189S", - discontinued
 
   //Labor Market
-  "Population" : "POPTHM",
+  Population: "POPTHM",
   "Employment-Population Ratio": "EMRATIO",
   "Employment Rate: Aged 15-64: All Persons for the United States":
     "LREM64TTUSM156S",
