@@ -7,7 +7,7 @@ var menuImageSources = {
   Featured: [
     "Wil5000_DomesticLiquidityIndicator",
     "usgovexp",
-    "oil_wilshire5000_gold",
+    "oil_will5000_gold",
     "M2_CPI",
     "DCOILWTICO_GOLD",
     "CGR_us10yr",
