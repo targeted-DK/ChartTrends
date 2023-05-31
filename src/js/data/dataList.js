@@ -46,7 +46,7 @@ export const fredDataList = {
   "Liabilities and Capital: Liabilities: Deposits with F.R. Banks, Other Than Reserve Balances: U.S. Treasury, General Account: Week Average":
     "WTREGEN",
   "Gross Domestic Product": "GDP",
-  M2: "WM2NS",
+  "M2": "WM2NS",
   "Real M2 Money Stock": "M2REAL",
   "Sticky Price Consumer Price Index less Food and Energy":
     "CORESTICKM159SFRBATL",
@@ -211,7 +211,8 @@ export const fredDataList = {
   // "M2 for Japan" :  "MYAGM2JPM189S", - discontinued
 
   //Labor Market
-  Population: "POPTHM",
+  "Population": "POPTHM",
+  "Unemployment Rate" : "UNRATE",
   "Employment-Population Ratio": "EMRATIO",
   "Employment Rate: Aged 15-64: All Persons for the United States":
     "LREM64TTUSM156S",

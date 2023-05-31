@@ -554,6 +554,8 @@ export function sendEiaDataToRds() {}
  */
 
 export function getDataFromRDS(json) {
+ 
+
   // const fredTagsArray = Object.values(fredDataList);
   //Modify this code everytime you add source
   const source = json.use;
@@ -588,8 +590,7 @@ export function getDataFromRDS(json) {
     return new Promise((resolve, reject) => {
       // for (let feature of list) {
 
-  
-       
+
 
       const feature = list.filter(({ urlendpoint }) => urlendpoint === tag)[0];
       
@@ -615,11 +616,11 @@ export function getDataFromRDS(json) {
      
       
 
-      // console.log(namesForTag);
       
+
+
+
      
-
-
       for (let i = 0; i < Object.keys(frequency).length; i++) {
         //When you use same data but with different format etc,
         // tag object in list.js does not allow duplicate 
@@ -678,30 +679,31 @@ export function getDataFromRDS(json) {
 
         promises.push(promise); // Add the promise to the array
       }
+     
 
       let namesForTag = [];
       for(let i = 0; i < tags.length; i++){
-
+       
         if(source[i] == "FRED"){
           let tag = tags[i];
+         
           const nameForTag = Object.entries(fredDataList)
           .filter(([key, value]) => value === tag);
-         
+            console.log(nameForTag);
           namesForTag.push(nameForTag[0][0]);
         } else {
           namesForTag.push(tags[i]);
           
         }
       }
+      
 
-      // console.log(namesForTag.length);
-      // console.log("here");
-
+    
       // Await the resolution of all promises using Promise.all()
       Promise.all(promises)
         .then((chain) => {
           //for some reason result.data returns [] on the client side
-         
+       
           result.values = chain;
           result.title = title;
           result.use = use;

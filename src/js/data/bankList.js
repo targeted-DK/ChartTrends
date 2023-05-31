@@ -90,12 +90,12 @@ let bankList = [
   
 
     {
-      title: "Commercial Real Estate Loans by Small, Large, All Commercial Banks.",
+      title: "Commercial Real Estate Loans by Small, Large, All Commercial Banks",
       urlendpoint : "cre_bybank",
       use : "enumerate",
       chartToCreate : false,
       adjustYaxis: false,
-      tag: ["CRESCBM027NBOG", "CRELCBW027SBOG","CREACBW027SBOG"],
+      tag: ["CRESCBW027SBOG", "CRELCBW027SBOG","CREACBW027SBOG"],
       source :  ["FRED", "FRED","FRED"],
       frequency : ["m", "m", "m"],
       transformation :["lin", "lin","lin"],

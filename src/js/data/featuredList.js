@@ -175,18 +175,18 @@ let featuredList = [
   },
   //three charts
   {
-    title: "Nominal Comparison of Wilshire 5000, Gold, Oil",
-    urlendpoint: "Wil5000_OIL_GOLD",
+    title: "Nominal Comparison of Oil, Wilshire 5000, Gold",
+    urlendpoint: "oil_will5000_gold",
     use: "case2",
     chartToCreate: false,
     adjustYaxis: true,
-    tag: [ "WILL5000PR", "DCOILWTICO" , "GOLD"],
+    tag: [ "DCOILWTICO" , "WILL5000PR", "GOLD"],
     source :  ["FRED", "FRED", "NDL"],
     frequency: ["d", "d", "d"],
     transformation: ["lin", "lin", "lin"],
     aggregation: ["avg", "avg", "avg"],
     adjustment: [1, 1, 1],
-    units: ["points", "dollars", "dollars"],
+    units: ["dollars","points",  "dollars"],
     comparisonChartName: null
   },
 
@@ -359,24 +359,6 @@ let featuredList = [
   },
 
   {
-    title: "Total US Debt / M2 and Fed Funds Rate",
-    urlendpoint: "usdebtM2_ffer",
-    use: "case4",
-    chartToCreate: true,
-    chartToCreateName : "Total Debt as a % of M2",
-    chartMethod : "Division",
-    adjustYaxis: false,
-    tag: ["GFDEBTN" ,  "WM2NS", "FEDFUNDS" ],
-    source :  ["FRED", "FRED","FRED"],
-    frequency: ["q", "q", "q"],
-    transformation: ["lin", "lin","lin"],
-    aggregation: ["avg", "avg", "avg"],
-    adjustment: [1,100, 1],
-    units: ["Millions of Dollars", "Billions of Dollars", "percent"],
-    comparisonChartName: "FEDFUNDS",
-  },
-
-  {
     title: "Manufacturer's New Orders yoy vs. M2 yoy",
     urlendpoint: "AMTMNO_M2",
     use: "compare",
@@ -500,25 +482,7 @@ let featuredList = [
     comparisonChartName: "T10Y3M",
   },
 
-  {
-    title: "Ratio of Commercial Real Estate (CRE) Loans in Small and Large Commercial Banks",
-    urlendpoint : "cre_loan_ratio",
-    use : "case5",
-    chartToCreate : true,
-    chartToCreateName : ["CRE Ratio in Small Banks", "CRE Ratio in Large Banks"],
-    chartMethod : "Division",
-    adjustYaxis: false,
-    tag: ["CRESCBW027SBOG", "LLBSCBW027SBOG","CRELCBW027SBOG", "LLBLCBW027NBOG"],
-    source :  ["FRED", "FRED","FRED", "FRED"],
-    frequency : ["w", "w", "w", "w"],
-    transformation :["lin", "lin","lin", "lin"],
-    aggregation : ["avg","avg","avg", "avg"],
-    adjustment: [1,1,1, 1],
-    units : ["Billions of dollars","Billions of dollars","Billions of dollars", "Billions of dollars"],
-    newUnits : ["percent", "percent"],
-    comparisonChartName : null,
-  },
-
+ 
   
 ];
  

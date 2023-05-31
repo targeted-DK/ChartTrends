@@ -50,6 +50,8 @@ function convertRDSDateFormatToHighCharts(dataFromRds) {
     return [];
   }
  
+ 
+  //convert and sort
   const convertedData = dataFromRds.map((item, index) => {
     const milliseconds = Date.parse(item.date);
     let result = [milliseconds, item.value];
@@ -69,8 +71,8 @@ function convertRDSDateFormatToHighCharts(dataFromRds) {
     
     return result;
   });
-  //   console.log(convertedData);
-  // convertedData.sort((a, b) => a[0] - b[0]);
+  
+  convertedData.sort((a, b) => a[0] - b[0]);
 
   return convertedData;
 }
@@ -83,6 +85,7 @@ function convertRDSDateFormatToHighCharts(dataFromRds) {
 function createFeaturedHighcharts(jsonData) {
   let title = jsonData.title;
   let names = jsonData.names;
+  let namesForTag = jsonData.namesForTag;
   let comparisonChartName = jsonData.comparisonChartName;
   let frequency = jsonData.frequency[0];
   let chartToCreate = jsonData.chartToCreate;
@@ -97,6 +100,10 @@ function createFeaturedHighcharts(jsonData) {
   let desiredDay = "Wednesday"; //Used to align timestamp - some weekly data records on friday. Use Wendesday since its default value for many weekly indicators
 
   let alignedData = jsonData.values;
+//@TODO - comparisonChartName still uses tag, not a real name
+  // names = namesForTag;
+  // comparisonChartName = namesForTag[comparisonChartNameIndex];
+
 
   //framework
   //1) For weekly data, match timestamp and adjust values by adjustment factor
@@ -237,6 +244,7 @@ function createFeaturedHighcharts(jsonData) {
       );
 
       names.unshift(chartToCreateName);
+      namesForTag.unshift(chartToCreateName);
       adjustedData.unshift(summedDataArray);
       units.unshift(units[0]);
       comparisonChartNameIndex++;
@@ -264,12 +272,12 @@ function createFeaturedHighcharts(jsonData) {
    
     } else if(use == "case5"){
 
-      let numberOfCharts = adjustedData.length;
+      let numberOfChartsToMake = adjustedData.length;
   
-     
+    
       let newCharts = [];
 
-      for(let i = 0, j = 1; i < numberOfCharts; i += 2, j += 2){
+      for(let i = 0, j = 1; i < numberOfChartsToMake; i += 2, j += 2){
      
         let nominatorData = adjustedData[i];
         let denominatorData = adjustedData[j];
@@ -322,49 +330,30 @@ function createFeaturedHighcharts(jsonData) {
     adjustedData.shift();
     units.shift();
     names.shift();
+    namesForTag.shift();
 
     adjustedData.unshift(summedData);
     units.unshift("percent");
     names.unshift(chartToCreateName);
+    namesForTag.unshift(chartToCreateName);
     use = "compare";
 
   } else if(use == "case4"){
     adjustedData.shift();
     units.shift();
     names.shift(); 
+    namesForTag.shift();
     adjustedData.shift();
     units.shift();
     names.shift();
+    namesForTag.shift();
 
     adjustedData.unshift(summedData);
     units.unshift("percent");
     names.unshift(chartToCreateName);
+    namesForTag.unshift(chartToCreateName);
     use = "compare";
   } 
-  
-  // else if (use == "case5"){
-  //   for(let i = 0; i < adjustedData.length; i++){
-
-      
-  //     adjustedData.shift();
-  //     units.shift();
-  //     names.shift();
-  //   }
-
-  //   for(let j = 0; j < summedData.length; j ++ ){
-     
-
-  //     adjustedData.unshift(summedData);
-  //     units.unshift("percent");
-    
-  //     names.unshift(chartToCreateName[j]);
-
-
-  //   }
-  //   use = "compare";
-  // }
-  
-  
 
   //in case where first data is empty
   const container = document.getElementById("chart-container");
@@ -390,6 +379,7 @@ function createFeaturedHighcharts(jsonData) {
       series: [
         ...adjustedData.map((dataset, index) => ({
           name: names[index],
+          legendName : namesForTag[index],
           data: dataset,
 
           yAxis: 0,
@@ -424,6 +414,7 @@ function createFeaturedHighcharts(jsonData) {
       ],
 
       tooltip: {
+      
         xDateFormat: "%Y-%m-%d",
       },
 
@@ -464,12 +455,22 @@ function createFeaturedHighcharts(jsonData) {
       },
 
       legend: {
+        labelFormatter: function() {
+          // Get the index of the series
+          const seriesIndex = this.chart.series.indexOf(this);
+          
+          // Use the custom name if available, otherwise use the original series name
+          const name = namesForTag[seriesIndex] || this.name;
+          
+          return name;
+        },
         enabled: true, // Set enabled to true to show legends
       },
     };
   }
   // title: "Nominal Comparison of SP500, Oil, Gold",
   else if (use == "case2") {
+    console.log(adjustedData);
     chartOptions = {
       title: {
         text: title,
@@ -503,12 +504,7 @@ function createFeaturedHighcharts(jsonData) {
         },
       ],
 
-      // {
-
-      //   height: "100%",
-      //   opposite: false, // Position on the left
-      // },
-      // ],
+     
 
       tooltip: {
         xDateFormat: "%Y-%m-%d",
@@ -544,7 +540,17 @@ function createFeaturedHighcharts(jsonData) {
         ],
       },
 
+    
       legend: {
+        labelFormatter: function() {
+          // Get the index of the series
+          const seriesIndex = this.chart.series.indexOf(this);
+          
+          // Use the custom name if available, otherwise use the original series name
+          const name = namesForTag[seriesIndex] || this.name;
+          
+          return name;
+        },
         enabled: true, // Set enabled to true to show legends
       },
     };
@@ -619,7 +625,17 @@ function createFeaturedHighcharts(jsonData) {
           ],
         },
 
+      
         legend: {
+          labelFormatter: function() {
+            // Get the index of the series
+            const seriesIndex = this.chart.series.indexOf(this);
+            
+            // Use the custom name if available, otherwise use the original series name
+            const name = namesForTag[seriesIndex] || this.name;
+            
+            return name;
+          },
           enabled: true, // Set enabled to true to show legends
         },
       };
@@ -702,9 +718,19 @@ function createFeaturedHighcharts(jsonData) {
           ],
         },
 
-        legend: {
-          enabled: true, // Set enabled to true to show legends
+       
+      legend: {
+        labelFormatter: function() {
+          // Get the index of the series
+          const seriesIndex = this.chart.series.indexOf(this);
+          
+          // Use the custom name if available, otherwise use the original series name
+          const name = namesForTag[seriesIndex] || this.name;
+          
+          return name;
         },
+        enabled: true, // Set enabled to true to show legends
+      },
       };
     }
     //enumerate case
@@ -780,7 +806,17 @@ function createFeaturedHighcharts(jsonData) {
         ],
       },
 
+    
       legend: {
+        labelFormatter: function() {
+          // Get the index of the series
+          const seriesIndex = this.chart.series.indexOf(this);
+          
+          // Use the custom name if available, otherwise use the original series name
+          const name = namesForTag[seriesIndex] || this.name;
+          
+          return name;
+        },
         enabled: true, // Set enabled to true to show legends
       },
     };
@@ -847,7 +883,17 @@ function createFeaturedHighcharts(jsonData) {
         ],
       },
 
+    
       legend: {
+        labelFormatter: function() {
+          // Get the index of the series
+          const seriesIndex = this.chart.series.indexOf(this);
+          
+          // Use the custom name if available, otherwise use the original series name
+          const name = namesForTag[seriesIndex] || this.name;
+          
+          return name;
+        },
         enabled: true, // Set enabled to true to show legends
       },
     };

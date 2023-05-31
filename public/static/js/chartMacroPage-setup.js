@@ -17,6 +17,7 @@ axios
   })
   .then((response) => {
    
+   
     let jsonData = Object.assign({}, response.data);
    
     let convertedDataList = [];
@@ -27,9 +28,10 @@ axios
     }
 
     jsonData.values = convertedDataList;
-
+    
+    
    
-    createMacroHighcharts(jsonData);
+    createFeaturedHighcharts(jsonData);
 
     const loading = document.getElementById("loading");
     loading.remove();
@@ -49,6 +51,8 @@ function convertRDSDateFormatToHighCharts(dataFromRds) {
     return [];
   }
  
+ 
+  //convert and sort
   const convertedData = dataFromRds.map((item, index) => {
     const milliseconds = Date.parse(item.date);
     let result = [milliseconds, item.value];
@@ -63,11 +67,12 @@ function convertRDSDateFormatToHighCharts(dataFromRds) {
         }
       }
       result[1] = count > 0 ? sum / count : null;
+      // result[1] = null; //connectnulls in highcharts options
     }
-   
+    
     return result;
   });
-  //   console.log(convertedData);
+  
   convertedData.sort((a, b) => a[0] - b[0]);
 
   return convertedData;
@@ -78,9 +83,10 @@ function convertRDSDateFormatToHighCharts(dataFromRds) {
  *
  * Creates highchart with given array
  */
-function createMacroHighcharts(jsonData) {
+function createFeaturedHighcharts(jsonData) {
   let title = jsonData.title;
   let names = jsonData.names;
+  let namesForTag = jsonData.namesForTag;
   let comparisonChartName = jsonData.comparisonChartName;
   let frequency = jsonData.frequency[0];
   let chartToCreate = jsonData.chartToCreate;
@@ -89,13 +95,17 @@ function createMacroHighcharts(jsonData) {
   let units = jsonData.units;
   let use = jsonData.use;
   let adjustYaxis = jsonData.adjustYaxis;
+  let newUnits = jsonData.newUnits;
   let comparisonChartNameIndex =
     Object.values(names).indexOf(comparisonChartName);
   let desiredDay = "Wednesday"; //Used to align timestamp - some weekly data records on friday. Use Wendesday since its default value for many weekly indicators
 
   let alignedData = jsonData.values;
+//@TODO - comparisonChartName still uses tag, not a real name
+  // names = namesForTag;
+  // comparisonChartName = namesForTag[comparisonChartNameIndex];
 
- 
+
   //framework
   //1) For weekly data, match timestamp and adjust values by adjustment factor
   //2) case 1
@@ -104,13 +114,14 @@ function createMacroHighcharts(jsonData) {
   //3) case 3, 4
       // 3-1) get rid of a first graph
       // 3-2) get rid of two graphs
-  //4) chartoptions
-  //  4-1) case 1
-  //  4-2) case 2
-  //  4-1) "compare" : compare two charts
-        // 4-1-1 : use same y-axis
-        // 4-1-2 : use two differnt y-axis
-  //  4-1) "enumerate" :  compare multiple charts with same units
+  //4) case 5 : create new charts by division ex) cash assets/gdp and enumerate -> 5-4
+  //5) chartoptions
+  //  5-1) case 1
+  //  5-2) case 2
+  //  5-3) "compare" : compare two charts
+        // 5-3-1 : use same y-axis
+        // 5-3-2 : use two differnt y-axis
+  //  5-4) "enumerate" :  compare multiple charts with same units
 
 
   //match timestamp for weeklydata
@@ -234,15 +245,18 @@ function createMacroHighcharts(jsonData) {
       );
 
       names.unshift(chartToCreateName);
+      namesForTag.unshift(chartToCreateName);
       adjustedData.unshift(summedDataArray);
       units.unshift(units[0]);
       comparisonChartNameIndex++;
-    } else if (use == "case3" || use == "case4") {
+    } else if (use == "case3" || use == "case4" ) {
   
      
+      
       const firstDataset = adjustedData[0];
       const secondDataset = adjustedData[1];
-    
+
+          
       summedData = [];
       firstDataset.forEach(([timestamp, value]) => {
         const correspondingValue = secondDataset.find(
@@ -256,44 +270,91 @@ function createMacroHighcharts(jsonData) {
           summedData.push([timestamp, dividedValue]);
         }
       });
-  
-  
-    }
-  }
+   
+    } else if(use == "case5"){
 
+      let numberOfChartsToMake = adjustedData.length;
+  
+    
+      let newCharts = [];
+
+      for(let i = 0, j = 1; i < numberOfChartsToMake; i += 2, j += 2){
+     
+        let nominatorData = adjustedData[i];
+        let denominatorData = adjustedData[j];
+
+        let newChart = [];
+        nominatorData.forEach(datapoint1 => {
+          const timestamp1 = datapoint1[0];
+          const value1 = datapoint1[1];
+
+          const matchingDataPoint2 = denominatorData.find(datapoint2 => datapoint2[0] == timestamp1);
+          if(matchingDataPoint2){
+            const value2 = matchingDataPoint2[1];
+
+            const result = value1 / value2;
+
+            const newDataPoint = [timestamp1, result];
+            
+
+            newChart.push(newDataPoint);
+
+          }
+
+        })
+        newCharts.push(newChart);
+
+    }
+
+    adjustedData = newCharts;
+    units = newUnits;
+    names = chartToCreateName;
+    use = "enumerate";
+
+  }
+    
+ 
+  }
+ 
   //if there is a comparison chart, extract it from orignal array if not, skip
   //this is due to different units
- 
+
   if (comparisonChartName != null) {
     comparionChartData = adjustedData[comparisonChartNameIndex];
     adjustedData = adjustedData.slice(0, comparisonChartNameIndex);
     names = names.slice(0, comparisonChartNameIndex);
+    comparionChartData.sort((a, b) => a[0] - b[0]);
   }
+
 
   if(use == "case3"){
     adjustedData.shift();
     units.shift();
     names.shift();
+    namesForTag.shift();
 
     adjustedData.unshift(summedData);
     units.unshift("percent");
     names.unshift(chartToCreateName);
+    namesForTag.unshift(chartToCreateName);
     use = "compare";
 
   } else if(use == "case4"){
     adjustedData.shift();
     units.shift();
     names.shift(); 
+    namesForTag.shift();
     adjustedData.shift();
     units.shift();
     names.shift();
+    namesForTag.shift();
 
     adjustedData.unshift(summedData);
     units.unshift("percent");
     names.unshift(chartToCreateName);
+    namesForTag.unshift(chartToCreateName);
     use = "compare";
-  }
-
+  } 
 
   //in case where first data is empty
   const container = document.getElementById("chart-container");
@@ -319,6 +380,7 @@ function createMacroHighcharts(jsonData) {
       series: [
         ...adjustedData.map((dataset, index) => ({
           name: names[index],
+          legendName : namesForTag[index],
           data: dataset,
 
           yAxis: 0,
@@ -353,6 +415,7 @@ function createMacroHighcharts(jsonData) {
       ],
 
       tooltip: {
+      
         xDateFormat: "%Y-%m-%d",
       },
 
@@ -393,12 +456,22 @@ function createMacroHighcharts(jsonData) {
       },
 
       legend: {
+        labelFormatter: function() {
+          // Get the index of the series
+          const seriesIndex = this.chart.series.indexOf(this);
+          
+          // Use the custom name if available, otherwise use the original series name
+          const name = namesForTag[seriesIndex] || this.name;
+          
+          return name;
+        },
         enabled: true, // Set enabled to true to show legends
       },
     };
   }
   // title: "Nominal Comparison of SP500, Oil, Gold",
   else if (use == "case2") {
+    console.log(adjustedData);
     chartOptions = {
       title: {
         text: title,
@@ -432,12 +505,7 @@ function createMacroHighcharts(jsonData) {
         },
       ],
 
-      // {
-
-      //   height: "100%",
-      //   opposite: false, // Position on the left
-      // },
-      // ],
+     
 
       tooltip: {
         xDateFormat: "%Y-%m-%d",
@@ -473,7 +541,17 @@ function createMacroHighcharts(jsonData) {
         ],
       },
 
+    
       legend: {
+        labelFormatter: function() {
+          // Get the index of the series
+          const seriesIndex = this.chart.series.indexOf(this);
+          
+          // Use the custom name if available, otherwise use the original series name
+          const name = namesForTag[seriesIndex] || this.name;
+          
+          return name;
+        },
         enabled: true, // Set enabled to true to show legends
       },
     };
@@ -492,10 +570,12 @@ function createMacroHighcharts(jsonData) {
             data: dataset,
 
             yAxis: 0,
+            // connectNulls: false
           })),
           {
             name: comparisonChartName,
             data: comparionChartData,
+            // connectNulls: false
           },
         ],
         xAxis: {
@@ -546,12 +626,22 @@ function createMacroHighcharts(jsonData) {
           ],
         },
 
+      
         legend: {
+          labelFormatter: function() {
+            // Get the index of the series
+            const seriesIndex = this.chart.series.indexOf(this);
+            
+            // Use the custom name if available, otherwise use the original series name
+            const name = namesForTag[seriesIndex] || this.name;
+            
+            return name;
+          },
           enabled: true, // Set enabled to true to show legends
         },
       };
     } else {
-      
+    
       //case for comparing two graphs with different y-axis
       chartOptions = {
         title: {
@@ -562,12 +652,13 @@ function createMacroHighcharts(jsonData) {
             name: names[index],
             data: dataset,
             yAxis: index,
+            // connectNulls: false
           })),
-          
           {
             name: comparisonChartName,
             data: comparionChartData,
             yAxis: 1,
+            // connectNulls: false
           },
         ],
         xAxis: {
@@ -628,13 +719,23 @@ function createMacroHighcharts(jsonData) {
           ],
         },
 
-        legend: {
-          enabled: true, // Set enabled to true to show legends
+       
+      legend: {
+        labelFormatter: function() {
+          // Get the index of the series
+          const seriesIndex = this.chart.series.indexOf(this);
+          
+          // Use the custom name if available, otherwise use the original series name
+          const name = namesForTag[seriesIndex] || this.name;
+          
+          return name;
         },
+        enabled: true, // Set enabled to true to show legends
+      },
       };
     }
-  
-  } else if(use == "diff_format"){
+    //enumerate case
+  }else if(use == "diff_format"){
   
     chartOptions = {
       title: {
@@ -706,13 +807,21 @@ function createMacroHighcharts(jsonData) {
         ],
       },
 
+    
       legend: {
+        labelFormatter: function() {
+          // Get the index of the series
+          const seriesIndex = this.chart.series.indexOf(this);
+          
+          // Use the custom name if available, otherwise use the original series name
+          const name = namesForTag[seriesIndex] || this.name;
+          
+          return name;
+        },
         enabled: true, // Set enabled to true to show legends
       },
     };
-  }
-    //enumerate case
-  else {
+  } else {
     //case for comparing two graphs with different y-axis(or same)
     chartOptions = {
       title: {
@@ -775,7 +884,17 @@ function createMacroHighcharts(jsonData) {
         ],
       },
 
+    
       legend: {
+        labelFormatter: function() {
+          // Get the index of the series
+          const seriesIndex = this.chart.series.indexOf(this);
+          
+          // Use the custom name if available, otherwise use the original series name
+          const name = namesForTag[seriesIndex] || this.name;
+          
+          return name;
+        },
         enabled: true, // Set enabled to true to show legends
       },
     };

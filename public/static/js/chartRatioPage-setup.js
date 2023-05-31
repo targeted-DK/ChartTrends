@@ -1,7 +1,7 @@
-// import { convertRDSDateFormatToHighCharts, createHighcharts } from "./createChart-setup.js";
-// I copied code from createChart-setup and added code here
-// import moment from 'moment'
-
+//******************************************************
+//This setup file is different from other *-setup files.
+//******************************************************
+//@TODO - later combine all setup files into one
 
 const path = window.location.pathname;
 // const chartName = path.split("/").pop();
@@ -17,9 +17,7 @@ axios
     tag: ratioSubject,
   })
   .then((response) => {
-    // console.log(response);
-    // console.log(response);
-    // let dataList = jsonData.names;
+   
     let jsonData = Object.assign({}, response.data);
     let convertedDataList = [];
 
@@ -123,7 +121,7 @@ function createRatioHighCharts(jsonData) {
 
     
   }
-  // console.log(alignedData);
+ 
 
   //multiply values by adjustment factor
   let adjustedData = alignedData.map((arr, index) =>
@@ -136,50 +134,6 @@ function createRatioHighCharts(jsonData) {
   let ratioData = adjustedData[0].map((_, index) => [alignedData[0][index][0], alignedData[0][index][1] / alignedData[1][index][1]]);
   ratioData.sort((a, b) => a[0] - b[0]);
 
-  // console.log(ratioData);
-  // if (use === "ratio") {
-  //   let ratioData = alignedData[0].map((_, index) => [alignedData[0][index][0], alignedData[0][index][1] / alignedData[1][index][1]]);
-   
-  // }
-  
-
-  // let comparisonChartData = adjustedData[comparisonChartIndex];
-  // adjustedData = adjustedData.slice(0, comparisonChartIndex);
-  // names = names.slice(0, comparisonChartIndex);
-
-  // //if there is a chart to make, combine it
-  // const summedData = {};
-  // adjustedData.forEach((dataset) => {
-  //   dataset.forEach(([timestamp, value]) => {
-  //     if (summedData.hasOwnProperty(timestamp)) {
-  //       summedData[timestamp] += value;
-  //     } else {
-  //       summedData[timestamp] = value;
-  //     }
-  //   });
-  // });
-
-
- 
-  // // Convert the mapping object to an array of arrays
-  // let summedDataArray = Object.entries(summedData).map(([timestamp, value]) => [
-  //   parseInt(timestamp),
-  //   value,
-  // ]);
-
-  // //get rid of -
-  // adjustedData = adjustedData.map((arr, index) =>
-  //   arr.map((innerArr) => [innerArr[0], Math.abs(innerArr[1])])
-  // );
-
-  // //sort custom-made chart by timestamp
-  // summedDataArray.sort((a, b) => a[0] - b[0]);
-
-  // names.unshift(title);
-  // adjustedData.unshift(summedDataArray)
-
-  //in case where first data is empty
-  // console.log(title);
   const container = document.getElementById("chart-container");
   var newChartContainer = document.createElement("div");
   newChartContainer.className = "chart-container-featured";

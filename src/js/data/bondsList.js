@@ -19,22 +19,22 @@ let bondsList = [
     },
 
     //@todo
-    {
-      title: "Nominal US Dollar Index vs. UST Held by foreign official and international accounts",
-      urlendpoint: "USD_USTforeign",
-      use : "compare",
-      chartToCreate : false,
-      adjustYaxis: true,
-      tag: ["DTWEXBGS", "WMTSECL1"],
-      source :  ["FRED", "FRED"],
-      frequency :[ "q", "q"],
-      transformation : ["lin", "lin"],
-      aggregation : ["avg","avg"],
-      adjustment: [1,1],
-      units : ["", "Billions of Dollars"],
-      comparisonChartName : "FDHBFIN"
+    // {
+    //   title: "Nominal US Dollar Index vs. UST Held by foreign official and international accounts",
+    //   urlendpoint: "USD_USTforeign",
+    //   use : "compare",
+    //   chartToCreate : false,
+    //   adjustYaxis: true,
+    //   tag: ["DTWEXBGS", "WMTSECL1"],
+    //   source :  ["FRED", "FRED"],
+    //   frequency :[ "q", "q"],
+    //   transformation : ["lin", "lin"],
+    //   aggregation : ["avg","avg"],
+    //   adjustment: [1,1],
+    //   units : ["", "Billions of Dollars"],
+    //   comparisonChartName : "FDHBFIN"
 
-    },
+    // },
 
      
 ]

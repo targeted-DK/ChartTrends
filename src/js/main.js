@@ -19,6 +19,11 @@ var menuImageSources = {
     "m2",
     "gdp_unemployment"
   ],
+
+  Bank : [
+    
+
+  ]
   // Petroleum: [
   //   "petroleum-image-1.png",
   //   "petroleum-image-2.png",
