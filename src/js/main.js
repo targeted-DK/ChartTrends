@@ -23,7 +23,7 @@ var menuImageSources = {
 
   Bank : [
     "fedshorttermliquidity",
-    "tga_lor",
+    "rrp_tga_lor",
     "loans_securities_bank",
     "securities_ratio_bank",
     "cre_loan_ratio",

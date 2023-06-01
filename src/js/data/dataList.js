@@ -70,10 +70,13 @@ export const fredDataList = {
   "Assets: Central Bank Liquidity Swaps: Central Bank Liquidity Swaps: Wednesday Level":
     "SWPT",
   "Secured Overnight Financing Rate": "SOFR",
-  "Overnight Reverse Repurchase Agreements: Treasury Securities Sold by the Federal Reserve in the Temporary Open Market Operations":
-    "RRPONTSYD",
   "Overnight Reverse Repurchase Agreements Award Rate: Treasury Securities Sold by the Federal Reserve in the Temporary Open Market Operations":
     "RRPONTSYAWARD",
+    "Federal Funds Target Range - Upper Limit" : "DFEDTARU",
+"Federal Funds Target Range - Lower Limit" :  "DFEDTARL",
+"Interest Rate on Reserve Balances" : "IORB",
+"Federal Funds Effective Rate" : "DFF",
+
   //FIMA
   "Assets: Other: Repurchase Agreements - Foreign Official: Wednesday Level":
     "H41RESPPALGTRFNWW",

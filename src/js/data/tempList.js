@@ -11,10 +11,10 @@ export const tempList = {
 //  "Real Estate Loans: Commercial Real Estate Loans, Small Domestically Chartered Commercial Banks":
 //    "CRESCBM027NBOG",
 
-"Securities in Bank Credit, Small Domestically Chartered Commercial Banks" : "SBCSCBW027SBOG",
-"Securities in Bank Credit, Large Domestically Chartered Commercial Banks" : "SBCLCBW027SBOG",
-"Bank Credit, Small Domestically Chartered Commercial Banks" : "BC0SCBW027SBOG",
-"Bank Credit, Large Domestically Chartered Commercial Banks" : "BC0LCBW027SBOG",
-"Bank Credit, All Commercial Banks" : "TOTBKCR",
+"Federal Funds Target Range - Upper Limit" : "DFEDTARU",
+"Federal Funds Target Range - Lower Limit" :  "DFEDTARL",
+"Interest Rate on Reserve Balances" : "IORB",
+"Federal Funds Effective Rate" : "DFF",
+
 
 };
