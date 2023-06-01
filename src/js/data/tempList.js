@@ -11,10 +11,13 @@ export const tempList = {
 //  "Real Estate Loans: Commercial Real Estate Loans, Small Domestically Chartered Commercial Banks":
 //    "CRESCBM027NBOG",
 
-"Federal Funds Target Range - Upper Limit" : "DFEDTARU",
-"Federal Funds Target Range - Lower Limit" :  "DFEDTARL",
-"Interest Rate on Reserve Balances" : "IORB",
-"Federal Funds Effective Rate" : "DFF",
+// "Federal Funds Target Range - Upper Limit" : "DFEDTARU",
+// "Federal Funds Target Range - Lower Limit" :  "DFEDTARL",
+// "Interest Rate on Reserve Balances" : "IORB",
+// "Federal Funds Effective Rate" : "DFF",
+
+// Discount Window Primary Credit Rate (DPCREDIT)
+"Discount Window Primary Credit Rate" : "DPCREDIT",
 
 
 };

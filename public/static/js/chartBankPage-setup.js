@@ -308,7 +308,9 @@ function createFeaturedHighcharts(jsonData) {
     adjustedData = newCharts;
     units = newUnits;
     names = chartToCreateName;
+    namesForTag = chartToCreateName;
     use = "enumerate";
+    
 
   }
     
@@ -821,7 +823,8 @@ function createFeaturedHighcharts(jsonData) {
       },
     };
   } else {
-    //case for comparing two graphs with different y-axis(or same)
+    //case for comparing two graphs with different y-axis(or same) - enumerate
+  
     chartOptions = {
       title: {
         text: title,
@@ -882,7 +885,7 @@ function createFeaturedHighcharts(jsonData) {
           },
         ],
       },
-
+   
     
       legend: {
         labelFormatter: function() {
