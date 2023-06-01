@@ -689,7 +689,7 @@ export function getDataFromRDS(json) {
          
           const nameForTag = Object.entries(fredDataList)
           .filter(([key, value]) => value === tag);
-            console.log(nameForTag);
+          
           namesForTag.push(nameForTag[0][0]);
         } else {
           namesForTag.push(tags[i]);
