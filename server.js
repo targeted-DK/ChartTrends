@@ -173,7 +173,7 @@ async function updateEntireDatabase(){
   // // await processData.getShillerDataset();
   // // await processData.getBakerHughesDataset();
   // await processData.convertCopperCSVToJson();
-  await processData.updateFredDataset();
+//  await processData.updateFredDataset();
   // await processData.updateCFTCDataset();
   // await processData.updateEIADataset();
 }
