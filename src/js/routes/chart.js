@@ -106,7 +106,7 @@ router.get("/bank/:subject", (req, res, next) => {
   
   const fileName = "chartBankTemplate";
   const list = bankList.map((item) => item.urlendpoint);
-  
+
   if (list.includes(bankSubject)) {
     res.render(fileName, { tag: bankSubject });
   } else {

@@ -354,7 +354,7 @@ function createFeaturedHighcharts(jsonData) {
   // newChartContainer.style.left = "20%";
 
   container.appendChild(newChartContainer);
-
+ 
   let chartOptions;
   //special case 1 : SP500_domestic_liquidity_indicator
   if (use == "case1") {

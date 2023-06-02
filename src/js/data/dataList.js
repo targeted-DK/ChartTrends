@@ -116,7 +116,7 @@ export const fredDataList = {
   //fed asset - interests etc.
   "Assets: Other: Other Assets, Consolidated Table: Wednesday Level": "WAOAL",
 
-  "Federal Funds Effective Rate": "FEDFUNDS",
+  // "Federal Funds Effective Rate": "FEDFUNDS",
   "Assets: Central Bank Liquidity Swaps: Central Bank Liquidity Swaps: Wednesday Level":
     "SWPT",
   "Secured Overnight Financing Rate": "SOFR",
@@ -307,6 +307,7 @@ export const fredDataList = {
 
 // const apiKey = process.env.eiaAPIKey;
 export const eiaDataOilList = {
+  
   //oil stocks
   "U.S. Ending Stocks of Crude Oil (Thousand Barrels)": `https://api.eia.gov/v2/petroleum/sum/sndw/data/?frequency=weekly&data[0]=value&facets[series][]=WCRSTUS1&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
   "U.S. Ending Stocks of Crude Oil in SPR (Thousand Barrels)": `https://api.eia.gov/v2/petroleum/sum/sndw/data/?frequency=weekly&data[0]=value&facets[series][]=WCSSTUS1&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,

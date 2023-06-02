@@ -159,7 +159,7 @@ export async function sendDataToRDS(mappedDataForRds) {
 
   // console.log(dateData);
   // console.log(valueData);
-
+  
   // TODO : get units and graph description from fred web using cheerio
   if (database.authorized) {
     console.log("Database Accessed");

@@ -99,13 +99,13 @@ let bankList = [
 
     {
       title: "National Deposit Rates and EFFR",
-      urlendpoint : "deposit_effr",
+      urlendpoint : "deposits_effr",
       use : "enumerate",
       chartToCreate : false,
       chartToCreateName : null,
       chartMethod : null,
       adjustYaxis: false,
-      tag: ["NDR12MCD", "SNDR","FEDFUNDS"],
+      tag: ["NDR12MCD", "SNDR","DFF"],
       source :  ["FRED", "FRED","FRED"],
       frequency : ["m", "m", "m"],
       transformation :["lin", "lin","lin"],
