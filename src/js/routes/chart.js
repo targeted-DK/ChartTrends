@@ -5,6 +5,7 @@ import ratioList from "../data/ratioList.js";
 import bondsList from "../data/bondsList.js";
 import macroList from "../data/macroList.js";
 import bankList from "../data/bankList.js";
+import fedList from "../data/fedList.js";
 
 
 var router = express.Router();
@@ -108,6 +109,19 @@ router.get("/bank/:subject", (req, res, next) => {
   
   if (list.includes(bankSubject)) {
     res.render(fileName, { tag: bankSubject });
+  } else {
+    res.status(404).render("404", { error: "Page not found" });
+  }
+});
+
+router.get("/fed/:subject", (req, res, next) => {
+  const fedSubject = req.params.subject;
+  
+  const fileName = "chartFEDTemplate";
+  const list = fedList.map((item) => item.urlendpoint);
+  
+  if (list.includes(fedSubject)) {
+    res.render(fileName, { tag: fedSubject });
   } else {
     res.status(404).render("404", { error: "Page not found" });
   }

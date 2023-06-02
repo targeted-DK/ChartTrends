@@ -17,7 +17,17 @@ export const tempList = {
 // "Federal Funds Effective Rate" : "DFF",
 
 // Discount Window Primary Credit Rate (DPCREDIT)
-"Discount Window Primary Credit Rate" : "DPCREDIT",
+// "Discount Window Primary Credit Rate" : "DPCREDIT",
+// "Market Yield on U.S. Treasury Securities at 1-Month Constant Maturity, Quoted on an Investment Basis" : "DGS1MO",
+// "Market Yield on U.S. Treasury Securities at 3-Month Constant Maturity, Quoted on an Investment Basis" : "DGS3MO",
+// "Market Yield on U.S. Treasury Securities at 6-Month Constant Maturity, Quoted on an Investment Basis" :"DGS6MO",
+// "Gross Domestic Product": "GDP",
+// "Assets: Securities Held Outright: U.S. Treasury Securities: Notes and Bonds: Wednesday Level" :" RESPPALGUONNWW",
 
+// "Assets: Securities Held Outright: U.S. Treasury Securities: Bills: Wednesday Level" : "WSHOBL",
+// "Assets: Securities Held Outright: U.S. Treasury Securities: Notes and Bonds, Nominal: Wednesday Level" : "WSHONBNL",
+// "Assets: Securities Held Outright: U.S. Treasury Securities: Notes and Bonds, Inflation-Indexed: Wednesday Level" : "WSHONBIIL",
+// "Assets: Securities Held Outright: Federal Agency Debt Securities: All: Wednesday Level" : "FEDDT",
+// "Assets: Securities Held Outright: Mortgage-Backed Securities: Wednesday Level" : "WSHOMCB",
 
 };

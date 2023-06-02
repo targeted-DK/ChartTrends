@@ -5,37 +5,8 @@
 //  case2, compare, enumerate
 
 let bankList = [
-    {
-      title: "Federal Reserve Short Term Liquidity support",
-      urlendpoint : "fedshorttermliquidity",
-      use : "enumerate",
-      chartToCreate : false,
-      adjustYaxis: false,
-      tag: ["H41RESPPALGTRFNWW", "WLCFLPCL", "H41RESPPALDKNWW", "WLCFOCEL"],
-      source :  ["FRED", "FRED","FRED", "FRED"],
-      frequency : ["w", "w","w", "w"],
-      transformation :["lin", "lin", "lin", "lin"],
-      aggregation : ["avg","avg","avg","avg"],
-      adjustment: [1, 1,1,1],
-      units : ["Millions of dollars","Millions of dollars","Millions of dollars","Millions of dollars"],
-      comparisonChartName : null
-    },
-
-    {
-      title: "RRP, TGA and Level of Reserves",
-      urlendpoint : "rrp_tga_lor",
-      use : "enumerate",
-      chartToCreate : false,
-      adjustYaxis: false,
-      tag: ["RRPONTSYD","WTREGEN", "WRBWFRBL"],
-      source :  ["FRED","FRED", "FRED"],
-      frequency : ["w","w", "w"],
-      transformation :["lin", "lin", "lin"],
-      aggregation : ["avg", "avg","avg"],
-      adjustment: [1000,1000,1],
-      units : ["Millions of dollars","Millions of dollars","Millions of dollars"],
-      comparisonChartName : null,
-    },
+   
+   
 
     {
       title: "M2 and Deposits in All Commercial Banks",
@@ -183,24 +154,6 @@ let bankList = [
       comparisonChartName : null,
     },
 
-    {
-      title: "FRED Federal Funds Rate Range",
-      urlendpoint : "rate_range",
-      use : "enumerate",
-      chartToCreate : null,
-      chartToCreateName : null,
-      chartMethod :null,
-      adjustYaxis: false,
-      tag: ["DPCREDIT", "DFEDTARU", "DFEDTARL","IORB", "DFF","RRPONTSYAWARD" ],
-      source :  ["FRED", "FRED", "FRED","FRED","FRED","FRED"],
-      frequency : ["d","d", "d", "d", "d","d"],
-      transformation :["lin","lin", "lin","lin", "lin", "lin"],
-      aggregation : ["avg","avg","avg","avg","avg","avg"],
-      adjustment: [1,1,1,1,1,1],
-      units : ["percent","percent","percent","percent","percent","percent"],
-      newUnits : null,
-      comparisonChartName : null,
-    },
 
     {
       title: "Level of Reserves / GDP",
@@ -220,6 +173,10 @@ let bankList = [
       newUnits : ["percent"],
       comparisonChartName : null,
     },
+
+   
+
+
   
   
   

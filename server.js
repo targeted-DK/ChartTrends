@@ -30,6 +30,7 @@ import macroList from './src/js/data/macroList.js';
 import dataList, { cftcList, eiaDUCList, eiaDataNGList, eiaDataOilList, eiaDataPetroleumList, fredDataList } from './src/js/data/dataList.js';
 import bankList from './src/js/data/bankList.js';
 import featuredList from './src/js/data/featuredList.js';
+import fedList from './src/js/data/fedList.js';
 
 
 //disable cache
@@ -133,6 +134,8 @@ app.get('/getSearchBarList', (req, res) => {
     ratioList :ratioList.map(({ title, urlendpoint }) => ({ title, urlendpoint })),
     bondsList : bondsList.map(({ title, urlendpoint }) => ({ title, urlendpoint })),
     bankList : bankList.map(({ title, urlendpoint }) => ({ title, urlendpoint })),
+    fedList : fedList.map(({ title, urlendpoint }) => ({ title, urlendpoint })),
+    
 }
   
   res.status(200).send(filteredNames);
@@ -160,7 +163,7 @@ app.get('*',function(req, res, next){
  */
 async function main(){
   const job = schedule.scheduleJob('0 0 0,12 * *', updateEntireDatabase);
-  updateEntireDatabase();
+  // updateEntireDatabase();
   // processData.convertCopperCSVToJson();
 // await processData.updateFredDatasettemp();
 
@@ -168,12 +171,12 @@ async function main(){
 
 async function updateEntireDatabase(){
   // await processData.getDUCDataset();
-  // await processData.updateFredDatasettemp();
+  await processData.updateFredDatasettemp();
   // await processData.updateNDLDataset();
   // // await processData.getShillerDataset();
   // // await processData.getBakerHughesDataset();
   // await processData.convertCopperCSVToJson();
-  await processData.updateFredDataset();
+  // await processData.updateFredDataset();
   // await processData.updateCFTCDataset();
   // await processData.updateEIADataset();
 }

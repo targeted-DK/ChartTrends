@@ -11,12 +11,14 @@ let featuredList = [];
 let macroList = [];
 let ratioList = [];
 let bondsList = [];
+let fedList = [];
 
 let fredDataUrlendpoints = [];
 let featuredUrlendpoints = [];
 let macroUrlendpoints = [];
 let ratioUrlendpoints = [];
 let bondsUrlendpoints = [];
+let fedUrlendpoints = [];
 
 
 axios
@@ -29,6 +31,7 @@ axios
     macroList = res.data.macroList;
     ratioList = res.data.ratioList;
     bondsList = res.data.bondsList;
+    fedList = res.data.fedList;
     
    
     // featuredUrlendpoints = res.data.featuredList.map((obj) => obj.urlendpoint)
@@ -133,7 +136,6 @@ function onInputChange() {
 //       }
 
 //   })
-  console.log();
   fredDataList.forEach((dataName) => {
  
     if (dataName.substr(0, key.length).toLowerCase() === key) {
@@ -164,6 +166,13 @@ function onInputChange() {
       filteredNames.push(obj.title);
     }
   });
+
+  fedList.forEach((obj) => {
+    if (obj.title.substr(0, key.length).toLowerCase() === key) {
+      filteredNames.push(obj.title);
+    }
+  });
+
 
   createAutoCompleteDropDown(filteredNames);
 }
@@ -267,7 +276,16 @@ function onSubmitButtonClick() {
     bondsList.map((obj) => {
       if (obj.title === input) {
         urlendpoint = obj.urlendpoint;
-        listType = "featured"
+        listType = "bonds"
+        sendRequestAndNavigateCustomChart(listType, urlendpoint);
+      } 
+      return;
+    });
+
+    fedList.map((obj) => {
+      if (obj.title === input) {
+        urlendpoint = obj.urlendpoint;
+        listType = "fed"
         sendRequestAndNavigateCustomChart(listType, urlendpoint);
       } 
       return;

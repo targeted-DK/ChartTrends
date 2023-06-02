@@ -1,9 +1,11 @@
 import bankList from "./data/bankList.js";
+import fedList from "./data/fedList.js";
 import bondsList from "./data/bondsList.js";
 import featuredList from "./data/featuredList.js";
 import macroList from "./data/macroList.js";
 import ratioList from "./data/ratioList.js";
 import { fredDataList } from "./dataList.js";
+
 // import {featuredList} from "./featuredList.js";
 // localStorage.setItem("fredDataList", JSON.stringify(fredDataList));
 // TODO: Implement error handling for the form submission
@@ -140,6 +142,12 @@ function onInputChange() {
     }
   });
 
+  fedList.forEach((obj) => {
+    if (obj.title.substr(0, key.length).toLowerCase() === key) {
+      filteredNames.push(obj.title);
+    }
+  });
+
   createAutoCompleteDropDown(filteredNames);
 }
 
@@ -256,6 +264,16 @@ function onSubmitButtonClick() {
       } 
       return;
     });
+
+    fedList.map((obj) => {
+      if (obj.title === key) {
+        urlendpoint = obj.urlendpoint;
+        listType = "fed"
+        sendRequestAndNavigateCustomChart(listType, urlendpoint);
+      } 
+      return;
+    });
+
 
 
 

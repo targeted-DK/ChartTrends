@@ -1,3 +1,7 @@
+//@TODO - Wednesday level? weekly?
+//@TODO - When calculating different frequency data, rather spread larger period data so every smaller period data can be used
+//@TODO - consolidate cases
+
 export const fredDataList = {
   //@TODO - Recession Indicator
   "NBER based Recession Indicators for the United States from the Period following the Peak through the Trough":
@@ -35,6 +39,13 @@ export const fredDataList = {
   "University of Michigan: Inflation Expectation": "MICH",
 
   //Macro Stuff
+  "Market Yield on U.S. Treasury Securities at 1-Month Constant Maturity, Quoted on an Investment Basis":
+    "DGS1MO",
+  "Market Yield on U.S. Treasury Securities at 3-Month Constant Maturity, Quoted on an Investment Basis":
+    "DGS3MO",
+  "Market Yield on U.S. Treasury Securities at 6-Month Constant Maturity, Quoted on an Investment Basis":
+    "DGS6MO",
+
   "Market Yield on U.S. Treasury Securities at 10-Year Constant Maturity, Quoted on an Investment Basis":
     "DGS10",
   "Market Yield on U.S. Treasury Securities at 10-/Year Constant Maturity, Quoted on an Investment Basis, Inflation-Indexed":
@@ -65,39 +76,63 @@ export const fredDataList = {
     "WTREGEN",
 
   //Fed Stuff
-  "Federal Funds Effective Rate": "FEDFUNDS",
+  //fed asset (in order of H.4.1)
   "Assets: Total Assets: Total Assets: Wednesday Level": "RESPPANWW",
+  //fed asset - securities
+  "Assets: Securities Held Outright: Securities Held Outright: Wednesday Level":
+  "WSHOSHO",
+  "Assets: Securities Held Outright: U.S. Treasury Securities: Notes and Bonds: Wednesday Level" :" RESPPALGUONNWW",
+"Assets: Securities Held Outright: U.S. Treasury Securities: Bills: Wednesday Level" : "WSHOBL",
+"Assets: Securities Held Outright: U.S. Treasury Securities: Notes and Bonds, Nominal: Wednesday Level" : "WSHONBNL",
+"Assets: Securities Held Outright: U.S. Treasury Securities: Notes and Bonds, Inflation-Indexed: Wednesday Level" : "WSHONBIIL",
+"Assets: Securities Held Outright: Federal Agency Debt Securities: All: Wednesday Level" : "FEDDT",
+"Assets: Securities Held Outright: Mortgage-Backed Securities: Wednesday Level" : "WSHOMCB",
+ 
+  "Assets: Unamortized Premiums on Securities Held Outright: Wednesday Level":
+    "WUPSHO",
+  "Assets: Unamortized Discounts on Securities Held Outright: Wednesday Level":
+    "WUDSHO",
+  //FIMA
+  "Assets: Other: Repurchase Agreements - Foreign Official: Wednesday Level":
+    "H41RESPPALGTRFNWW",
+  //fed asset - loans(재할인 창구)
+  "Assets: Liquidity and Credit Facilities: Loans: Primary Credit: Wednesday Level":
+    "WLCFLPCL",
+  //fed asset - bank crisis loans
+  "Assets: Liquidity and Credit Facilities: Loans: Bank Term Funding Program, Net: Wednesday Level":
+    "H41RESPPALDKNWW",
+  //fed asset - other loans (Bridge Bank Loan)
+  "Assets: Liquidity and Credit Facilities: Loans: Other Credit Extensions: Wednesday Level":
+    "WLCFOCEL",
+  //fed asset - covid loans
+  "Assets: Liquidity and Credit Facilities: Loans: Payroll Protection Program Liquidity Facility: Wednesday Level":
+    "H41RESPPALDJNWW",
+  "Assets: Liquidity and Credit Facilities: Net Portfolio Holdings of MS Facilities LLC (Main Street Lending Program): Wednesday Level":
+    "H41RESPPAAENWW",
+  "Assets: Liquidity and Credit Facilities: Net Portfolio Holdings of Municipal Liquidity Facility LLC: Wednesday Level":
+    "H41RESPPAADHNWW",
+  "Assets: Liquidity and Credit Facilities: Net Portfolio Holdings of TALF II LLC: Wednesday Level":
+    "H41RESPPAATAL2HNWW",
+  //fed asset - interests etc.
+  "Assets: Other: Other Assets, Consolidated Table: Wednesday Level": "WAOAL",
+
+  "Federal Funds Effective Rate": "FEDFUNDS",
   "Assets: Central Bank Liquidity Swaps: Central Bank Liquidity Swaps: Wednesday Level":
     "SWPT",
   "Secured Overnight Financing Rate": "SOFR",
   "Overnight Reverse Repurchase Agreements Award Rate: Treasury Securities Sold by the Federal Reserve in the Temporary Open Market Operations":
     "RRPONTSYAWARD",
-    "Federal Funds Target Range - Upper Limit" : "DFEDTARU",
-"Federal Funds Target Range - Lower Limit" :  "DFEDTARL",
-"Interest Rate on Reserve Balances" : "IORB",
-"Federal Funds Effective Rate" : "DFF",
-"Discount Window Primary Credit Rate" : "DPCREDIT",
+  "Federal Funds Target Range - Upper Limit": "DFEDTARU",
+  "Federal Funds Target Range - Lower Limit": "DFEDTARL",
+  "Interest Rate on Reserve Balances": "IORB",
+  "Federal Funds Effective Rate": "DFF",
+  "Discount Window Primary Credit Rate": "DPCREDIT",
 
-
-  //FIMA
-  "Assets: Other: Repurchase Agreements - Foreign Official: Wednesday Level":
-    "H41RESPPALGTRFNWW",
-  //재할인 창구
-  "Assets: Liquidity and Credit Facilities: Loans: Primary Credit: Wednesday Level":
-    "WLCFLPCL",
-  //Bank Term Funding Program
-  "Assets: Liquidity and Credit Facilities: Loans: Bank Term Funding Program, Net: Wednesday Level":
-    "H41RESPPALDKNWW",
-  //Bridge Bank Loan
-  "Assets: Liquidity and Credit Facilities: Loans: Other Credit Extensions: Wednesday Level":
-    "WLCFOCEL",
-  //지급 준비금
-  //최소안정수준 지급준비금(LCLoR) = 8%
-  //9월 TGA목표 확인할것
+  //지급 준비금//최소안정수준 지급준비금(LCLoR) = 8%//9월 TGA목표 확인할것
   "Liabilities and Capital: Other Factors Draining Reserve Balances: Reserve Balances with Federal Reserve Banks: Wednesday Level":
     "WRBWFRBL",
 
-  //mmf
+  //mmf - check https://www.ici.org/research/stats/mmfassets
   "Retail Money Market Funds": "RMFSL",
 
   //Government Debt Stuff
@@ -216,8 +251,8 @@ export const fredDataList = {
   // "M2 for Japan" :  "MYAGM2JPM189S", - discontinued
 
   //Labor Market
-  "Population": "POPTHM",
-  "Unemployment Rate" : "UNRATE",
+  Population: "POPTHM",
+  "Unemployment Rate": "UNRATE",
   "Employment-Population Ratio": "EMRATIO",
   "Employment Rate: Aged 15-64: All Persons for the United States":
     "LREM64TTUSM156S",

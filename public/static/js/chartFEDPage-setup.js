@@ -4,16 +4,16 @@
 
 const path = window.location.pathname;
 // const chartName = path.split("/").pop();
-const bankSubject = tag;
+const fedSubject = tag;
 
 // let unit;
 
 axios
   .post("/mysqlRequest", {
     //mysql
-    use: "bank",
+    use: "fed",
     //eia
-    tag: bankSubject,
+    tag: fedSubject,
   })
   .then((response) => {
    
