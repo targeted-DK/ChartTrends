@@ -112,7 +112,7 @@ function createCards(container, imageSources) {
     cardBody.appendChild(link);
     link.appendChild(img);
     cardBody.appendChild(title);
-    cardBody.appendChild(description);
+    // cardBody.appendChild(description);
 
  
 
