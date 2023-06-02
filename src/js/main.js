@@ -3,6 +3,7 @@ import featuredList from "./data/featuredList.js";
 import macroList from "./data/macroList.js";
 import ratioList from "./data/ratioList.js";
 import bankList from "./data/bankList.js";
+import fedList from "./data/fedList.js";
 
 var menuImageSources = {
   Featured: [
@@ -21,9 +22,15 @@ var menuImageSources = {
     "gdp_unemployment"
   ],
 
-  Bank : [
+  Fed : [
+    "fed_securities",
     "fedshorttermliquidity",
+    "fedcovidliquidity",
     "rrp_tga_lor",
+  ],
+
+  Bank : [
+   
     "loans_securities_bank",
     "securities_ratio_bank",
     "cre_loan_ratio",
@@ -39,6 +46,7 @@ var menuImageSources = {
 // Get the containers for each menu
 var featuredContainer = document.querySelector("#Featured .container");
 var macroContainer = document.querySelector("#Macro .container");
+var fedContainer = document.querySelector("#Fed .container");
 var bankContainer = document.querySelector("#Bank .container");
 
 // Function to create and append cards to the container
@@ -54,6 +62,7 @@ function createCards(container, imageSources) {
     || findSubjectInList(ratioList, src) 
     || findSubjectInList(bondsList, src)
     || findSubjectInList(bankList, src)
+    || findSubjectInList(fedList, src)
 
     if (index % 2 === 0) {
       row = document.createElement("div");
@@ -130,4 +139,5 @@ function findSubjectInList(list, source) {
 // Call the function to create cards for each menu
 createCards(featuredContainer, menuImageSources.Featured);
   createCards(macroContainer, menuImageSources.Macro);
+  createCards(fedContainer, menuImageSources.Fed);
   createCards(bankContainer, menuImageSources.Bank);
