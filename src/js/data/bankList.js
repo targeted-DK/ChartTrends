@@ -53,7 +53,7 @@ let bankList = [
       frequency : ["w", "w", "w","w","w","w"],
       transformation :["lin", "lin","lin", "lin", "lin", "lin"],
       aggregation : ["avg","avg","avg","avg","avg","avg"],
-      adjustment: [1,1,1,1,1,1],
+      adjustment: [10,1,10,1,10,1],
       units : ["Billions of dollars","Billions of dollars","Billions of dollars","Billions of dollars","Billions of dollars","Billions of dollars"],
       newUnits : ["percent", "percent","percent"],
       comparisonChartName : null,
