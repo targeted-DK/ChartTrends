@@ -242,6 +242,10 @@ export const fredDataList = {
   // Global price of Agr. Raw Material Index (PRAWMINDEXM)
   // Global price of WTI Crude (POILWTIUSDM)
 
+  //recession indicators
+  "Motor Vehicle Retail Sales: Heavy Weight Trucks" : "HTRUCKSSAAR",
+"Unemployment Level - Permanent Job Losers" : "LNS13026638",
+
   //japan/korea
   "Residential Property Prices for Japan": "QJPN368BIS",
   "Nikkei Stock Average, Nikkei 225": "NIKKEI225",

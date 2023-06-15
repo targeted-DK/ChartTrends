@@ -29,5 +29,6 @@ export const tempList = {
 // "Assets: Securities Held Outright: U.S. Treasury Securities: Notes and Bonds, Inflation-Indexed: Wednesday Level" : "WSHONBIIL",
 // "Assets: Securities Held Outright: Federal Agency Debt Securities: All: Wednesday Level" : "FEDDT",
 // "Assets: Securities Held Outright: Mortgage-Backed Securities: Wednesday Level" : "WSHOMCB",
-
+"Motor Vehicle Retail Sales: Heavy Weight Trucks" : "HTRUCKSSAAR",
+"Unemployment Level - Permanent Job Losers" : "LNS13026638",
 };
