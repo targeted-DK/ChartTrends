@@ -325,17 +325,20 @@ function createFeaturedHighcharts(jsonData) {
     comparionChartData.sort((a, b) => a[0] - b[0]);
   }
 
-
+  
   if(use == "case3"){
-    adjustedData.shift();
-    units.shift();
-    names.shift();
-    namesForTag.shift();
+    adjustedData.pop();
+    units.pop();
+    names.pop();
+    namesForTag.pop();
 
-    adjustedData.unshift(summedData);
-    units.unshift("percent");
-    names.unshift(chartToCreateName);
-    namesForTag.unshift(chartToCreateName);
+    // adjustedData.push(summedData);
+  
+    // names.push(chartToCreateName);
+    // namesForTag.push(chartToCreateName);
+  units.push("percent");
+    comparionChartData = summedData
+    comparisonChartName = chartToCreateName;
     use = "compare";
 
   } else if(use == "case4"){
@@ -354,6 +357,8 @@ function createFeaturedHighcharts(jsonData) {
     namesForTag.unshift(chartToCreateName);
     use = "compare";
   } 
+
+ 
 
   //in case where first data is empty
   const container = document.getElementById("chart-container");

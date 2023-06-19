@@ -276,14 +276,14 @@ let featuredList = [
     chartToCreate: true,
     chartToCreateName : "US Government Expenditure Interest Rate as a % of GDP",
     adjustYaxis: true,
-    tag: ["GDP", "A091RC1Q027SBEA"],
+    tag: ["A091RC1Q027SBEA", "GDP"],
     source :  ["FRED", "FRED"],
     frequency: ["q", "q"],
     transformation: ["lin", "lin"],
     aggregation: ["avg", "avg"],
-    adjustment: [1/100, 1],
+    adjustment: [1, 1/100],
     units: ["Billions of Dollars", "Billions of Dollars"],
-    comparisonChartName: "A091RC1Q027SBEA",
+    comparisonChartName: null,
   },
 
 
