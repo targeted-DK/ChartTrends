@@ -61,7 +61,9 @@
 
 <!-- Two containers merged into one, to make 'tag' accessible from both js files -->
 <div id="container">
-  <script>let tag = "<%= tag %>";</script>
+  <script>let tag = "<%= tag %>"
+          let welltype = "<%= welltype %>"
+  </script>
   <div class="chart-container" id="chart-container"></div>
   <div class="loading" id ="loading">
     <img src="/static/images/loading.gif" alt="Loading...">

@@ -28,7 +28,7 @@ router.get("/", function (req, res) {
 
 router.get("/:category", (req, res, next) => {
   const category = req.params.category;
-
+ 
   if (categoryList.includes(category) || Object.values(dataList.fredDataList).includes(category)) {
     next();
   } else {
@@ -127,15 +127,31 @@ router.get("/fed/:subject", (req, res, next) => {
   }
 });
 
-router.get("/CFTC/ALL", (req, res, next) => {
-  const source = req.params.source;
-  // const tag = req.params.tag;
+// router.get("/CFTC/ALL", (req, res, next) => {
+//   const source = req.params.source;
+//   // const tag = req.params.tag;
 
-  const fileName = "chart" + CFTC + "Template";
+//   const fileName = "chart" + CFTC + "Template";
 
-  res.render(fileName);
+//   res.render(fileName);
+// });
+
+router.get("/eia/:tag/:welltype", (req, res, next) => {
+  const source = "EIA"
+  const tag = req.params.tag;
+  const welltype = req.params.welltype;
+  
+  if(welltype == 'DUC'|| welltype == 'drilled' || welltype == 'completed'){
+    const fileName = "chart" + source + "Template";
+    res.render(fileName, { tag: tag, welltype : welltype });
+  
+  } else {
+    
+    res.status(404).render("404", { error: "Well types are DUC(drilled but uncompleted), drilled, and completed" });
+  }
+  
+ 
 });
-
 
 
 

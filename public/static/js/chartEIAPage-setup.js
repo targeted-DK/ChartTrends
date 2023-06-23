@@ -4,6 +4,7 @@
 const path = window.location.pathname;
 const chartName = path.split("/").pop();
 const eiatag = tag;
+const type = welltype;
 
 let unit;
 
@@ -20,18 +21,18 @@ axios
       const dataFromRds = response.data.values;
       const names = response.data.names;
       const eiaTableName = response.data.tag;
-
+    
       let index = 0;
       for (const dataArray of Object.values(dataFromRds)) {
         let convertedData = convertRDSDateFormatToFiveYearHighCharts(
           dataArray,
           eiaTableName
         );
-
-     
         // convertedData.sort((a, b) => a[0] - b[0]);
-       
-        createHighcharts(convertedData, eiaTableName, names[index]);
+        let type_region = names[index];
+        type_region = (type === 'drilled' ? 'Drilled Wells '  + type_region.substring(4)  : type === 'completed' ? 'Completed Wells ' + type_region.substring(4) : 'DUC ' +  type_region.substring(4));
+
+        createHighcharts(convertedData, eiaTableName, type_region);
         index++;
       }
     } else {
@@ -51,8 +52,9 @@ axios
         }
 
         const catalog = indicators[tagIndexInIndicators];
-
+      
         const parsedData = convertRDSDateFormatToFiveYearHighCharts(dataArray);
+        
         createHighcharts(parsedData, eiaTableName, catalog);
         count++;
       }
@@ -76,27 +78,28 @@ export function convertRDSDateFormatToFiveYearHighCharts(
   eiaTableName = ""
 ) {
 
-
-  // console.log(dataFromRds);
-  // console.log(dataFromRds);
 let parsedData;
   if(eiaTableName == "DUC"){
-    parsedData = dataFromRds.map(item => ({
+    if(type == "DUC"){
+      parsedData = dataFromRds.map(item => ({
    
-    year : new Date(item.date).getFullYear(),
-    value: item.DUC
-  }));
-} else if(eiaTableName == "drilled"){
-  parsedData = dataFromRds.map(item => ({
- 
-  year : new Date(item.date).getFullYear(),
-  value: item.drilled
-}))}else if(eiaTableName == "completed"){
-  parsedData = dataFromRds.map(item => ({
- 
-  year : new Date(item.date).getFullYear(),
-  value: item.completed
-}))}
+        year : new Date(item.date).getFullYear(),
+        value: item.DUC
+      }));
+    }else if(type == "drilled"){
+    
+      parsedData = dataFromRds.map(item => ({
+     
+      year : new Date(item.date).getFullYear(),
+      value: item.drilled
+    }))}else if(type == "completed"){
+      parsedData = dataFromRds.map(item => ({
+     
+      year : new Date(item.date).getFullYear(),
+      value: item.completed
+    }))}
+   
+} 
   
 
 let yearData = {};
@@ -179,15 +182,14 @@ export function createHighcharts(yearData, eiaTableName, catalog = "") {
       recentFiveYearData[year] = yearData[year];
     }
 
-    
- 
+  
       // Create the chart for the current year
       Highcharts.chart(newChartContainer, {
         chart: {
           type: 'line'
         },
         title: {
-          text: catalog + ' 5-Year Chart'
+          text: catalog + ' 5-Year'
         },
         xAxis: {
           categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -198,9 +200,18 @@ export function createHighcharts(yearData, eiaTableName, catalog = "") {
           }
         },
         series: Object.entries(recentFiveYearData).map(([year, values]) => ({
-          year: year.toString(),
+          name: year,
+          // year: year.toString(),
           data: values
         })),
+
+        tooltip: {
+          labelFormatter: function() {
+
+
+            return yearList[this.index];;
+          },
+            },
         legend: {
           labelFormatter: function() {
 
