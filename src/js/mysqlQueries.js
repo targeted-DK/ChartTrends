@@ -55,7 +55,6 @@ const queries = {
     change_in_m_money_short_all, 
     indicator_id) VALUES ?`,
   INSERT_DATA_TO_TABLE_DUC: `INSERT INTO ??.?? (date, drilled, completed, DUC, indicator_id) VALUES ?`,
-  // SHOW_INDICATOR_TABLE: `SHOW TABLES LIKE 'indicators'`,
 
   SHOW_ALL_TABLES: `SHOW TABLES FROM ??`,
 
@@ -83,7 +82,7 @@ const queries = {
   //                                     FROM catalog.indicators
   // `
 
-  ADD_INDICATOR_TO_TABLE: `INSERT INTO catalog.?? (tag, frequency, description, units, transformation, DATABASE_NAME, last_updated_time, aggregation, asset_type) VALUES (?,?,?,?,?,?,?,?,?)`,
+  ADD_INDICATOR_TO_TABLE: `INSERT INTO catalog.?? (tag, frequency, transformation, description, aggregation, units,last_updated_time, asset_type) VALUES (?,?,?,?,?,?,?,?)`,
 };
 
 export default queries;

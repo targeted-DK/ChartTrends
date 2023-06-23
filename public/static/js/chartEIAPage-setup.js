@@ -15,18 +15,22 @@ axios
     tag: eiatag,
   })
   .then((response) => {
+   
     if (tag == "DUC") {
       const dataFromRds = response.data.values;
       const names = response.data.names;
       const eiaTableName = response.data.tag;
+
       let index = 0;
       for (const dataArray of Object.values(dataFromRds)) {
-        let convertedData = convertRDSDateFormatToHighCharts(
+        let convertedData = convertRDSDateFormatToFiveYearHighCharts(
           dataArray,
           eiaTableName
         );
-        convertedData.sort((a, b) => a[0] - b[0]);
 
+     
+        // convertedData.sort((a, b) => a[0] - b[0]);
+       
         createHighcharts(convertedData, eiaTableName, names[index]);
         index++;
       }
@@ -48,8 +52,8 @@ axios
 
         const catalog = indicators[tagIndexInIndicators];
 
-        const convertedData = convertRDSDateFormatToHighCharts(dataArray);
-        createHighcharts(convertedData, eiaTableName, catalog);
+        const parsedData = convertRDSDateFormatToFiveYearHighCharts(dataArray);
+        createHighcharts(parsedData, eiaTableName, catalog);
         count++;
       }
     }
@@ -67,22 +71,67 @@ axios
  *
  * Drops id, and parameter names, and convert date into miliseconds.
  */
-export function convertRDSDateFormatToHighCharts(
+export function convertRDSDateFormatToFiveYearHighCharts(
   dataFromRds,
   eiaTableName = ""
 ) {
-  const convertedData = dataFromRds.map((item) => {
-    const milliseconds = Date.parse(item.date);
 
-    if (eiaTableName == "DUC") {
-      return [milliseconds, item.drilled, item.completed, item.DUC];
-    } else {
-      return [milliseconds, item.value];
-    }
-  });
-  //   console.log(convertedData);
 
-  return convertedData;
+  // console.log(dataFromRds);
+  // console.log(dataFromRds);
+let parsedData;
+  if(eiaTableName == "DUC"){
+    parsedData = dataFromRds.map(item => ({
+   
+    year : new Date(item.date).getFullYear(),
+    value: item.DUC
+  }));
+} else if(eiaTableName == "drilled"){
+  parsedData = dataFromRds.map(item => ({
+ 
+  year : new Date(item.date).getFullYear(),
+  value: item.drilled
+}))}else if(eiaTableName == "completed"){
+  parsedData = dataFromRds.map(item => ({
+ 
+  year : new Date(item.date).getFullYear(),
+  value: item.completed
+}))}
+  
+
+let yearData = {};
+
+// Split the data into separate arrays for each year
+parsedData.forEach(data => {
+  const { year, value } = data;
+
+  
+  if (yearData.hasOwnProperty(year)) {
+    yearData[year].push(value);
+  } else {
+    yearData[year] = [value];
+  }
+});
+
+
+  // const convertedData = dataFromRds.map((item) => {
+  //   const milliseconds = Date.parse(item.date);
+
+  //   if (eiaTableName == "DUC") {
+  //     return [milliseconds, item.DUC];
+  //   } else {
+  //     return [milliseconds, item.value];
+  //   }
+
+  //   // if (eiaTableName == "DUC") {
+  //   //   return [milliseconds, item.drilled, item.completed, item.DUC];
+  //   // } else {
+  //   //   return [milliseconds, item.value];
+  //   // }
+  // });
+    // console.log(convertedData);
+
+  return yearData;
 }
 
 /**
@@ -90,20 +139,25 @@ export function convertRDSDateFormatToHighCharts(
  *
  * Creates highchart with given array
  */
-export function createHighcharts(convertedData, eiaTableName, catalog = "") {
+export function createHighcharts(yearData, eiaTableName, catalog = "") {
   const container = document.getElementById("chart-container");
   var newChartContainer = document.createElement("div");
 
   if(eiaTableName == "DUC"){
     newChartContainer.className = "chart-container-" + catalog;
     newChartContainer.id = "chart-container-" + catalog;
+
+
+
   } else {
     newChartContainer.className = "chart-container-" + eiaTableName;
     newChartContainer.id = "chart-container-" + eiaTableName;
   }
+
+  
  
   newChartContainer.style.width = "70%";
-  newChartContainer.style.height = "400px";
+  newChartContainer.style.height = "700px";
   newChartContainer.style.position = "relative";
   newChartContainer.style.right = "20%";
   newChartContainer.style.left = "20%";
@@ -112,49 +166,104 @@ export function createHighcharts(convertedData, eiaTableName, catalog = "") {
 
   //for DUC catalog = only name
   if (eiaTableName == "DUC") {
-    Highcharts.stockChart(newChartContainer.className, {
-      rangeSelector: {
-        selected: 5,
-      },
-      title: {
-        text: catalog,
-      },
-      yAxis: [
-        {
+
+     // Extract the data for the recent 5 years
+    const currentYear = new Date().getFullYear();
+    const numYearsToShow = 5;
+    const recentFiveYearData = {};
+    const yearList = Array.from({ length: numYearsToShow }, (_, index) => currentYear - numYearsToShow + 1 + index);
+
+   
+    for(let i = numYearsToShow; i  > 0; i--){
+      let year = currentYear - i + 1;
+      recentFiveYearData[year] = yearData[year];
+    }
+
+    
+ 
+      // Create the chart for the current year
+      Highcharts.chart(newChartContainer, {
+        chart: {
+          type: 'line'
+        },
+        title: {
+          text: catalog + ' 5-Year Chart'
+        },
+        xAxis: {
+          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        },
+        yAxis: {
           title: {
-            text: "counts",
+            text: 'counts'
+          }
+        },
+        series: Object.entries(recentFiveYearData).map(([year, values]) => ({
+          year: year.toString(),
+          data: values
+        })),
+        legend: {
+          labelFormatter: function() {
+
+
+            return yearList[this.index];;
           },
-          top: "15%",
-          height: "85%",
+          enabled: true, // Set enabled to true to show legends
         },
-      ],
+      });
+      return;
 
-      series: [
-        {
-          name: "Drilled",
-          data: convertedData.map((row) => [row[0], row[1]]),
-          yAxis: 0,
-        },
-        {
-          name: "Completed",
-          data: convertedData.map((row) => [row[0], row[2]]),
-          yAxis: 0,
-        },
-        {
-          name: "DUC",
-          data: convertedData.map((row) => [row[0], row[3]]),
-          yAxis: 0,
-        },
-      ],
-      tooltip: {
-        xDateFormat: "%Y-%m-%d",
-      },
+      // {
+        //       name: "Drilled",
+        //       data: parsedData.map((row) => [row[0], row[1]]),
+        //       yAxis: 0,
+        //     },
+    
 
-      legend: {
-        enabled: true, // Set enabled to true to show legends
-      },
-    });
-    return;
+
+
+    // Highcharts.stockChart(newChartContainer.className, {
+    //   rangeSelector: {
+    //     selected: 5,
+    //   },
+    //   title: {
+    //     text: catalog,
+    //   },
+    //   yAxis: [
+    //     {
+    //       title: {
+    //         text: "counts",
+    //       },
+    //       top: "15%",
+    //       height: "85%",
+    //     },
+    //   ],
+
+    //   series: [
+    //     {
+    //       name: "Drilled",
+    //       data: parsedData.map((row) => [row[0], row[1]]),
+    //       yAxis: 0,
+    //     },
+    //     {
+    //       name: "Completed",
+    //       data: parsedData.map((row) => [row[0], row[2]]),
+    //       yAxis: 0,
+    //     },
+    //     {
+    //       name: "DUC",
+    //       data: parsedData.map((row) => [row[0], row[3]]),
+    //       yAxis: 0,
+    //     },
+    //   ],
+    //   tooltip: {
+    //     xDateFormat: "%Y-%m-%d",
+    //   },
+
+    //   legend: {
+    //     enabled: true, // Set enabled to true to show legends
+    //   },
+    // });
+    // return;
   }
 
   Highcharts.stockChart(newChartContainer.className, {

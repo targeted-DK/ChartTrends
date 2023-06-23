@@ -220,10 +220,13 @@ export async function sendDataToRDS(mappedDataForRds) {
           queries.FIND_DUPLICATE_IN_INDICATOR_TABLE,
           [
             DATABASE_NAME,
-            tag,
+            newTableName,
+            description,
             frequency,
             transformation,
             aggregation,
+            units,
+            lastUpdatedTime,
             assetType,
           ],
           function (err, catalogQueryResult, field) {
@@ -235,6 +238,8 @@ export async function sendDataToRDS(mappedDataForRds) {
               return;
             } else {
               console.log("FIND_DUPLICATE_IN_INDICATOR_TABLE executed");
+
+            
               if (catalogQueryResult[0] == null) {
                 database.query(
                   queries.ADD_INDICATOR_TO_TABLE,
@@ -242,17 +247,18 @@ export async function sendDataToRDS(mappedDataForRds) {
                   [
                     DATABASE_NAME,
                     newTableName,
-                    frequency,
                     description,
-                    units,
+                    frequency,
                     transformation,
-                    DATABASE_NAME,
-                    lastUpdatedTime,
                     aggregation,
+                    units,
+                    lastUpdatedTime,
                     assetType,
                   ],
+                  
                   function (err, result, field) {
                     if (err) {
+                  
                       console.error(
                         "ERROR EXECUTING ADD_INDICATOR_TO_TABLE QUERY",
                         err
@@ -265,9 +271,9 @@ export async function sendDataToRDS(mappedDataForRds) {
                     let data = dataset[region];
                     let dateData = Object.keys(data);
                     let values = Object.values(data);
-                    const drilledData = values.map((item) => item.drilled);
-                    const completedData = values.map((item) => item.completed);
-                    const DUCData = values.map((item) => item.DUC);
+                    let drilledData = values.map((item) => item.drilled == "--" ? 0 : item.drilled);
+                    let completedData = values.map((item) => item.completed == "--" ? 0 : item.completed);
+                    let DUCData = values.map((item) => item.DUC == "--" ? 0 : item.DUC);
 
                     let tuples = lodash
                       .zip(dateData, drilledData, completedData, DUCData)
@@ -278,9 +284,7 @@ export async function sendDataToRDS(mappedDataForRds) {
                         row[3],
                         indicator_id,
                       ]);
-
-                    console.log(newTableName);
-
+                      console.log(tuples);
                     database.query(
                       queries.CREATE_DATA_TABLE_DUC,
                       [DATABASE_NAME, newTableName, DATABASE_NAME],
@@ -370,7 +374,6 @@ export async function sendDataToRDS(mappedDataForRds) {
               description,
               units,
               transformation,
-              DATABASE_NAME,
               lastUpdatedTime,
               aggregation,
               assetType,
