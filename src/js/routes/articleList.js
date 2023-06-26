@@ -5,7 +5,7 @@ var router = express.Router();
 
 router.get('/', function(req, res) {
 
-  res.render('articleListTemplate');
+  res.render('articleTemplate');
 });
 
 export default router;
