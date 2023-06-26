@@ -7,13 +7,13 @@ const queries = {
   //because catalog.?? is already an DATABASE_NAME;
   CHECK_INDICATOR_TABLE_IF_EXISTS: `CREATE TABLE IF NOT EXISTS catalog.?? (
       indicator_id INT PRIMARY KEY AUTO_INCREMENT,
-      tag VARCHAR(20),
+      tag VARCHAR(30),
       description TEXT,
-      frequency VARCHAR(5),
-      transformation VARCHAR(5),
-      aggregation VARCHAR(5),
-      units VARCHAR(40),
-      last_updated_time VARCHAR(40),
+      frequency VARCHAR(10),
+      transformation VARCHAR(10),
+      aggregation VARCHAR(10),
+      units VARCHAR(10),
+      last_updated_time VARCHAR(20),
       asset_type VARCHAR(20)
     )`,
 

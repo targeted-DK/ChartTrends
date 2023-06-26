@@ -162,7 +162,7 @@ app.get('*',function(req, res, next){
  * 1) Gets data from mainPageData.js and loads charts on the main webpage using drawCharts.js
  */
 async function main(){
-  const job = schedule.scheduleJob('0 0 0,12 * *', updateEntireDatabase);
+  // const job = schedule.scheduleJob('0 0 0,12 * *', updateEntireDatabase);
   // updateEntireDatabase();
   // processData.convertCopperCSVToJson();
 // await processData.updateFredDatasettemp();

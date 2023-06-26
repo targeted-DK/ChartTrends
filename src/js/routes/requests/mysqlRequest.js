@@ -7,8 +7,13 @@ import database from "../../config/Database/serverConnection.js";
 import queries from "../../mysqlQueries.js";
 import {
   chartCategoryList,
+  EIAPetroleumExportList,
+  EIAPetroleumExportTags,
   EIAPetroleumFourWeekAvgDemandList,
   EIAPetroleumFourWeekAvgDemandTags,
+  EIAPetroleumImportList,
+  EIAPetroleumImportTags,
+  EIAPetroleumSubCategoryList,
 } from "../../data/chartSubCategoryList.js";
 import dataList, {
   cftcList,
@@ -785,19 +790,28 @@ export function getDataFromRDS(json) {
 
     //@TODO - automate process of choosing weekly/4weekavg. For now, defualt value is 4weekavg.
     
-    else if (subcategory == "demand") {
-    
-      let frequency = "4wavg"
+    else if (EIAPetroleumSubCategoryList.includes(subcategory)) {
+
+      let frequency = (subcategory == "demand") ? "4wavg" : "w";
       let transformation = "lin";
       let aggregation = "avg";
       let units = [];
+      let EIAPetroleumTag = (subcategory == "demand") ? EIAPetroleumFourWeekAvgDemandTags 
+      : (subcategory == "export") ? EIAPetroleumExportTags 
+      : (subcategory == "import") ? EIAPetroleumImportTags
+      : null; 
+      let EIAPetroleumList = (subcategory == "demand") ? EIAPetroleumFourWeekAvgDemandList
+      : (subcategory == "export") ? EIAPetroleumExportList
+      : (subcategory == "import") ? EIAPetroleumImportList
+      : null;
+      
 
       return new Promise((resolve, reject) => {
-        let promises = EIAPetroleumFourWeekAvgDemandTags.map(
-          (petroleum_type) => {
+        let promises = EIAPetroleumTag.map(
+          (tag) => {
 
             let tableName =
-              petroleum_type +
+              tag +
               "_" +
               frequency +
               "_" +
@@ -807,13 +821,13 @@ export function getDataFromRDS(json) {
           
             database.query(
               queries.SELECT_UNITS_FROM_CATALOG,
-              [source, petroleum_type, frequency, transformation, aggregation],
+              [source, tag, frequency, transformation, aggregation],
               (error, results) => {
                 
                 if (error) {
                   console.log(error.stack);
                 }
-
+              
                 //result returns [ { units: 'MBBL/D' } 
                 units.push(results[0].units);
                
@@ -844,7 +858,7 @@ export function getDataFromRDS(json) {
           .then((promise) => {
             let result = {};
             result.values = promise;
-            result.names = EIAPetroleumFourWeekAvgDemandList;
+            result.names = EIAPetroleumList;
             result.tag = tag;
             result.units = units;
 

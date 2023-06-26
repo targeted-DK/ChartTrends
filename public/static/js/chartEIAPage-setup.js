@@ -19,7 +19,7 @@ axios
     subcategory : subcategory
   })
   .then((response) => {
-      console.log(response);
+   
     if (subcategory == "DUC" || subcategory == "completed" || subcategory == "drilled") {
       const dataFromRds = response.data.values;
       const names = response.data.names;
@@ -91,7 +91,8 @@ let parsedData;
    
 } else if(eiaTag == "petroleum"){
   
-  if(subcategory == "demand"){
+ 
+  if(subcategory == "demand" || subcategory == "export" || subcategory == "import"){
     parsedData = dataFromRds.map(item => ({
       time : new Date(item.date).toISOString().split('T')[0],
       value: item.value
@@ -151,7 +152,7 @@ export function createHighcharts(convertedData, eiaTag, subcategory = "", tableN
 
   
     let timeline = "";
-    if(subcategory == "demand"){
+    if(subcategory == "demand" || subcategory == "import" || subcategory == "export"){
       timeline =  Array.from({ length: 53 }, (_, index) => `Week ${index + 1}`);
     } else {
       timeline = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
