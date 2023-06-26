@@ -5,13 +5,26 @@ import bodyParser from "body-parser";
 import lodash from "lodash";
 import database from "../../config/Database/serverConnection.js";
 import queries from "../../mysqlQueries.js";
-import dataList, { cftcList, eiaDUCList, fredDataList } from "../../data/dataList.js";
+import {
+  chartCategoryList,
+  EIAPetroleumFourWeekAvgDemandList,
+  EIAPetroleumFourWeekAvgDemandTags,
+} from "../../data/chartSubCategoryList.js";
+import dataList, {
+  cftcList,
+  eiaDUCList,
+  eiaDataNGTags,
+  eiaDataOilTags,
+  eiaDataPetroleumList,
+  eiaDataPetroleumTags,
+  fredDataList,
+} from "../../data/dataList.js";
 import featuredList from "../../data/featuredList.js";
 import ratioList from "../../data/ratioList.js";
 import bondsList from "../../data/bondsList.js";
 import macroList from "../../data/macroList.js";
 import bankList from "../../data/bankList.js";
-import fedList from "../../data/fedList.js"
+import fedList from "../../data/fedList.js";
 
 router.use(bodyParser.json());
 
@@ -105,7 +118,6 @@ router.post("/mysqlRequest", async (req, res) => {
   }
 
   if (req.body.use == "bank") {
-    
     try {
       const results = await getDataFromRDS(req.body);
       res.status(200).send(results);
@@ -113,9 +125,8 @@ router.post("/mysqlRequest", async (req, res) => {
       res.status(500).send({ message: "Error fetching data from RDS" });
     }
   }
-  
+
   if (req.body.use == "fed") {
-     
     try {
       const results = await getDataFromRDS(req.body);
       res.status(200).send(results);
@@ -159,12 +170,13 @@ export async function sendDataToRDS(mappedDataForRds) {
 
   // console.log(dateData);
   // console.log(valueData);
-  
+
   // TODO : get units and graph description from fred web using cheerio
   if (database.authorized) {
     console.log("Database Accessed");
 
     //DATABASE SET UPS
+    //create catalog database if not exists
     database.query(
       queries.CREATE_DATABASE,
       "catalog",
@@ -177,7 +189,7 @@ export async function sendDataToRDS(mappedDataForRds) {
         }
       }
     );
-
+    //create database if not exists
     database.query(
       queries.CREATE_DATABASE,
       DATABASE_NAME,
@@ -239,7 +251,6 @@ export async function sendDataToRDS(mappedDataForRds) {
             } else {
               console.log("FIND_DUPLICATE_IN_INDICATOR_TABLE executed");
 
-            
               if (catalogQueryResult[0] == null) {
                 database.query(
                   queries.ADD_INDICATOR_TO_TABLE,
@@ -255,10 +266,9 @@ export async function sendDataToRDS(mappedDataForRds) {
                     lastUpdatedTime,
                     assetType,
                   ],
-                  
+
                   function (err, result, field) {
                     if (err) {
-                  
                       console.error(
                         "ERROR EXECUTING ADD_INDICATOR_TO_TABLE QUERY",
                         err
@@ -271,9 +281,15 @@ export async function sendDataToRDS(mappedDataForRds) {
                     let data = dataset[region];
                     let dateData = Object.keys(data);
                     let values = Object.values(data);
-                    let drilledData = values.map((item) => item.drilled == "--" ? 0 : item.drilled);
-                    let completedData = values.map((item) => item.completed == "--" ? 0 : item.completed);
-                    let DUCData = values.map((item) => item.DUC == "--" ? 0 : item.DUC);
+                    let drilledData = values.map((item) =>
+                      item.drilled == "--" ? 0 : item.drilled
+                    );
+                    let completedData = values.map((item) =>
+                      item.completed == "--" ? 0 : item.completed
+                    );
+                    let DUCData = values.map((item) =>
+                      item.DUC == "--" ? 0 : item.DUC
+                    );
 
                     let tuples = lodash
                       .zip(dateData, drilledData, completedData, DUCData)
@@ -284,7 +300,7 @@ export async function sendDataToRDS(mappedDataForRds) {
                         row[3],
                         indicator_id,
                       ]);
-                      console.log(tuples);
+                    console.log(tuples);
                     database.query(
                       queries.CREATE_DATA_TABLE_DUC,
                       [DATABASE_NAME, newTableName, DATABASE_NAME],
@@ -335,7 +351,7 @@ export async function sendDataToRDS(mappedDataForRds) {
       newTableName =
         tag + "_" + frequency + "_" + transformation + "_" + aggregation;
     }
-    
+
     let newCatalog = [
       tag,
       frequency,
@@ -370,12 +386,12 @@ export async function sendDataToRDS(mappedDataForRds) {
             [
               DATABASE_NAME,
               tag,
-              frequency,
               description,
-              units,
+              frequency,
               transformation,
-              lastUpdatedTime,
               aggregation,
+              units,
+              lastUpdatedTime,
               assetType,
             ],
             function (err, result, field) {
@@ -432,8 +448,7 @@ export async function sendDataToRDS(mappedDataForRds) {
                         row[5],
                         indicator_id,
                       ]);
-                    console.log(DATABASE_NAME);
-                    console.log(newTableName);
+
                     database.query(
                       queries.INSERT_DATA_TO_TABLE_CFTC,
                       [DATABASE_NAME, newTableName, tuples],
@@ -568,22 +583,16 @@ export function sendEiaDataToRds() {}
  */
 
 export function getDataFromRDS(json) {
- 
-
   // const fredTagsArray = Object.values(fredDataList);
   //Modify this code everytime you add source
   const source = json.use;
   const tag = json.tag;
+  //this may or may not exist depending on routes
+  const subcategory = json.subcategory;
 
-  // /chart/featured, ratio, bonds case
-  if (
-    source == "featured" ||
-    source == "ratio" ||
-    source == "bonds" ||
-    source == "macro" ||
-    source == "bank" ||
-    source == "fed"
-  ) {
+  // /chart/featured, ratio, bonds, bank, fed case
+  // 'eia', 'cftc category is different
+  if (chartCategoryList.includes(source)) {
     let list = [];
 
     if (source == "featured") {
@@ -592,30 +601,23 @@ export function getDataFromRDS(json) {
       list = ratioList;
     } else if (source == "bonds") {
       list = bondsList;
-    } else if( source == "macro"){
+    } else if (source == "macro") {
       list = macroList;
-    } else if( source == "bank"){
+    } else if (source == "bank") {
       list = bankList;
-    } else if( source == "fed"){
+    } else if (source == "fed") {
       list = fedList;
-    } 
-    
-
-    
-
-   
+    }
 
     return new Promise((resolve, reject) => {
       // for (let feature of list) {
 
-
-
       const feature = list.filter(({ urlendpoint }) => urlendpoint === tag)[0];
-      
+
       let title = feature.title;
       let tags = feature.tag;
       let use = feature.use;
-      let source = feature.source
+      let source = feature.source;
       let adjustment = feature.adjustment;
       let chartToCreate = feature.chartToCreate;
       let chartToCreateName = feature.chartToCreateName;
@@ -630,65 +632,49 @@ export function getDataFromRDS(json) {
       let chartNames = [];
       let promises = []; // Array to store the promises
       let result = {};
-   
-     
-      
 
-      
-
-
-
-     
       for (let i = 0; i < Object.keys(frequency).length; i++) {
         //When you use same data but with different format etc,
-        // tag object in list.js does not allow duplicate 
+        // tag object in list.js does not allow duplicate
 
-       
         let j = i;
         // if(Object.keys(tags).length < Object.keys(frequency).length){
         //   j = 0;
         // }
-        let tag_instance = tags[i]
-       
-        let source_instance = source[i]
-        let frequency_instance = frequency[i]
-        let transformation_instance =transformation[i];
+        let tag_instance = tags[i];
+
+        let source_instance = source[i];
+        let frequency_instance = frequency[i];
+        let transformation_instance = transformation[i];
         let aggregation_instance = aggregation[i];
-     
+
         let tableName;
-       
+
         //CFTC data does not use "w_lin_avg format"
-        if(source_instance != "CFTC"){
-         tableName =
-          tag_instance +
-          "_" +
-          frequency_instance +
-          "_" +
-          transformation_instance +
-          "_" +
-          aggregation_instance;
+        if (source_instance != "CFTC") {
+          tableName =
+            tag_instance +
+            "_" +
+            frequency_instance +
+            "_" +
+            transformation_instance +
+            "_" +
+            aggregation_instance;
         } else {
-          tableName = tag_instance
+          tableName = tag_instance;
         }
-        // console.log(tableName);
-        // console.log(tag_instance);
-        // console.log(frequency_instance);
-        // console.log(transformation_instance);
-        // console.log(aggregation_instance);
-      
+
         chartNames.push(tag_instance);
-      
+
         let promise = new Promise((resolve, reject) => {
           database.query(
             queries.SELECT_ALL_ROWS_FROM_TABLE,
             [source_instance, tableName],
             (error, results) => {
               if (error) {
-               
                 console.log(error);
                 reject(error.stack);
               } else {
-              
                 resolve(results);
               }
             }
@@ -697,31 +683,26 @@ export function getDataFromRDS(json) {
 
         promises.push(promise); // Add the promise to the array
       }
-     
 
       let namesForTag = [];
-      for(let i = 0; i < tags.length; i++){
-       
-        if(source[i] == "FRED"){
+      for (let i = 0; i < tags.length; i++) {
+        if (source[i] == "FRED") {
           let tag = tags[i];
-         
-          const nameForTag = Object.entries(fredDataList)
-          .filter(([key, value]) => value === tag);
-          
+
+          const nameForTag = Object.entries(fredDataList).filter(
+            ([key, value]) => value === tag
+          );
+
           namesForTag.push(nameForTag[0][0]);
         } else {
           namesForTag.push(tags[i]);
-          
         }
       }
-      
-
-    
       // Await the resolution of all promises using Promise.all()
       Promise.all(promises)
         .then((chain) => {
           //for some reason result.data returns [] on the client side
-       
+
           result.values = chain;
           result.title = title;
           result.use = use;
@@ -740,8 +721,6 @@ export function getDataFromRDS(json) {
           result.newUnits = newUnits;
           result.comparisonChartName = comparisonChartName;
 
-        
-
           // Here, you have an array of resolved results from all the promises
           resolve(result);
         })
@@ -756,7 +735,11 @@ export function getDataFromRDS(json) {
   else if (source == "EIA") {
     //edge case for DUC, since it has unusual table name in mysql database
 
-    if (tag == "DUC") {
+    if (
+      subcategory == "DUC" ||
+      subcategory == "completed" ||
+      subcategory == "drilled"
+    ) {
       return new Promise((resolve, reject) => {
         // let jsonDUCDataArrays = [];
 
@@ -790,18 +773,80 @@ export function getDataFromRDS(json) {
             result.values = promise;
             result.names = eiaDUCList;
             result.tag = tag;
+            
+            resolve(result);
+          })
+          .catch((error) => {
+            console.log(`Error fetching data: ${error.stack}`);
+            reject(error);
+          });
+      });
+    }
 
-            //  result.title = title;
-            //  result.use = use;
-            //  result.names = chartNames;
-            //  result.adjustment = adjustment;
-            //  result.comparisonChart = comparisonChartName;
-            //  result.frequency = frequency;
-            //  result.transformation = transformation;
-            //  result.aggregation = aggregation;
-            //  result.chartToCreate = chartToCreate;
-            //  result.units = units;
-            //  result.adjustYaxis = adjustYaxis;
+    //@TODO - automate process of choosing weekly/4weekavg. For now, defualt value is 4weekavg.
+    
+    else if (subcategory == "demand") {
+    
+      let frequency = "4wavg"
+      let transformation = "lin";
+      let aggregation = "avg";
+      let units = [];
+
+      return new Promise((resolve, reject) => {
+        let promises = EIAPetroleumFourWeekAvgDemandTags.map(
+          (petroleum_type) => {
+
+            let tableName =
+              petroleum_type +
+              "_" +
+              frequency +
+              "_" +
+              transformation +
+              "_" +
+              aggregation;
+          
+            database.query(
+              queries.SELECT_UNITS_FROM_CATALOG,
+              [source, petroleum_type, frequency, transformation, aggregation],
+              (error, results) => {
+                
+                if (error) {
+                  console.log(error.stack);
+                }
+
+                //result returns [ { units: 'MBBL/D' } 
+                units.push(results[0].units);
+               
+              }
+            );
+
+            return new Promise((resolve, reject) => {
+              database.query(
+                queries.SELECT_ALL_ROWS_FROM_TABLE,
+                [source, tableName],
+                (err, rows) => {
+                  if (err) {
+                    console.log(
+                      `Error fetching rows from ${tableName}: ${err.stack}`
+                    );
+                    reject(err);
+                    return;
+                  }
+                  //rather than putting it in array just return as a promise
+                  resolve(rows);
+                }
+              );
+            });
+          }
+        );
+
+        Promise.all(promises)
+          .then((promise) => {
+            let result = {};
+            result.values = promise;
+            result.names = EIAPetroleumFourWeekAvgDemandList;
+            result.tag = tag;
+            result.units = units;
 
             resolve(result);
           })
@@ -811,65 +856,64 @@ export function getDataFromRDS(json) {
           });
       });
     }
-    return new Promise((resolve, reject) => {
-      let indicators;
-      let assetType = tag;
-      let jsonOilDataArrays = {};
-      database.query(
-        queries.SELECT_ALL_INDICATOR_ROWS_BY_ASSET_TYPE,
-        [source, assetType],
-        (error, results) => {
-          if (error) {
-            console.log(error.stack);
-          }
-          indicators = results;
-          // console.log(indicators);
-        }
-      );
 
-      database.query(queries.SHOW_ALL_TABLES, source, (error, tables) => {
-        if (error) {
-          console.error("Error fetching tables: " + error.stack);
-          reject(error);
-          return;
-        }
-        const promises = tables.map((table) => {
-          const tableName = table["Tables_in_EIA"];
+    // return new Promise((resolve, reject) => {
+    //   let indicators;
+    //   let assetType = tag;
+    //   let jsonOilDataArrays = {};
+      // database.query(
+      //   queries.SELECT_ALL_INDICATOR_ROWS_BY_ASSET_TYPE,
+      //   [source, assetType],
+      //   (error, results) => {
+      //     if (error) {
+      //       console.log(error.stack);
+      //     }
+      //     indicators = results;
+      //     // console.log(indicators);
+      //   }
+      // );
 
-          return new Promise((resolve, reject) => {
-            database.query(
-              queries.SELECT_ALL_ROWS_FROM_TABLE,
-              [source, tableName],
-              (err, rows) => {
-                if (err) {
-                  console.log(
-                    `Error fetching rows from ${tableName}: ${err.stack}`
-                  );
-                  reject(err);
-                  return;
-                }
+    //   database.query(queries.SHOW_ALL_TABLES, source, (error, tables) => {
+    //     if (error) {
+    //       console.error("Error fetching tables: " + error.stack);
+    //       reject(error);
+    //       return;
+    //     }
+    //     const promises = tables.map((table) => {
+    //       const tableName = table["Tables_in_EIA"];
 
-                // Add the rows data to the jsonOilDataArrays object
-                jsonOilDataArrays[tableName.split("_")[0]] = rows;
-                resolve();
-              }
-            );
-          });
-        });
+    //       return new Promise((resolve, reject) => {
+    //         database.query(
+    //           queries.SELECT_ALL_ROWS_FROM_TABLE,
+    //           [source, tableName],
+    //           (err, rows) => {
+    //             if (err) {
+    //               console.log(
+    //                 `Error fetching rows from ${tableName}: ${err.stack}`
+    //               );
+    //               reject(err);
+    //               return;
+    //             }
 
-        Promise.all(promises)
-          .then(() => {
-            resolve({ jsonOilDataArrays, indicators });
-          })
-          .catch((error) => {
-            console.log(`Error fetching data: ${error.stack}`);
-            reject(error);
-          });
-      });
-    });
+    //             // Add the rows data to the jsonOilDataArrays object
+    //             jsonOilDataArrays[tableName.split("_")[0]] = rows;
+    //             resolve();
+    //           }
+    //         );
+    //       });
+    //     });
+
+    //     Promise.all(promises)
+    //       .then(() => {
+    //         resolve({ jsonOilDataArrays, indicators });
+    //       })
+    //       .catch((error) => {
+    //         console.log(`Error fetching data: ${error.stack}`);
+    //         reject(error);
+    //       });
+    //   });
+    // });
   } else if (source == "CFTC") {
-
-   
     return new Promise((resolve, reject) => {
       let indicators;
       let assetType = tag;
@@ -884,7 +928,6 @@ export function getDataFromRDS(json) {
             console.log(error.stack);
           }
           indicators = results;
-        
         }
       );
 
@@ -897,7 +940,7 @@ export function getDataFromRDS(json) {
 
         const promises = tables.map((table) => {
           const tableName = table["Tables_in_CFTC"];
-        
+
           return new Promise((resolve, reject) => {
             database.query(
               queries.SELECT_ALL_ROWS_FROM_TABLE,
@@ -931,6 +974,7 @@ export function getDataFromRDS(json) {
     });
   }
   //or else just fetch one graph
+
   return new Promise((resolve, reject) => {
     database.query(
       `SELECT COUNT(*) FROM catalog.${source} WHERE tag = '${json.tag}' AND  frequency = '${json.frequency}' AND transformation = '${json.transformation}' AND aggregation = '${json.aggregation}';`,

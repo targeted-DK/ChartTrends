@@ -148,7 +148,7 @@ export async function updateEIADataset() {
         const response = await axios.get(apiurl);
         let json = response.data.response;
         let code = response.data.response.data[0].series;
-
+      
         // json.frequency = response.data.response.frequency;
         // json.description = response.data.response['series-description'];
         // // json.description = description;
@@ -194,7 +194,7 @@ export async function updateEIADataset() {
 
         let result = await getGraphInfo(json, code, "EIA", "NG");
         // orderedData[key] = data;
-
+        
         await sendDataToRDS(result);
       } catch (error) {
         failedDataParams.push(["EIA", key]);

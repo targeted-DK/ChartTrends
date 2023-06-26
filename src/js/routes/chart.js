@@ -1,12 +1,17 @@
 import express from "express";
-import dataList, { fredDataList } from "../data/dataList.js";
+import dataList, { cftcList, fredDataList } from "../data/dataList.js";
 import featuredList from "../data/featuredList.js";
 import ratioList from "../data/ratioList.js";
 import bondsList from "../data/bondsList.js";
 import macroList from "../data/macroList.js";
 import bankList from "../data/bankList.js";
 import fedList from "../data/fedList.js";
-
+import {
+  eiaDataNGTags,
+  eiaDataOilTags,
+  eiaDataPetroleumTags,
+} from "../data/dataList.js";
+import { EIACategoryList, EIAPetroleumFourWeekAvgDemandTags } from "../data/chartSubCategoryList.js";
 
 var router = express.Router();
 
@@ -17,8 +22,8 @@ const categoryList = [
   "ratio",
   "CFTC",
   "EIA",
-  "NG",
-  "Petroleum",
+  // "NG",
+  // "Petroleum",
   "",
 ];
 
@@ -28,8 +33,11 @@ router.get("/", function (req, res) {
 
 router.get("/:category", (req, res, next) => {
   const category = req.params.category;
- 
-  if (categoryList.includes(category) || Object.values(dataList.fredDataList).includes(category)) {
+
+  if (
+    categoryList.includes(category) ||
+    Object.values(dataList.fredDataList).includes(category)
+  ) {
     next();
   } else {
     res.status(404).render("404", { error: "Page not found" });
@@ -85,15 +93,11 @@ router.get("/bonds/:subject", (req, res, next) => {
   }
 });
 
-
 router.get("/macro/:subject", (req, res, next) => {
-  
   const macroSubject = req.params.subject;
   const fileName = "chartMacroTemplate";
   const list = macroList.map((item) => item.urlendpoint);
 
-  console.log(fileName);
-  
   if (list.includes(macroSubject)) {
     res.render(fileName, { tag: macroSubject });
   } else {
@@ -103,7 +107,7 @@ router.get("/macro/:subject", (req, res, next) => {
 
 router.get("/bank/:subject", (req, res, next) => {
   const bankSubject = req.params.subject;
-  
+
   const fileName = "chartBankTemplate";
   const list = bankList.map((item) => item.urlendpoint);
 
@@ -116,10 +120,10 @@ router.get("/bank/:subject", (req, res, next) => {
 
 router.get("/fed/:subject", (req, res, next) => {
   const fedSubject = req.params.subject;
-  
+
   const fileName = "chartFEDTemplate";
   const list = fedList.map((item) => item.urlendpoint);
-  
+
   if (list.includes(fedSubject)) {
     res.render(fileName, { tag: fedSubject });
   } else {
@@ -127,33 +131,72 @@ router.get("/fed/:subject", (req, res, next) => {
   }
 });
 
-// router.get("/CFTC/ALL", (req, res, next) => {
-//   const source = req.params.source;
-//   // const tag = req.params.tag;
-
-//   const fileName = "chart" + CFTC + "Template";
-
-//   res.render(fileName);
-// });
-
-router.get("/eia/:tag/:welltype", (req, res, next) => {
-  const source = "EIA"
+router.get("/CFTC/:tag", (req, res, next) => {
+  const source = req.params.source;
   const tag = req.params.tag;
-  const welltype = req.params.welltype;
-  
-  if(welltype == 'DUC'|| welltype == 'drilled' || welltype == 'completed'){
-    const fileName = "chart" + source + "Template";
-    res.render(fileName, { tag: tag, welltype : welltype });
-  
+
+  if (cftcList.includes(tag)) {
+    const fileName = "chart" + "CFTC" + "Template";
+
+    res.render(fileName, { tag: tag });
   } else {
-    
-    res.status(404).render("404", { error: "Well types are DUC(drilled but uncompleted), drilled, and completed" });
+    //define error message later
+    res.status(404).render("404", {});
   }
-  
- 
 });
 
 
+
+// eia/duc/duc
+// eia/oil/duc
+
+router.get("/eia/:tag/:sub", (req, res, next) => {
+  const source = "EIA";
+  const tag = req.params.tag;
+  const subcategory = req.params.sub;
+
+  if (!EIACategoryList.includes(tag)) {
+    res
+      .status(404)
+      .render("404", {
+        error: "EIA data categories are oil, petroleum and ng",
+      });
+  }
+
+  
+  const fileName = "chart" + source + "Template";
+
+  if (tag == "oil") {
+  
+    if (eiaDataOilTags.includes(subcategory)) {
+   
+      res.render(fileName, { tag: tag, subcategory: subcategory });
+      return;
+    }
+  } else if (tag == "petroleum") {
+
+    if (subcategory == 'demand') {
+      res.render(fileName, { tag: tag, subcategory: subcategory });
+      return;
+    } 
+  } 
+  
+  else if (tag == "ng") {
+    if (eiaDataNGTags.includes(subcategory)) {
+      res.render(fileName, { tag: tag, subcategory: subcategory });
+      return;
+    }
+  } 
+
+
+    res
+      .status(404)
+      .render("404", {
+        error:
+          "Well types are DUC(drilled but uncompleted), drilled, and completed",
+      });
+  
+});
 
 router.get("/:source/:tag", (req, res, next) => {
   const source = req.params.source;

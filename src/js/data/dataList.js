@@ -57,7 +57,7 @@ export const fredDataList = {
   "Liabilities and Capital: Liabilities: Deposits with F.R. Banks, Other Than Reserve Balances: U.S. Treasury, General Account: Week Average":
     "WTREGEN",
   "Gross Domestic Product": "GDP",
-  "M2": "WM2NS",
+  M2: "WM2NS",
   "Real M2 Money Stock": "M2REAL",
   "Sticky Price Consumer Price Index less Food and Energy":
     "CORESTICKM159SFRBATL",
@@ -80,14 +80,20 @@ export const fredDataList = {
   "Assets: Total Assets: Total Assets: Wednesday Level": "RESPPANWW",
   //fed asset - securities
   "Assets: Securities Held Outright: Securities Held Outright: Wednesday Level":
-  "WSHOSHO",
-  "Assets: Securities Held Outright: U.S. Treasury Securities: Notes and Bonds: Wednesday Level" :" RESPPALGUONNWW",
-"Assets: Securities Held Outright: U.S. Treasury Securities: Bills: Wednesday Level" : "WSHOBL",
-"Assets: Securities Held Outright: U.S. Treasury Securities: Notes and Bonds, Nominal: Wednesday Level" : "WSHONBNL",
-"Assets: Securities Held Outright: U.S. Treasury Securities: Notes and Bonds, Inflation-Indexed: Wednesday Level" : "WSHONBIIL",
-"Assets: Securities Held Outright: Federal Agency Debt Securities: All: Wednesday Level" : "FEDDT",
-"Assets: Securities Held Outright: Mortgage-Backed Securities: Wednesday Level" : "WSHOMCB",
- 
+    "WSHOSHO",
+  "Assets: Securities Held Outright: U.S. Treasury Securities: Notes and Bonds: Wednesday Level":
+    " RESPPALGUONNWW",
+  "Assets: Securities Held Outright: U.S. Treasury Securities: Bills: Wednesday Level":
+    "WSHOBL",
+  "Assets: Securities Held Outright: U.S. Treasury Securities: Notes and Bonds, Nominal: Wednesday Level":
+    "WSHONBNL",
+  "Assets: Securities Held Outright: U.S. Treasury Securities: Notes and Bonds, Inflation-Indexed: Wednesday Level":
+    "WSHONBIIL",
+  "Assets: Securities Held Outright: Federal Agency Debt Securities: All: Wednesday Level":
+    "FEDDT",
+  "Assets: Securities Held Outright: Mortgage-Backed Securities: Wednesday Level":
+    "WSHOMCB",
+
   "Assets: Unamortized Premiums on Securities Held Outright: Wednesday Level":
     "WUPSHO",
   "Assets: Unamortized Discounts on Securities Held Outright: Wednesday Level":
@@ -243,8 +249,8 @@ export const fredDataList = {
   // Global price of WTI Crude (POILWTIUSDM)
 
   //recession indicators
-  "Motor Vehicle Retail Sales: Heavy Weight Trucks" : "HTRUCKSSAAR",
-"Unemployment Level - Permanent Job Losers" : "LNS13026638",
+  "Motor Vehicle Retail Sales: Heavy Weight Trucks": "HTRUCKSSAAR",
+  "Unemployment Level - Permanent Job Losers": "LNS13026638",
 
   //japan/korea
   "Residential Property Prices for Japan": "QJPN368BIS",
@@ -311,7 +317,6 @@ export const fredDataList = {
 
 // const apiKey = process.env.eiaAPIKey;
 export const eiaDataOilList = {
-  
   //oil stocks
   "U.S. Ending Stocks of Crude Oil (Thousand Barrels)": `https://api.eia.gov/v2/petroleum/sum/sndw/data/?frequency=weekly&data[0]=value&facets[series][]=WCRSTUS1&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
   "U.S. Ending Stocks of Crude Oil in SPR (Thousand Barrels)": `https://api.eia.gov/v2/petroleum/sum/sndw/data/?frequency=weekly&data[0]=value&facets[series][]=WCSSTUS1&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
@@ -337,16 +342,55 @@ export const eiaDataOilList = {
   // "U.S. Natural Gas Rotary Rigs in Operation (Count)" : `https://api.eia.gov/v2/petroleum/crd/drill/data/?frequency=monthly&data[0]=value&facets[series][]=E_ERTRRG_XR0_NUS_C&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`	,
 };
 
+export const eiaDataOilTags = [
+  "WCRSTUS1",
+  "WCSSTUS1",
+  "WCESTUS1",
+  "WTTSTUS1",
+  "WGFSTUS1",
+  "WDISTUS1",
+  "WKJSTUS1",
+  "WRESTUS1",
+
+  //-----
+  "DUC",
+  "completed",
+  "drilled"
+];
+
+export const eiaDUCList = [
+  "DUC_Anadarko",
+  "DUC_Appalachia",
+  "DUC_Bakken",
+  "DUC_Eagle Ford",
+  "DUC_Haynesville",
+  "DUC_Niobrara",
+  "DUC_Permian",
+  "DUC_DPR Regions",
+];
+
+//demands
 export const eiaDataPetroleumList = {
-  //product demands
-  "U.S. Product Supplied of Kerosene-Type Jet Fuel (Thousand Barrels per Day)": `https://api.eia.gov/v2/petroleum/cons/wpsup/data/?frequency=weekly&data[0]=value&facets[series][]=WKJUPUS2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+   //product demands
+   //4-week-average
+   "4-Week Avg U.S. Product Supplied of Finished Motor Gasoline (Thousand Barrels per Day)": `https://api.eia.gov/v2/petroleum/cons/wpsup/data/?frequency=four-week-average&data[0]=value&facets[series][]=WGFUPUS2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+   "4-Week Avg U.S. Product Supplied of Kerosene-Type Jet Fuel (Thousand Barrels per Day)": `https://api.eia.gov/v2/petroleum/cons/wpsup/data/?frequency=four-week-average&data[0]=value&facets[series][]=WKJUPUS2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+   "4-Week Avg U.S. Product Supplied of Distillate Fuel Oil (Thousand Barrels per Day)": `https://api.eia.gov/v2/petroleum/cons/wpsup/data/?frequency=four-week-average&data[0]=value&facets[series][]=WDIUPUS2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+   "4-Week Avg U.S. Product Supplied of Propane and Propylene (Thousand Barrels per Day)": `https://api.eia.gov/v2/petroleum/cons/wpsup/data/?frequency=four-week-average&data[0]=value&facets[series][]=WPRUP_NUS_2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+   "4-Week Avg U.S. Product Supplied of Other Oils (Thousand Barrels per Day)": `https://api.eia.gov/v2/petroleum/cons/wpsup/data/?frequency=four-week-average&data[0]=value&facets[series][]=WWOUP_NUS_2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+   "4-Week Avg U.S. Product Supplied of Residual Fuel Oil (Thousand Barrels per Day)" : `https://api.eia.gov/v2/petroleum/cons/wpsup/data/?frequency=four-week-average&data[0]=value&facets[series][]=WREUPUS2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+ 
+  //weekly
   "U.S. Product Supplied of Finished Motor Gasoline (Thousand Barrels per Day)": `https://api.eia.gov/v2/petroleum/cons/wpsup/data/?frequency=weekly&data[0]=value&facets[series][]=WGFUPUS2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+  "U.S. Product Supplied of Kerosene-Type Jet Fuel (Thousand Barrels per Day)": `https://api.eia.gov/v2/petroleum/cons/wpsup/data/?frequency=weekly&data[0]=value&facets[series][]=WKJUPUS2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
   "U.S. Product Supplied of Distillate Fuel Oil (Thousand Barrels per Day)": `https://api.eia.gov/v2/petroleum/cons/wpsup/data/?frequency=weekly&data[0]=value&facets[series][]=WDIUPUS2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
   "U.S. Product Supplied of Propane and Propylene (Thousand Barrels per Day)": `https://api.eia.gov/v2/petroleum/cons/wpsup/data/?frequency=weekly&data[0]=value&facets[series][]=WPRUP_NUS_2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
   "U.S. Product Supplied of Other Oils (Thousand Barrels per Day)": `https://api.eia.gov/v2/petroleum/cons/wpsup/data/?frequency=weekly&data[0]=value&facets[series][]=WWOUP_NUS_2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+  "U.S. Product Supplied of Residual Fuel Oil (Thousand Barrels per Day)" : `https://api.eia.gov/v2/petroleum/cons/wpsup/data/?frequency=weekly&data[0]=value&facets[series][]=WREUPUS2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+ 
   //refinery utilizations
   "% Utilization Refinery Operable Capacity Weekly": `https://api.eia.gov/v2/petroleum/pnp/wiup/data/?frequency=weekly&data[0]=value&facets[series][]=WPULEUS3&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
-  "% Utilization Refinery Operable Capacity Four-Week Average": `https://api.eia.gov/v2/petroleum/pnp/wiup/data/?frequency=four-week-average&data[0]=value&facets[series][]=WPULEUS3&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+  "4-week Avg % Utilization Refinery Operable Capacity": `https://api.eia.gov/v2/petroleum/pnp/wiup/data/?frequency=four-week-average&data[0]=value&facets[series][]=WPULEUS3&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
 
   //exports and imports
   "U.S. Net Imports of Total Petroleum Products (Thousand Barrels per Day)": `https://api.eia.gov/v2/petroleum/move/wkly/data/?frequency=weekly&data[0]=value&facets[series][]=WRPNTUS2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
@@ -359,6 +403,26 @@ export const eiaDataPetroleumList = {
   "U.S. Exports of Kerosene-Type Jet Fuel (Thousand Barrels per Day)": `https://api.eia.gov/v2/petroleum/move/wkly/data/?frequency=weekly&data[0]=value&facets[series][]=WKJEXUS2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
   "U.S. Exports of Residual Fuel Oil (Thousand Barrels per Day)": `https://api.eia.gov/v2/petroleum/move/wkly/data/?frequency=weekly&data[0]=value&facets[series][]=WREEXUS2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
 };
+
+export const eiaDataPetroleumTags = [
+  "WGFUPUS2",
+  "WKJUPUS2",
+  "WDIUPUS2",
+  "WPRUP_NUS_2",
+  "WWOUP_NUS_2",
+  "WREUPUS2",
+  "WPULEUS3",
+  "WPULEUS3",
+  "WRPNTUS2",
+  "WGTIMUS2",
+  "WDIIMUS2",
+  "WKJIMUS2",
+  "WREIMUS2",
+  "W_EPM0F_EEX_NUS-Z00_MBBLD",
+  "WDIEXUS2",
+  "WKJEXUS2",
+  "WREEXUS2",
+];
 
 export const eiaDataNGList = {
   //ng pirce
@@ -388,17 +452,33 @@ export const eiaDataNGList = {
   "U.S. Natural Gas Industrial Consumption (MMcf)": `https://api.eia.gov/v2/natural-gas/cons/sum/data/?frequency=monthly&data[0]=value&facets[series][]=N3035US2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
 };
 
-//this refers to custom table name on mysql database, NOT EIA tags or urls
-export const eiaDUCList = [
-  "DUC_Anadarko",
-  "DUC_Appalachia",
-  "DUC_Bakken",
-  "DUC_Eagle Ford",
-  "DUC_Haynesville",
-  "DUC_Niobrara",
-  "DUC_Permian",
-  "DUC_DPR Regions",
+export const eiaDataNGTags = [
+  "RNGWHHD",
+  "N9133US3",
+  "NW2_EPG0_SWO_R48_BCF",
+  "NW2_EPG0_SWO_R33_BCF",
+  "NW2_EPG0_SWO_R48_BCF",
+  "NW2_EPG0_SSO_R33_BCF",
+  "NW2_EPG0_SWO_R34_BCF",
+  "NW2_EPG0_SWO_R35_BCF",
+  "NW2_EPG0_SWO_R32_BCF",
+  "N9010US2",
+  "N9011US2",
+  "NGM_EPG0_FGS_NUS_MMCF",
+  "N9160US2",
+  "NGM_EPG0_FGS_NUS_MMCF",
+  "N9160US2",
+  "N3010US2",
+  "N3060US2",
+  "N3020US2",
+  "N9170US2",
+  "N3045US2",
+  "N3025US2",
+  "N3035US2",
 ];
+
+//this refers to custom table name on mysql database, NOT EIA tags or urls
+
 const eiaDataElectricityList = {};
 
 export const cftcList = [

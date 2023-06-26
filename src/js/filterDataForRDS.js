@@ -50,6 +50,8 @@ function getGraphInfo(jsonObject, code, source, assetType = "") {
           frequency:
             jsonObject.frequency === "weekly"
               ? "w"
+              : jsonObject.frequency === "four-week-average"
+              ? "4wavg"
               : jsonObject.frequency === "monthly"
               ? "m"
               : jsonObject.frequency === "daily"
@@ -66,7 +68,7 @@ function getGraphInfo(jsonObject, code, source, assetType = "") {
           source: source,
           assetType: assetType,
         };
-
+       
         resolve(newGraphObj);
       } catch (error) {
         reject(error);

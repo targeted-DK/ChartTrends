@@ -2,9 +2,11 @@ const queries = {
   // CREATE TABLES IN MYSQL FOR THE FIRST TIME
   CREATE_DATABASE: `CREATE DATABASE IF NOT EXISTS ??`,
 
+
+  // DATABASE_NAME VARCHAR(20) deleted from check_indicator_table_if_exists
+  //because catalog.?? is already an DATABASE_NAME;
   CHECK_INDICATOR_TABLE_IF_EXISTS: `CREATE TABLE IF NOT EXISTS catalog.?? (
       indicator_id INT PRIMARY KEY AUTO_INCREMENT,
-      DATABASE_NAME VARCHAR(20),
       tag VARCHAR(20),
       description TEXT,
       frequency VARCHAR(5),
@@ -67,13 +69,17 @@ const queries = {
                                             FROM catalog.??
                                             WHERE asset_type = ?`,
 
+  SELECT_UNITS_FROM_CATALOG : `SELECT units FROM catalog.?? WHERE tag = ? AND frequency = ? AND transformation = ? AND aggregation = ? `                  ,  
+
   // SELECT_INDICATOR_FROM_EIA_INDICATORS : `SELECT DATABASE_NAME, description, frequency, aggregation, units, last_updated_time
   //                     FROM catalog.EIA
   //                     WHERE tag = ?`,
 
-  FIND_DUPLICATE_IN_INDICATOR_TABLE: `SELECT indicator_id, tag, frequency, transformation, last_updated_time, aggregation, asset_type 
+
+  FIND_DUPLICATE_IN_INDICATOR_TABLE: `SELECT indicator_id, tag, description, frequency, transformation, aggregation, units, last_updated_time, asset_type 
   FROM catalog.?? 
   WHERE tag = ? AND frequency = ? AND transformation = ? AND aggregation = ? AND asset_type = ?`,
+
   UPDATE_CATALOG: `UPDATE catalog.?? SET last_updated_time = ? WHERE indicator_id = ?`,
 
   TRUNCATE_TABLE: "TRUNCATE TABLE ??.??",
@@ -82,7 +88,7 @@ const queries = {
   //                                     FROM catalog.indicators
   // `
 
-  ADD_INDICATOR_TO_TABLE: `INSERT INTO catalog.?? (tag, frequency, transformation, description, aggregation, units,last_updated_time, asset_type) VALUES (?,?,?,?,?,?,?,?)`,
+  ADD_INDICATOR_TO_TABLE: `INSERT INTO catalog.?? (tag, description, frequency, transformation, aggregation, units, last_updated_time, asset_type) VALUES (?,?,?,?,?,?,?,?)`,
 };
 
 export default queries;

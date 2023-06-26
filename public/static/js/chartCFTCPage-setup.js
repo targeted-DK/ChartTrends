@@ -114,7 +114,7 @@ export function createHighcharts(
   seriesData.shift();
   graphnames.shift();
 
-  console.log(seriesData);
+  // console.log(seriesData);
   Highcharts.stockChart(newChartContainer.className, {
     
 

@@ -4,7 +4,8 @@
 const path = window.location.pathname;
 const chartName = path.split("/").pop();
 const eiatag = tag;
-const type = welltype;
+const subcategory = sub;
+
 
 let unit;
 
@@ -14,48 +15,48 @@ axios
     use: "EIA",
     //eia
     tag: eiatag,
+    //special cases for duc, drilled, completed
+    subcategory : subcategory
   })
   .then((response) => {
-   
-    if (tag == "DUC") {
+    
+    if (subcategory == "DUC" || subcategory == "completed" || subcategory == "drilled") {
       const dataFromRds = response.data.values;
       const names = response.data.names;
-      const eiaTableName = response.data.tag;
-    
+      const eiaTag = response.data.tag;
+      
       let index = 0;
       for (const dataArray of Object.values(dataFromRds)) {
         let convertedData = convertRDSDateFormatToFiveYearHighCharts(
           dataArray,
-          eiaTableName
+          eiaTag,
+          subcategory
         );
-        // convertedData.sort((a, b) => a[0] - b[0]);
-        let type_region = names[index];
-        type_region = (type === 'drilled' ? 'Drilled Wells '  + type_region.substring(4)  : type === 'completed' ? 'Completed Wells ' + type_region.substring(4) : 'DUC ' +  type_region.substring(4));
 
-        createHighcharts(convertedData, eiaTableName, type_region);
+     
+        // convertedData.sort((a, b) => a[0] - b[0]);
+        let regionName = names[index];
+       
+        regionName = (subcategory === 'drilled' ? 'Drilled Wells '  + regionName.substring(4)  : subcategory === 'completed' ? 'Completed Wells ' + regionName.substring(4) : 'DUC(Drilled but Uncompleted) ' +  regionName.substring(4));
+
+        createHighcharts(convertedData, eiaTag, subcategory, regionName);
         index++;
       }
     } else {
-      const indicators = response.data.indicators;
-      const dataFromRds = response.data.jsonOilDataArrays;
-      const tagsInIndicators = indicators.map((item) => item.tag);
-      const tableNames = Object.keys(dataFromRds);
+      const dataFromRds = response.data.values;
+      const names = response.data.names;
+      const eiaTag = response.data.tag;
+      const units = response.data.units;
+    
+  
       let count = 0;
 
       for (const dataArray of Object.values(dataFromRds)) {
-        const eiaTableName = tableNames[count];
-        const tagIndexInIndicators = tagsInIndicators.indexOf(eiaTableName);
+        const tableName = names[count];
+        const unit = units[count]
 
-        if (tagIndexInIndicators == -1) {
-          count++;
-          continue;
-        }
-
-        const catalog = indicators[tagIndexInIndicators];
-      
-        const parsedData = convertRDSDateFormatToFiveYearHighCharts(dataArray);
-        
-        createHighcharts(parsedData, eiaTableName, catalog);
+        const convertedData = convertRDSDateFormatToFiveYearHighCharts(dataArray, eiaTag, subcategory);
+        createHighcharts(convertedData, eiaTag, subcategory, tableName, unit);
         count++;
       }
     }
@@ -75,66 +76,48 @@ axios
  */
 export function convertRDSDateFormatToFiveYearHighCharts(
   dataFromRds,
-  eiaTableName = ""
+  eiaTag = "",
+  subcategory = "",
 ) {
 
 let parsedData;
-  if(eiaTableName == "DUC"){
-    if(type == "DUC"){
-      parsedData = dataFromRds.map(item => ({
-   
-        year : new Date(item.date).getFullYear(),
-        value: item.DUC
-      }));
-    }else if(type == "drilled"){
+  if(eiaTag == "oil"){
+    if(subcategory == "DUC" || subcategory == "drilled" || subcategory == "completed"){
     
       parsedData = dataFromRds.map(item => ({
-     
-      year : new Date(item.date).getFullYear(),
-      value: item.drilled
-    }))}else if(type == "completed"){
-      parsedData = dataFromRds.map(item => ({
-     
-      year : new Date(item.date).getFullYear(),
-      value: item.completed
-    }))}
+        time : new Date(item.date).toISOString().split('T')[0],
+        value: item.DUC || item.drilled || item.completed
+      }));
+    }
    
-} 
+} else if(eiaTag == "petroleum"){
+  
+  if(subcategory == "demand"){
+    parsedData = dataFromRds.map(item => ({
+      time : new Date(item.date).toISOString().split('T')[0],
+      value: item.value
+    }));
+
+  }
+}
   
 
-let yearData = {};
-
+let convertedData = {};
+  
 // Split the data into separate arrays for each year
 parsedData.forEach(data => {
-  const { year, value } = data;
-
+  const { time, value } = data;
+  const currentYear = new Date(time).getFullYear();
   
-  if (yearData.hasOwnProperty(year)) {
-    yearData[year].push(value);
+  if (convertedData.hasOwnProperty(currentYear)) {
+    convertedData[currentYear].push(value);
   } else {
-    yearData[year] = [value];
+    convertedData[currentYear] = [value];
   }
 });
 
-
-  // const convertedData = dataFromRds.map((item) => {
-  //   const milliseconds = Date.parse(item.date);
-
-  //   if (eiaTableName == "DUC") {
-  //     return [milliseconds, item.DUC];
-  //   } else {
-  //     return [milliseconds, item.value];
-  //   }
-
-  //   // if (eiaTableName == "DUC") {
-  //   //   return [milliseconds, item.drilled, item.completed, item.DUC];
-  //   // } else {
-  //   //   return [milliseconds, item.value];
-  //   // }
-  // });
-    // console.log(convertedData);
-
-  return yearData;
+  // console.log(convertedData);
+  return convertedData;
 }
 
 /**
@@ -142,23 +125,14 @@ parsedData.forEach(data => {
  *
  * Creates highchart with given array
  */
-export function createHighcharts(yearData, eiaTableName, catalog = "") {
+//or subcategory is tableName
+export function createHighcharts(convertedData, eiaTag, subcategory = "", tableName, unit = "count") {
   const container = document.getElementById("chart-container");
   var newChartContainer = document.createElement("div");
-
-  if(eiaTableName == "DUC"){
-    newChartContainer.className = "chart-container-" + catalog;
-    newChartContainer.id = "chart-container-" + catalog;
-
-
-
-  } else {
-    newChartContainer.className = "chart-container-" + eiaTableName;
-    newChartContainer.id = "chart-container-" + eiaTableName;
-  }
-
-  
  
+
+  newChartContainer.className = "chart-container-" + subcategory;
+  newChartContainer.id = "chart-container-" + subcategory;
   newChartContainer.style.width = "70%";
   newChartContainer.style.height = "700px";
   newChartContainer.style.position = "relative";
@@ -167,8 +141,8 @@ export function createHighcharts(yearData, eiaTableName, catalog = "") {
 
   container.appendChild(newChartContainer);
 
-  //for DUC catalog = only name
-  if (eiaTableName == "DUC") {
+  //for DUC subcategory = only name
+  // if (subcategory == "DUC" || subcategory == "completed" || subcategory == "drilled") {
 
      // Extract the data for the recent 5 years
     const currentYear = new Date().getFullYear();
@@ -176,10 +150,18 @@ export function createHighcharts(yearData, eiaTableName, catalog = "") {
     const recentFiveYearData = {};
     const yearList = Array.from({ length: numYearsToShow }, (_, index) => currentYear - numYearsToShow + 1 + index);
 
-   
+  
+    let timeline = "";
+    if(subcategory == "demand"){
+      timeline =  Array.from({ length: 52 }, (_, index) => `Week ${index + 1}`);
+    } else {
+      timeline = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    }
+    
+
     for(let i = numYearsToShow; i  > 0; i--){
       let year = currentYear - i + 1;
-      recentFiveYearData[year] = yearData[year];
+      recentFiveYearData[year] = convertedData[year];
     }
 
   
@@ -189,14 +171,14 @@ export function createHighcharts(yearData, eiaTableName, catalog = "") {
           type: 'line'
         },
         title: {
-          text: catalog + ' 5-Year'
+          text: tableName + ' 5-Year'
         },
         xAxis: {
-          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+          categories: timeline
         },
         yAxis: {
           title: {
-            text: 'counts'
+            text: unit,
           }
         },
         series: Object.entries(recentFiveYearData).map(([year, values]) => ({
@@ -229,93 +211,48 @@ export function createHighcharts(yearData, eiaTableName, catalog = "") {
         //       yAxis: 0,
         //     },
     
-
-
-
-    // Highcharts.stockChart(newChartContainer.className, {
-    //   rangeSelector: {
-    //     selected: 5,
-    //   },
-    //   title: {
-    //     text: catalog,
-    //   },
-    //   yAxis: [
-    //     {
-    //       title: {
-    //         text: "counts",
-    //       },
-    //       top: "15%",
-    //       height: "85%",
-    //     },
-    //   ],
-
-    //   series: [
-    //     {
-    //       name: "Drilled",
-    //       data: parsedData.map((row) => [row[0], row[1]]),
-    //       yAxis: 0,
-    //     },
-    //     {
-    //       name: "Completed",
-    //       data: parsedData.map((row) => [row[0], row[2]]),
-    //       yAxis: 0,
-    //     },
-    //     {
-    //       name: "DUC",
-    //       data: parsedData.map((row) => [row[0], row[3]]),
-    //       yAxis: 0,
-    //     },
-    //   ],
-    //   tooltip: {
-    //     xDateFormat: "%Y-%m-%d",
-    //   },
-
-    //   legend: {
-    //     enabled: true, // Set enabled to true to show legends
-    //   },
-    // });
-    // return;
   }
 
-  Highcharts.stockChart(newChartContainer.className, {
-    rangeSelector: {
-      selected: 1,
-    },
+//   // console.log(convertedData);
+//   Highcharts.stockChart(newChartContainer.className, {
+//     rangeSelector: {
+//       selected: 1,
+//     },
 
-    title: {
-      text: catalog.description,
-    },
+//     title: {
+//       text: subcategory,
+//     },
 
-    yAxis: [
-      {
-        title: {
-          text: catalog.units,
-        },
-        top: "15%",
-        height: "85%",
-      },
-      {
-        height: "15%",
-      },
-    ],
+//     yAxis: [
+//       {
+//         title: {
+//           text: unit,
+//         },
+//         top: "15%",
+//         height: "85%",
+//       },
+//       {
+//         height: "15%",
+//       },
+//     ],
 
-    plotOptions: {
-      flags: {
-        accessibility: {
-          exposeAsGroupOnly: true,
-          description: "Flagged events.",
-        },
-      },
-    },
+//     plotOptions: {
+//       flags: {
+//         accessibility: {
+//           exposeAsGroupOnly: true,
+//           description: "Flagged events.",
+//         },
+//       },
+//     },
 
-    series: [
-      {
-        data: convertedData,
-        id: "dataseries",
-        tooltip: {
-          valueDecimals: 4,
-        },
-      },
-    ],
-  });
-}
+//     series: [
+//       {
+//         data: convertedData,
+//         id: "dataseries",
+//         tooltip: {
+//           valueDecimals: 4,
+//         },
+//       },
+//     ],
+//   });
+// }
