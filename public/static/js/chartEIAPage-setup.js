@@ -19,7 +19,7 @@ axios
     subcategory : subcategory
   })
   .then((response) => {
-    
+      console.log(response);
     if (subcategory == "DUC" || subcategory == "completed" || subcategory == "drilled") {
       const dataFromRds = response.data.values;
       const names = response.data.names;
@@ -50,7 +50,6 @@ axios
     
   
       let count = 0;
-
       for (const dataArray of Object.values(dataFromRds)) {
         const tableName = names[count];
         const unit = units[count]
@@ -153,7 +152,7 @@ export function createHighcharts(convertedData, eiaTag, subcategory = "", tableN
   
     let timeline = "";
     if(subcategory == "demand"){
-      timeline =  Array.from({ length: 52 }, (_, index) => `Week ${index + 1}`);
+      timeline =  Array.from({ length: 53 }, (_, index) => `Week ${index + 1}`);
     } else {
       timeline = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     }
