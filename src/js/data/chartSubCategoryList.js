@@ -1,5 +1,6 @@
 import {
   eiaDataNGList,
+  eiaDataNGTags,
   eiaDataOilList,
   eiaDataOilTags,
   eiaDataPetroleumList,
@@ -67,7 +68,10 @@ export const EIAPetroleumStockList = Object.keys(eiaDataPetroleumList).slice(23,
 export const EIAPetroleumBig3Tags = eiaDataPetroleumTags.slice(28, 29)
 export const EIAPetroleumBig3List = Object.keys(eiaDataPetroleumList).slice(28,29)
 // export const EIAPetorleumWeeklyDemandTags = Object
-export const EIANGSubCategoryList = Object.keys(eiaDataNGList);
+
+export const EIANGSubCategoryList = ["storage"];
+export const EIANGStorageTags = eiaDataNGTags.slice(0,6);
+export const EIANGStorageList = Object.keys(eiaDataNGList).slice(0,6);
 
 // export const CFTC
 
@@ -94,7 +98,7 @@ export default {
   EIAPetroleumStockList,
   EIAPetroleumBig3Tags,
   EIAPetroleumBig3List,
- 
   EIANGSubCategoryList,
-
+  EIANGStorageTags,
+  EIANGStorageList
 };

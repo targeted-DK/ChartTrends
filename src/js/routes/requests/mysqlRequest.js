@@ -7,6 +7,9 @@ import database from "../../config/Database/serverConnection.js";
 import queries from "../../mysqlQueries.js";
 import {
   chartCategoryList,
+  EIANGStorageList,
+  EIANGStorageTags,
+  EIANGSubCategoryList,
   EIAOilExportList,
   EIAOilExportTags,
   EIAOilImportList,
@@ -251,13 +254,12 @@ export async function sendDataToRDS(mappedDataForRds) {
           [
             DATABASE_NAME,
             newTableName,
-            description,
             frequency,
             transformation,
             aggregation,
-            units,
-            lastUpdatedTime,
-            assetType,
+            // units,
+            // lastUpdatedTime,
+            // assetType,
           ],
           function (err, catalogQueryResult, field) {
             if (err) {
@@ -268,7 +270,7 @@ export async function sendDataToRDS(mappedDataForRds) {
               return;
             } else {
               console.log("FIND_DUPLICATE_IN_INDICATOR_TABLE executed");
-
+             
               if (catalogQueryResult[0] == null) {
                 database.query(
                   queries.ADD_INDICATOR_TO_TABLE,
@@ -318,7 +320,7 @@ export async function sendDataToRDS(mappedDataForRds) {
                         row[3],
                         indicator_id,
                       ]);
-                    console.log(tuples);
+                
                     database.query(
                       queries.CREATE_DATA_TABLE_DUC,
                       [DATABASE_NAME, newTableName, DATABASE_NAME],
@@ -527,8 +529,9 @@ export async function sendDataToRDS(mappedDataForRds) {
         } else {
           // console.log("Last Updated :" + catalogQueryResult[0].last_updated_time);
           // console.log("Today : " +  lastUpdatedTime);
-
+         
           if (catalogQueryResult[0].last_updated_time != lastUpdatedTime) {
+            console.log(catalogQueryResult);
             database.query(
               queries.UPDATE_CATALOG,
               [
@@ -583,7 +586,7 @@ export async function sendDataToRDS(mappedDataForRds) {
                 }
               }
             );
-          }
+          } 
         }
       }
     );
@@ -871,7 +874,8 @@ export function getDataFromRDS(json) {
     //@TODO - automate process of choosing weekly/4weekavg. For now, defualt value is 4weekavg.
     else if (
       EIAPetroleumSubCategoryList.includes(subcategory) ||
-      EIAOilSubCategoryList.includes(subcategory)
+      EIAOilSubCategoryList.includes(subcategory) ||
+      EIANGSubCategoryList.includes(subcategory)
       
     ) {
 
@@ -944,15 +948,24 @@ export function getDataFromRDS(json) {
             : null;
 
            
+      } else if(tag == 'ng' && EIANGSubCategoryList.includes(subcategory)){
+       
+        EIATag = subcategory == "storage"
+        ? EIANGStorageTags
+        : null;
+
+        EIAList = subcategory == "storage"
+        ? EIANGStorageList
+        : null;
       }
     
       return new Promise((resolve, reject) => {
-    
+      
         let promises = EIATag.map((tag) => {
          
           let tableName =
             tag + "_" + frequency + "_" + transformation + "_" + aggregation;
-
+          console.log(tableName);
           database.query(
             queries.SELECT_UNITS_FROM_CATALOG,
             [source, tag, frequency, transformation, aggregation],
@@ -962,6 +975,8 @@ export function getDataFromRDS(json) {
               }
 
               //result returns [ { units: 'MBBL/D' }
+           
+
               units.push(results[0].units);
             }
           );

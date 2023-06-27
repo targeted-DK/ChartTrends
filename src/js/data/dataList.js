@@ -453,55 +453,62 @@ export const eiaDataPetroleumTags = [
 
 export const eiaDataNGList = {
   //ng pirce
-  "Henry Hub Natural Gas Spot Price (Dollars per Million Btu)": `https://api.eia.gov/v2/natural-gas/pri/fut/data/?frequency=daily&data[0]=value&facets[series][]=RNGWHHD&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
-  "Liquefied Natural Gas Exports Price": `https://api.eia.gov/v2/natural-gas/pri/sum/data/?frequency=monthly&data[0]=value&facets[series][]=N9133US3&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`, //monthly
+  // "Henry Hub Natural Gas Spot Price (Dollars per Million Btu)": `https://api.eia.gov/v2/natural-gas/pri/fut/data/?frequency=daily&data[0]=value&facets[series][]=RNGWHHD&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+  // "Liquefied Natural Gas Exports Price": `https://api.eia.gov/v2/natural-gas/pri/sum/data/?frequency=monthly&data[0]=value&facets[series][]=N9133US3&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`, //monthly
   //ng storages by region
   "Weekly Lower 48 States Natural Gas Working Underground Storage (Billion Cubic Feet)": `https://api.eia.gov/v2/natural-gas/stor/wkly/data/?frequency=weekly&data[0]=value&facets[series][]=NW2_EPG0_SWO_R48_BCF&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
   "Weekly South Central Region Natural Gas Working Underground Storage (Billion Cubic Feet)": `https://api.eia.gov/v2/natural-gas/stor/wkly/data/?frequency=weekly&data[0]=value&facets[series][]=NW2_EPG0_SWO_R33_BCF&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
   "Weekly East Region Natural Gas Working Underground Storage (Billion Cubic Feet)": `https://api.eia.gov/v2/natural-gas/stor/wkly/data/?frequency=weekly&data[0]=value&facets[series][]=NW2_EPG0_SWO_R48_BCF&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
   "Weekly Salt Region Natural Gas Working Underground Storage (Billion Cubic Feet)": `https://api.eia.gov/v2/natural-gas/stor/wkly/data/?frequency=weekly&data[0]=value&facets[series][]=NW2_EPG0_SSO_R33_BCF&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+  "Weekly Nonsalt Region Natural Gas Working Underground Storage (Billion Cubic Feet)" :`https://api.eia.gov/v2/natural-gas/stor/wkly/data/?frequency=weekly&data[0]=value&facets[series][]=NW2_EPG0_SNO_R33_BCF&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
   "Weekly Mountain Region Natural Gas Working Underground Storage (Billion Cubic Feet)": `https://api.eia.gov/v2/natural-gas/stor/wkly/data/?frequency=weekly&data[0]=value&facets[series][]=NW2_EPG0_SWO_R34_BCF&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
   "Weekly Pacific Region Natural Gas Working Underground Storage (Billion Cubic Feet)": `https://api.eia.gov/v2/natural-gas/stor/wkly/data/?frequency=weekly&data[0]=value&facets[series][]=NW2_EPG0_SWO_R35_BCF&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
   "Weekly Midwest Region Natural Gas Working Underground Storage (Billion Cubic Feet)": `https://api.eia.gov/v2/natural-gas/stor/wkly/data/?frequency=weekly&data[0]=value&facets[series][]=NW2_EPG0_SWO_R32_BCF&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
-  //ng production
-  "U.S. Natural Gas Gross Withdrawals (MMcf)": `https://api.eia.gov/v2/natural-gas/sum/lsum/data/?frequency=monthly&data[0]=value&facets[series][]=N9010US2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
-  // NGM_EPG0_FGW_NUS_MMCFD	U.S. Natural Gas Gross Withdrawals (Million Cubic Feet per Day) + shorter history
-  "U.S. Natural Gas Gross Withdrawals from Gas Wells (MMcf)": `https://api.eia.gov/v2/natural-gas/sum/lsum/data/?frequency=monthly&data[0]=value&facets[series][]=N9011US2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
-  "U.S. Natural Gas Gross Withdrawals from Shale Gas (Million Cubic Feet)": `https://api.eia.gov/v2/natural-gas/sum/lsum/data/?frequency=monthly&data[0]=value&facets[series][]=NGM_EPG0_FGS_NUS_MMCF&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
-  //ng consumption by use
-  "U.S. Natural Gas Lease and Plant Fuel Consumption (MMcf)": `https://api.eia.gov/v2/natural-gas/cons/sum/data/?frequency=monthly&data[0]=value&facets[series][]=N9160US2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
-  "U.S. Natural Gas Residential Consumption (MMcf)": `https://api.eia.gov/v2/natural-gas/cons/sum/data/?frequency=monthly&data[0]=value&facets[series][]=N3010US2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
-  "Natural Gas Delivered to Consumers in the U.S. (MMcf)": `https://api.eia.gov/v2/natural-gas/cons/sum/data/?frequency=monthly&data[0]=value&facets[series][]=N3060US2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
-  "Natural Gas Deliveries to Commercial Consumers (Including Vehicle Fuel through 1996) in the U.S. (MMcf)": `https://api.eia.gov/v2/natural-gas/cons/sum/data/?frequency=monthly&data[0]=value&facets[series][]=N3020US2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
-  "U.S. Natural Gas Pipeline & Distribution Use (MMcf)": `https://api.eia.gov/v2/natural-gas/cons/sum/data/?frequency=monthly&data[0]=value&facets[series][]=N9170US2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
-  "U.S. Natural Gas Deliveries to Electric Power Consumers (MMcf)": `https://api.eia.gov/v2/natural-gas/cons/sum/data/?frequency=monthly&data[0]=value&facets[series][]=N3045US2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
-  "U.S. Natural Gas Vehicle Fuel Consumption (MMcf)": `https://api.eia.gov/v2/natural-gas/cons/sum/data/?frequency=monthly&data[0]=value&facets[series][]=N3025US2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
-  "U.S. Natural Gas Industrial Consumption (MMcf)": `https://api.eia.gov/v2/natural-gas/cons/sum/data/?frequency=monthly&data[0]=value&facets[series][]=N3035US2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+  // //ng production
+  // "U.S. Natural Gas Gross Withdrawals (MMcf)": `https://api.eia.gov/v2/natural-gas/sum/lsum/data/?frequency=monthly&data[0]=value&facets[series][]=N9010US2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+  // // NGM_EPG0_FGW_NUS_MMCFD	U.S. Natural Gas Gross Withdrawals (Million Cubic Feet per Day) + shorter history
+  // "U.S. Natural Gas Gross Withdrawals from Gas Wells (MMcf)": `https://api.eia.gov/v2/natural-gas/sum/lsum/data/?frequency=monthly&data[0]=value&facets[series][]=N9011US2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+  // "U.S. Natural Gas Gross Withdrawals from Shale Gas (Million Cubic Feet)": `https://api.eia.gov/v2/natural-gas/sum/lsum/data/?frequency=monthly&data[0]=value&facets[series][]=NGM_EPG0_FGS_NUS_MMCF&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+  // //ng consumption by use
+  // "U.S. Natural Gas Lease and Plant Fuel Consumption (MMcf)": `https://api.eia.gov/v2/natural-gas/cons/sum/data/?frequency=monthly&data[0]=value&facets[series][]=N9160US2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+  // "Natural Gas Delivered to Consumers in the U.S. (MMcf)": `https://api.eia.gov/v2/natural-gas/cons/sum/data/?frequency=monthly&data[0]=value&facets[series][]=N3060US2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+  // "Natural Gas Deliveries to Commercial Consumers (Including Vehicle Fuel through 1996) in the U.S. (MMcf)": `https://api.eia.gov/v2/natural-gas/cons/sum/data/?frequency=monthly&data[0]=value&facets[series][]=N3020US2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+  // "U.S. Natural Gas Pipeline & Distribution Use (MMcf)": `https://api.eia.gov/v2/natural-gas/cons/sum/data/?frequency=monthly&data[0]=value&facets[series][]=N9170US2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+  // "U.S. Natural Gas Deliveries to Electric Power Consumers (MMcf)": `https://api.eia.gov/v2/natural-gas/cons/sum/data/?frequency=monthly&data[0]=value&facets[series][]=N3045US2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+  // "U.S. Natural Gas Vehicle Fuel Consumption (MMcf)": `https://api.eia.gov/v2/natural-gas/cons/sum/data/?frequency=monthly&data[0]=value&facets[series][]=N3025US2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+  // "U.S. Natural Gas Industrial Consumption (MMcf)": `https://api.eia.gov/v2/natural-gas/cons/sum/data/?frequency=monthly&data[0]=value&facets[series][]=N3035US2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+  // "U.S. Natural Gas Residential Consumption (MMcf)": `https://api.eia.gov/v2/natural-gas/cons/sum/data/?frequency=monthly&data[0]=value&facets[series][]=N3010US2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+
+  // N9133US2	Liquefied U.S. Natural Gas Exports (MMcf)
+  // N9132US2	U.S. Natural Gas Pipeline Exports (MMcf)
+  // N9132MX2 	U.S. Natural Gas Pipeline Exports to Mexico (MMcf)
+  // N9132CN2	U.S. Natural Gas Pipeline Exports to Canada (MMcf)
 };
 
 export const eiaDataNGTags = [
-  "RNGWHHD",
-  "N9133US3",
+  // "RNGWHHD",
+  // "N9133US3",
   "NW2_EPG0_SWO_R48_BCF",
   "NW2_EPG0_SWO_R33_BCF",
   "NW2_EPG0_SWO_R48_BCF",
   "NW2_EPG0_SSO_R33_BCF",
+  "NW2_EPG0_SNO_R33_BCF",
   "NW2_EPG0_SWO_R34_BCF",
   "NW2_EPG0_SWO_R35_BCF",
   "NW2_EPG0_SWO_R32_BCF",
-  "N9010US2",
-  "N9011US2",
-  "NGM_EPG0_FGS_NUS_MMCF",
-  "N9160US2",
-  "NGM_EPG0_FGS_NUS_MMCF",
-  "N9160US2",
-  "N3010US2",
-  "N3060US2",
-  "N3020US2",
-  "N9170US2",
-  "N3045US2",
-  "N3025US2",
-  "N3035US2",
+  // "N9010US2",
+  // "N9011US2",
+  // "NGM_EPG0_FGS_NUS_MMCF",
+  // "N9160US2",
+  // "NGM_EPG0_FGS_NUS_MMCF",
+  // "N9160US2",
+  // "N3060US2",
+  // "N3020US2",
+  // "N9170US2",
+  // "N3045US2",
+  // "N3025US2",
+  // "N3035US2",
+  // "N3010US2",
 ];
 
 //this refers to custom table name on mysql database, NOT EIA tags or urls

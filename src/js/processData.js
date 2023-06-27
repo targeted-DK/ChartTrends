@@ -228,23 +228,23 @@ export async function updateEIADataset() {
       }
     }
 
-    // for (let [key, url] of Object.entries(eiaDataNGList)) {
-    //   try {
-    //     const apiurl = url + "&api_key=" + eiaAPIKey;
-    //     const response = await axios.get(apiurl);
-    //     let json = response.data.response;
+    for (let [key, url] of Object.entries(eiaDataNGList)) {
+      try {
+        const apiurl = url + "&api_key=" + eiaAPIKey;
+        const response = await axios.get(apiurl);
+        let json = response.data.response;
 
-    //     let code = response.data.response.data[0].series;
+        let code = response.data.response.data[0].series;
 
-    //     let result = await getGraphInfo(json, code, "EIA", "NG");
-    //     // orderedData[key] = data;
+        let result = await getGraphInfo(json, code, "EIA", "NG");
+        // orderedData[key] = data;
         
-    //     await sendDataToRDS(result);
-    //   } catch (error) {
-    //     failedDataParams.push(["EIA", key]);
-    //     console.log(error);
-    //   }
-    // }
+        await sendDataToRDS(result);
+      } catch (error) {
+        failedDataParams.push(["EIA", key]);
+        console.log(error);
+      }
+    }
   })().then(() => {
     const currentDate = new Date().toISOString().slice(0, 10);
     fs.writeFile(

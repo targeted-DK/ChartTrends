@@ -78,7 +78,7 @@ const queries = {
 
   FIND_DUPLICATE_IN_INDICATOR_TABLE: `SELECT indicator_id, tag, description, frequency, transformation, aggregation, units, last_updated_time, asset_type 
   FROM catalog.?? 
-  WHERE tag = ? AND frequency = ? AND transformation = ? AND aggregation = ? AND asset_type = ?`,
+  WHERE tag = ? AND frequency = ? AND transformation = ? AND aggregation = ?`,
 
   UPDATE_CATALOG: `UPDATE catalog.?? SET last_updated_time = ? WHERE indicator_id = ?`,
 

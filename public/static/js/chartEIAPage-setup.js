@@ -43,7 +43,7 @@ axios
         index++;
       }
     } else {
-
+     
     
       const dataFromRds = response.data.values;
       const names = response.data.names;
@@ -89,7 +89,7 @@ let parsedData;
         time : new Date(item.date).toISOString().split('T')[0],
         value: item.DUC || item.drilled || item.completed
       }));
-    } else if(subcategory == "demand" || subcategory == "export" || subcategory == "import" || subcategory == "stock" || subcategory == "production" || subcategory == "BigThreeProductStorage"){
+    } else if(subcategory == "demand" || subcategory == "export" || subcategory == "import" || subcategory == "stock" || subcategory == "production" || subcategory == "BigThreeProductStorage" || subcategory == "storage"){
  
     parsedData = dataFromRds.map(item => ({
       time : new Date(item.date).toISOString().split('T')[0],
@@ -100,6 +100,8 @@ let parsedData;
 
 
 let convertedData = {};
+
+// console.log(parsedData);
 
 // Split the data into separate arrays for each year
 parsedData.forEach(data => {
@@ -149,7 +151,7 @@ export function createHighcharts(convertedData, eiaTag, subcategory = "", tableN
 
   
     let timeline = "";
-    if(subcategory == "demand" || subcategory == "export" || subcategory == "import" || subcategory == "stock"){
+    if(subcategory == "demand" || subcategory == "export" || subcategory == "import" || subcategory == "stock" || subcategory == "storage"){
       timeline =  Array.from({ length: 53 }, (_, index) => `Week ${index + 1}`);
     } else {
       //DUC, drilled, completed, field production
