@@ -104,16 +104,21 @@ let convertedData = {};
 // console.log(parsedData);
 
 // Split the data into separate arrays for each year
-parsedData.forEach(data => {
-  const { time, value } = data;
-  const currentYear = new Date(time).getFullYear();
-  
-  if (convertedData.hasOwnProperty(currentYear)) {
-    convertedData[currentYear].push(value);
-  } else {
-    convertedData[currentYear] = [value];
-  }
-});
+if(subcategory != "production"){
+  parsedData.forEach(data => {
+    const { time, value } = data;
+    const currentYear = new Date(time).getFullYear();
+    
+    if (convertedData.hasOwnProperty(currentYear)) {
+      convertedData[currentYear].push(value);
+    } else {
+      convertedData[currentYear] = [value];
+    }
+  });
+} else {
+  convertedData = parsedData
+}
+
 
   // console.log(convertedData);
   return convertedData;
@@ -151,9 +156,15 @@ export function createHighcharts(convertedData, eiaTag, subcategory = "", tableN
 
   
     let timeline = "";
+    let linearData = "";
     if(subcategory == "demand" || subcategory == "export" || subcategory == "import" || subcategory == "stock" || subcategory == "storage"){
       timeline =  Array.from({ length: 53 }, (_, index) => `Week ${index + 1}`);
-    } else {
+    } else if(subcategory == "production"){
+      timeline = convertedData.map(item => item.time);
+      linearData = convertedData.map(item => item.value);
+      
+    }
+    else {
       //DUC, drilled, completed, field production
       timeline = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     }
@@ -164,7 +175,7 @@ export function createHighcharts(convertedData, eiaTag, subcategory = "", tableN
       recentFiveYearData[year] = convertedData[year];
     }
 
-  
+    if(subcategory != "production"){
       // Create the chart for the current year
       Highcharts.chart(newChartContainer, {
         chart: {
@@ -188,7 +199,7 @@ export function createHighcharts(convertedData, eiaTag, subcategory = "", tableN
           marker: {
             enabled: false // Disable the markers
           }
-        })),
+        }))  ,
 
         tooltip: {
           labelFormatter: function() {
@@ -207,6 +218,83 @@ export function createHighcharts(convertedData, eiaTag, subcategory = "", tableN
         },
       });
       return;
+    } else {
+      Highcharts.chart(newChartContainer, {
+        chart: {
+          type: 'line'
+        },
+        title: {
+          text: tableName
+        },
+        series: [{
+          name : tableName,
+          data: linearData,
+         
+          // marker: {
+          //   enabled: false // Disable the markers
+          // }
+        }],
+        xAxis: {
+          categories: timeline
+        },
+        yAxis: {
+          title: {
+            text: unit,
+          }
+        },
+      
+      
+        // tooltip: {
+        //   xDateFormat: "%Y-%m-%d",
+        // },
+
+        // rangeSelector: {
+        //   selected: 3, // Set the default range (0 = first, 1 = second, etc.)
+        //   buttons: [
+        //     {
+        //       type: "day",
+        //       count: 1,
+        //       text: "1d",
+        //     },
+        //     {
+        //       type: "week",
+        //       count: 1,
+        //       text: "1w",
+        //     },
+        //     {
+        //       type: "month",
+        //       count: 1,
+        //       text: "1m",
+        //     },
+        //     {
+        //       type: "year",
+        //       count: 2,
+        //       text: "2y",
+        //     },
+        //     {
+        //       type: "all",
+        //       text: "All",
+        //     },
+        //   ],
+        // },
+        // tooltip: {
+        //   labelFormatter: function() {
+
+
+        //     return yearList[this.index];;
+        //   },
+        //     },
+        // legend: {
+        //   labelFormatter: function() {
+
+
+        //     return yearList[this.index];;
+        //   },
+        //   enabled: true, // Set enabled to true to show legends
+        // },
+      });
+      return;
+    }
 
       // {
         //       name: "Drilled",

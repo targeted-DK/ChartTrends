@@ -545,6 +545,7 @@ function createFeaturedHighcharts(jsonData) {
   //"US Government Expenditure Interest Rate and % of GDP", -> same as compare tho
   else if (use == "compare") {
     //case for comparing two graphs with same y-axis
+   
     if (!adjustYaxis) {
       chartOptions = {
         title: {
