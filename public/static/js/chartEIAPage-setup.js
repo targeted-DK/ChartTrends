@@ -153,23 +153,22 @@ export function createHighcharts(convertedData, eiaTag, subcategory = "", tableN
     const numYearsToShow = 5;
     const recentFiveYearData = {};
     const yearList = Array.from({ length: numYearsToShow }, (_, index) => currentYear - numYearsToShow + 1 + index);
-
   
     let timeline = "";
     let linearData = "";
-    if(subcategory == "demand" || subcategory == "export" || subcategory == "import" || subcategory == "stock" || subcategory == "storage"){
+    if(subcategory == "demand" || subcategory == "export" || subcategory == "import" || subcategory == "stock" || subcategory == "storage" || subcategory == "BigThreeProductStorage"){
       timeline =  Array.from({ length: 53 }, (_, index) => `Week ${index + 1}`);
+     
     } else if(subcategory == "production"){
       timeline = convertedData.map(item => item.time);
       linearData = convertedData.map(item => item.value);
-      
     }
     else {
       //DUC, drilled, completed, field production
       timeline = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     }
     
-
+  
     for(let i = numYearsToShow; i  > 0; i--){
       let year = currentYear - i + 1;
       recentFiveYearData[year] = convertedData[year];
