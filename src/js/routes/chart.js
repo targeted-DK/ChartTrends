@@ -11,7 +11,7 @@ import {
   eiaDataOilTags,
   eiaDataPetroleumTags,
 } from "../data/dataList.js";
-import { EIACategoryList, EIAPetroleumFourWeekAvgDemandTags, EIAPetroleumSubCategoryList } from "../data/chartSubCategoryList.js";
+import { EIACategoryList, EIAOilSubCategoryList, EIAPetroleumFourWeekAvgDemandTags, EIAPetroleumSubCategoryList } from "../data/chartSubCategoryList.js";
 
 var router = express.Router();
 
@@ -168,7 +168,7 @@ router.get("/eia/:tag/:sub", (req, res, next) => {
 
   if (tag == "oil") {
   
-    if (eiaDataOilTags.includes(subcategory)) {
+    if (EIAOilSubCategoryList.includes(subcategory)) {
    
       res.render(fileName, { tag: tag, subcategory: subcategory });
       return;

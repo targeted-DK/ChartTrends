@@ -7,12 +7,25 @@ import database from "../../config/Database/serverConnection.js";
 import queries from "../../mysqlQueries.js";
 import {
   chartCategoryList,
+  EIAOilExportList,
+  EIAOilExportTags,
+  EIAOilImportList,
+  EIAOilImportTags,
+  EIAOilProductionTags,
+  EIAOilProductonList,
+  EIAOilStockList,
+  EIAOilStockTags,
+  EIAOilSubCategoryList,
+  EIAPetroleumBig3List,
+  EIAPetroleumBig3Tags,
   EIAPetroleumExportList,
   EIAPetroleumExportTags,
   EIAPetroleumFourWeekAvgDemandList,
   EIAPetroleumFourWeekAvgDemandTags,
   EIAPetroleumImportList,
   EIAPetroleumImportTags,
+  EIAPetroleumStockList,
+  EIAPetroleumStockTags,
   EIAPetroleumSubCategoryList,
 } from "../../data/chartSubCategoryList.js";
 import dataList, {
@@ -739,7 +752,7 @@ export function getDataFromRDS(json) {
   //@TODO - fix source in mysqlrequest where it is name is database_name or fix this
   else if (source == "EIA") {
     //edge case for DUC, since it has unusual table name in mysql database
-
+    //edge case of combining EIA datasets, such as product storage
     if (
       subcategory == "DUC" ||
       subcategory == "completed" ||
@@ -778,7 +791,7 @@ export function getDataFromRDS(json) {
             result.values = promise;
             result.names = eiaDUCList;
             result.tag = tag;
-            
+
             resolve(result);
           })
           .catch((error) => {
@@ -786,79 +799,199 @@ export function getDataFromRDS(json) {
             reject(error);
           });
       });
-    }
+    } 
+    // else if(subcategory == "Big3ProductStorage"){
+    //   let frequency =  "w";
+    //  let transformation = "lin";
+    //  let aggregation = "avg";
+    //  let units = [];
+
+    //  let EIATag = EIAPetroleumStockTags.slice(0,3);
+    //  let EIAList = EIAPetroleumStockList.slice(0,3);
+
+    //  return new Promise((resolve, reject) => {
+       
+    //   let promises = EIATag.map((tag) => {
+       
+    //     let tableName =
+    //       tag + "_" + frequency + "_" + transformation + "_" + aggregation;
+
+    //     database.query(
+    //       queries.SELECT_UNITS_FROM_CATALOG,
+    //       [source, tag, frequency, transformation, aggregation],
+    //       (error, results) => {
+    //         if (error) {
+    //           console.log(error.stack);
+    //         }
+
+    //         //result returns [ { units: 'MBBL/D' }
+    //         units.push(results[0].units);
+    //       }
+    //     );
+  
+    //     return new Promise((resolve, reject) => {
+    //       database.query(
+    //         queries.SELECT_ALL_ROWS_FROM_TABLE,
+    //         [source, tableName],
+    //         (err, rows) => {
+    //           if (err) {
+    //             console.log(
+    //               `Error fetching rows from ${tableName}: ${err.stack}`
+    //             );
+    //             reject(err);
+    //             return;
+    //           }
+    //           //rather than putting it in array just return as a promise
+    //          console.log(rows);
+    //           resolve(rows);
+    //         }
+    //       );
+    //     });
+    //   });
+
+    //   Promise.all(promises)
+    //     .then((promise) => {
+         
+    //       let result = {};
+    //       result.values = promise;
+    //       result.names = EIAList;
+    //       result.tag = tag;
+    //       result.units = units;
+
+    //       resolve(result);
+    //     })
+    //     .catch((error) => {
+    //       console.log(`Error fetching data: ${error.stack}`);
+    //       reject(error);
+    //     });
+    // });
+
+    // }
 
     //@TODO - automate process of choosing weekly/4weekavg. For now, defualt value is 4weekavg.
-    
-    else if (EIAPetroleumSubCategoryList.includes(subcategory)) {
+    else if (
+      EIAPetroleumSubCategoryList.includes(subcategory) ||
+      EIAOilSubCategoryList.includes(subcategory)
+      
+    ) {
 
-      let frequency = (subcategory == "demand") ? "4wavg" : "w";
+    
+      let frequency =
+        subcategory == "demand"
+          ? "4wavg"
+          : subcategory == "production"
+          ? "m"
+          : "w";
       let transformation = "lin";
       let aggregation = "avg";
       let units = [];
-      let EIAPetroleumTag = (subcategory == "demand") ? EIAPetroleumFourWeekAvgDemandTags 
-      : (subcategory == "export") ? EIAPetroleumExportTags 
-      : (subcategory == "import") ? EIAPetroleumImportTags
-      : null; 
-      let EIAPetroleumList = (subcategory == "demand") ? EIAPetroleumFourWeekAvgDemandList
-      : (subcategory == "export") ? EIAPetroleumExportList
-      : (subcategory == "import") ? EIAPetroleumImportList
-      : null;
       
+      let EIATag ;
+      let EIAList ;
+      
+      if (tag == 'oil' && EIAOilSubCategoryList.includes(subcategory)) {
+    
+       
+        EIATag =
+          subcategory == "export"
+            ? EIAOilExportTags
+            : subcategory == "import"
+            ? EIAOilImportTags
+            : subcategory == "stock"
+            ? EIAOilStockTags
+            : subcategory == "production"
+            ? EIAOilProductionTags
+            : null;
 
+      
+        EIAList =
+          subcategory == "export"
+            ? EIAOilExportList
+            : subcategory == "import"
+            ? EIAOilImportList
+            : subcategory == "stock"
+            ? EIAOilStockList
+            : subcategory == "production"
+            ? EIAOilProductonList
+            : null;
+
+           
+      } else if (tag == 'petroleum' && EIAPetroleumSubCategoryList.includes(subcategory)) {
+       
+        EIATag =
+          subcategory == "demand"
+            ? EIAPetroleumFourWeekAvgDemandTags
+            : subcategory == "export"
+            ? EIAPetroleumExportTags
+            : subcategory == "import"
+            ? EIAPetroleumImportTags
+            : subcategory == "stock"
+            ? EIAPetroleumStockTags
+            : subcategory == "BigThreeProductStorage"
+            ? EIAPetroleumBig3Tags
+            : null;
+        EIAList =
+          subcategory == "demand"
+            ? EIAPetroleumFourWeekAvgDemandList
+            : subcategory == "export"
+            ? EIAPetroleumExportList
+            : subcategory == "import"
+            ? EIAPetroleumImportList
+            : subcategory == "stock"
+            ? EIAPetroleumStockList  
+            : subcategory == "BigThreeProductStorage"
+            ? EIAPetroleumBig3List
+            : null;
+
+           
+      }
+    
       return new Promise((resolve, reject) => {
-        let promises = EIAPetroleumTag.map(
-          (tag) => {
+    
+        let promises = EIATag.map((tag) => {
+         
+          let tableName =
+            tag + "_" + frequency + "_" + transformation + "_" + aggregation;
 
-            let tableName =
-              tag +
-              "_" +
-              frequency +
-              "_" +
-              transformation +
-              "_" +
-              aggregation;
-          
+          database.query(
+            queries.SELECT_UNITS_FROM_CATALOG,
+            [source, tag, frequency, transformation, aggregation],
+            (error, results) => {
+              if (error) {
+                console.log(error.stack);
+              }
+
+              //result returns [ { units: 'MBBL/D' }
+              units.push(results[0].units);
+            }
+          );
+    
+          return new Promise((resolve, reject) => {
             database.query(
-              queries.SELECT_UNITS_FROM_CATALOG,
-              [source, tag, frequency, transformation, aggregation],
-              (error, results) => {
-                
-                if (error) {
-                  console.log(error.stack);
+              queries.SELECT_ALL_ROWS_FROM_TABLE,
+              [source, tableName],
+              (err, rows) => {
+                if (err) {
+                  console.log(
+                    `Error fetching rows from ${tableName}: ${err.stack}`
+                  );
+                  reject(err);
+                  return;
                 }
-              
-                //result returns [ { units: 'MBBL/D' } 
-                units.push(results[0].units);
+                //rather than putting it in array just return as a promise
                
+                resolve(rows);
               }
             );
-
-            return new Promise((resolve, reject) => {
-              database.query(
-                queries.SELECT_ALL_ROWS_FROM_TABLE,
-                [source, tableName],
-                (err, rows) => {
-                  if (err) {
-                    console.log(
-                      `Error fetching rows from ${tableName}: ${err.stack}`
-                    );
-                    reject(err);
-                    return;
-                  }
-                  //rather than putting it in array just return as a promise
-                  resolve(rows);
-                }
-              );
-            });
-          }
-        );
+          });
+        });
 
         Promise.all(promises)
           .then((promise) => {
+           
             let result = {};
             result.values = promise;
-            result.names = EIAPetroleumList;
+            result.names = EIAList;
             result.tag = tag;
             result.units = units;
 
@@ -875,17 +1008,17 @@ export function getDataFromRDS(json) {
     //   let indicators;
     //   let assetType = tag;
     //   let jsonOilDataArrays = {};
-      // database.query(
-      //   queries.SELECT_ALL_INDICATOR_ROWS_BY_ASSET_TYPE,
-      //   [source, assetType],
-      //   (error, results) => {
-      //     if (error) {
-      //       console.log(error.stack);
-      //     }
-      //     indicators = results;
-      //     // console.log(indicators);
-      //   }
-      // );
+    // database.query(
+    //   queries.SELECT_ALL_INDICATOR_ROWS_BY_ASSET_TYPE,
+    //   [source, assetType],
+    //   (error, results) => {
+    //     if (error) {
+    //       console.log(error.stack);
+    //     }
+    //     indicators = results;
+    //     // console.log(indicators);
+    //   }
+    // );
 
     //   database.query(queries.SHOW_ALL_TABLES, source, (error, tables) => {
     //     if (error) {

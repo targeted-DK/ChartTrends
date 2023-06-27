@@ -31,6 +31,31 @@ function getGraphInfo(jsonObject, code, source, assetType = "") {
     });
   } else if (source == "EIA") {
     return new Promise((resolve, reject) => {
+
+      //special case
+    
+      if(code == "BigThreeProductStorage"){
+    
+        const newGraphObj = {
+          date:
+            jsonObject.date,
+          value: jsonObject.value,
+          code: code,
+          frequency : "w",
+          last_updated_time: jsonObject.date[jsonObject.date.length -1], //this exists as 'realtime_end' in FRED dataset, basically both means the latest updated date.
+          description: "Product Storage (Gasoline + Distillate + Jet Fuel)",
+          units: "MBBL",
+          output_type: "", //use this as a default value for all EIA dataset
+          transformation: "lin", //use this as a default value for all EIA dataset
+          aggregation: "avg", //use this as a default value for all EIA dataset
+          source: source,
+          assetType: assetType,
+        };
+
+        resolve(newGraphObj);
+        return;
+      }
+
       let size = Object.keys(jsonObject.data).length;
 
       try {

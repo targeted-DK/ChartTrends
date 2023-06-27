@@ -167,40 +167,84 @@ export async function updateEIADataset() {
       }
     }
 
+    let gasolineStock = ""
+    let distillateStock = ""
+    let jetFuelStock = ""
+    let tempJson;
+ 
     for (let [key, url] of Object.entries(eiaDataPetroleumList)) {
+
+      let result;
+
       try {
-        const apiurl = url + "&api_key=" + eiaAPIKey;
-        const response = await axios.get(apiurl);
-        let json = response.data.response;
-
-        let code = response.data.response.data[0].series;
-
-        let result = await getGraphInfo(json, code, "EIA", "Petroleum");
-
-        await sendDataToRDS(result);
-      } catch (error) {
-        failedDataParams.push(["EIA", key]);
-        console.log(error);
-      }
-    }
-
-    for (let [key, url] of Object.entries(eiaDataNGList)) {
-      try {
-        const apiurl = url + "&api_key=" + eiaAPIKey;
-        const response = await axios.get(apiurl);
-        let json = response.data.response;
-
-        let code = response.data.response.data[0].series;
-
-        let result = await getGraphInfo(json, code, "EIA", "NG");
-        // orderedData[key] = data;
         
-        await sendDataToRDS(result);
+        //special case : ProductBigThreeStorage
+        if(key == "Product Storage (Gasoline + Distillate + Jet Fuel)"){
+          
+          let samePeriodLength = Math.min(gasolineStock.length, distillateStock.length, jetFuelStock.length);
+          let bigThreeStock = gasolineStock.slice(-samePeriodLength).map((num, index) => num + distillateStock.slice(-samePeriodLength)[index] + jetFuelStock.slice(-samePeriodLength)[index]);
+      
+          let tempJsonForBigThree = {};
+
+          tempJsonForBigThree["date"] = tempJson.data.map((data) => data["period"]).slice(-samePeriodLength);
+          tempJsonForBigThree["value"] = bigThreeStock;
+        
+
+          result = await getGraphInfo(tempJsonForBigThree, "BigThreeProductStorage", "EIA", "Petroleum");
+    
+          
+        } else {
+        const apiurl = url + "&api_key=" + eiaAPIKey;
+        const response = await axios.get(apiurl);
+        let json = response.data.response;
+
+        let code = response.data.response.data[0].series;
+
+        result = await getGraphInfo(json, code, "EIA", "Petroleum");
+      
+        //gasoline stock as the shortest dataset
+        if(key == "U.S. Ending Stocks of Total Gasoline (Thousand Barrels)" ){
+          gasolineStock = json.data.map((data) => data["value"])
+          tempJson = json;
+     
+        } else if(key ==  "U.S. Ending Stocks of Distillate Fuel Oil (Thousand Barrels)"){
+          distillateStock =json.data.map((data) => data["value"])
+        
+        }
+        else if("U.S. Ending Stocks of Kerosene-Type Jet Fuel (Thousand Barrels)"){
+          jetFuelStock =json.data.map((data) => data["value"])
+         
+        } 
+        
+   
+        // await sendDataToRDS(result);
+      }
+
+      await sendDataToRDS(result);
+        
       } catch (error) {
         failedDataParams.push(["EIA", key]);
         console.log(error);
       }
     }
+
+    // for (let [key, url] of Object.entries(eiaDataNGList)) {
+    //   try {
+    //     const apiurl = url + "&api_key=" + eiaAPIKey;
+    //     const response = await axios.get(apiurl);
+    //     let json = response.data.response;
+
+    //     let code = response.data.response.data[0].series;
+
+    //     let result = await getGraphInfo(json, code, "EIA", "NG");
+    //     // orderedData[key] = data;
+        
+    //     await sendDataToRDS(result);
+    //   } catch (error) {
+    //     failedDataParams.push(["EIA", key]);
+    //     console.log(error);
+    //   }
+    // }
   })().then(() => {
     const currentDate = new Date().toISOString().slice(0, 10);
     fs.writeFile(

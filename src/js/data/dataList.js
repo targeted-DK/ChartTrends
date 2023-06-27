@@ -316,17 +316,14 @@ export const fredDataList = {
 };
 
 // const apiKey = process.env.eiaAPIKey;
+//careful with desc, asc
 export const eiaDataOilList = {
   //oil stocks
   "U.S. Ending Stocks of Crude Oil (Thousand Barrels)": `https://api.eia.gov/v2/petroleum/sum/sndw/data/?frequency=weekly&data[0]=value&facets[series][]=WCRSTUS1&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
   "U.S. Ending Stocks of Crude Oil in SPR (Thousand Barrels)": `https://api.eia.gov/v2/petroleum/sum/sndw/data/?frequency=weekly&data[0]=value&facets[series][]=WCSSTUS1&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
   "U.S. Ending Stocks excluding SPR of Crude Oil (Thousand Barrels)": `https://api.eia.gov/v2/petroleum/sum/sndw/data/?frequency=weekly&data[0]=value&facets[series][]=WCESTUS1&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
   "U.S. Ending Stocks of Crude Oil and Petroleum Products (Thousand Barrels)": `https://api.eia.gov/v2/petroleum/sum/sndw/data/?frequency=weekly&data[0]=value&facets[series][]=WTTSTUS1&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
-  "U.S. Ending Stocks of Finished Motor Gasoline (Thousand Barrels)": `https://api.eia.gov/v2/petroleum/sum/sndw/data/?frequency=weekly&data[0]=value&facets[series][]=WGFSTUS1&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
-  "U.S. Ending Stocks of Distillate Fuel Oil (Thousand Barrels)": `https://api.eia.gov/v2/petroleum/sum/sndw/data/?frequency=weekly&data[0]=value&facets[series][]=WDISTUS1&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
-  "U.S. Ending Stocks of Kerosene-Type Jet Fuel (Thousand Barrels)": `https://api.eia.gov/v2/petroleum/sum/sndw/data/?frequency=weekly&data[0]=value&facets[series][]=WKJSTUS1&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
-  "U.S. Ending Stocks of Residual Fuel Oil (Thousand Barrels)": `https://api.eia.gov/v2/petroleum/sum/sndw/data/?frequency=weekly&data[0]=value&facets[series][]=WRESTUS1&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
-
+ 
   //field production and exports, imports- how about 4 week averages?
   "U.S. Exports of Crude Oil (Thousand Barrels per Day)": `https://api.eia.gov/v2/petroleum/move/wkly/data/?frequency=weekly&data[0]=value&facets[series][]=WCREXUS2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
   "U.S. Imports of Crude Oil (Thousand Barrels per Day)": `https://api.eia.gov/v2/petroleum/move/wkly/data/?frequency=weekly&data[0]=value&facets[series][]=WCRIMUS2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
@@ -347,15 +344,19 @@ export const eiaDataOilTags = [
   "WCSSTUS1",
   "WCESTUS1",
   "WTTSTUS1",
-  "WGFSTUS1",
-  "WDISTUS1",
-  "WKJSTUS1",
-  "WRESTUS1",
+  "WCREXUS2",
+  "WCRIMUS2",
+  "MCRFP4E1",
+  "NW2_EPG0_SWO_R48_BCF",
+  "NGM_EPG0_SAO_R48_MMCF",
 
-  //-----
-  "DUC",
-  "completed",
-  "drilled"
+
+ 
+
+  // //-----
+  // "DUC",
+  // "completed",
+  // "drilled"
 ];
 
 export const eiaDUCList = [
@@ -402,23 +403,36 @@ export const eiaDataPetroleumList = {
   "U.S. Exports of Total Distillate (Thousand Barrels per Day)": `https://api.eia.gov/v2/petroleum/move/wkly/data/?frequency=weekly&data[0]=value&facets[series][]=WDIEXUS2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
   "U.S. Exports of Kerosene-Type Jet Fuel (Thousand Barrels per Day)": `https://api.eia.gov/v2/petroleum/move/wkly/data/?frequency=weekly&data[0]=value&facets[series][]=WKJEXUS2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
   "U.S. Exports of Residual Fuel Oil (Thousand Barrels per Day)": `https://api.eia.gov/v2/petroleum/move/wkly/data/?frequency=weekly&data[0]=value&facets[series][]=WREEXUS2&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+
+  //stocks - originally in oil category, not petroleum category
+
+  "U.S. Ending Stocks of Finished Motor Gasoline (Thousand Barrels)": `https://api.eia.gov/v2/petroleum/sum/sndw/data/?frequency=weekly&data[0]=value&facets[series][]=WGFSTUS1&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+  "U.S. Ending Stocks of Total Gasoline (Thousand Barrels)" : `https://api.eia.gov/v2/petroleum/stoc/wstk/data/?frequency=weekly&data[0]=value&facets[series][]=WGTSTUS1&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+  "U.S. Ending Stocks of Distillate Fuel Oil (Thousand Barrels)": `https://api.eia.gov/v2/petroleum/sum/sndw/data/?frequency=weekly&data[0]=value&facets[series][]=WDISTUS1&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+  "U.S. Ending Stocks of Kerosene-Type Jet Fuel (Thousand Barrels)": `https://api.eia.gov/v2/petroleum/sum/sndw/data/?frequency=weekly&data[0]=value&facets[series][]=WKJSTUS1&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+  "U.S. Ending Stocks of Residual Fuel Oil (Thousand Barrels)": `https://api.eia.gov/v2/petroleum/sum/sndw/data/?frequency=weekly&data[0]=value&facets[series][]=WRESTUS1&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000`,
+  "Product Storage (Gasoline + Distillate + Jet Fuel)" : ``,
 };
 
 export const eiaDataPetroleumTags = [
+  //4weekavg
   "WGFUPUS2",
   "WKJUPUS2",
   "WDIUPUS2",
   "WPRUP_NUS_2",
   "WWOUP_NUS_2",
   "WREUPUS2",
+    //weekly
   "WGFUPUS2",
   "WKJUPUS2",
   "WDIUPUS2",
   "WPRUP_NUS_2",
   "WWOUP_NUS_2",
   "WREUPUS2",
+  //refinery utilizations
   "WPULEUS3",
   "WPULEUS3",
+  //exports and imports
   "WRPNTUS2",
   "WGTIMUS2",
   "WDIIMUS2",
@@ -428,6 +442,13 @@ export const eiaDataPetroleumTags = [
   "WDIEXUS2",
   "WKJEXUS2",
   "WREEXUS2",
+  //stocks
+  "WGFSTUS1",
+  "WGTSTUS1",
+  "WDISTUS1",
+  "WKJSTUS1",
+  "WRESTUS1",
+  "BigThreeProductStorage"
 ];
 
 export const eiaDataNGList = {
