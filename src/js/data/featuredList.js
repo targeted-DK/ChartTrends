@@ -482,6 +482,54 @@ let featuredList = [
     comparisonChartName: "T10Y3M",
   },
 
+  {
+    title: "Baker Hughes Rig Count",
+    urlendpoint: "rigcount",
+    use: "enumerate",
+    chartToCreate: false,
+    adjustYaxis: false,
+    tag: ["latAm", "europe", "africa","middleEast", "asiaPacific", "totalInt", "canada", "US", "totalWorld"],
+    source: ["BakerHughes", "BakerHughes", "BakerHughes", "BakerHughes", "BakerHughes","BakerHughes", "BakerHughes", "BakerHughes","BakerHughes"],
+    frequency: ["m","m","m","m","m","m","m","m","m",],
+    transformation: ["lin","lin","lin","lin","lin","lin","lin","lin","lin"],
+    aggregation: ["avg","avg","avg","avg","avg","avg","avg","avg","avg"],
+    adjustment: [1, 1, 1,1, 1,1,1,1,1],
+    units: [
+      "count",
+      "count",
+      "count",
+      "count",
+      "count",
+      "count",
+      "count",
+      "count",
+      "count",
+    ],
+    comparisonChartName: null,
+    colors : ['#1f77b4', '#7f7f7f', "#FF00FF",'#8c564b', '#ff7f0e', '#9467bd', '#2ca02c', '#d62728' , '#e377c2'],
+  },
+
+  {
+    title: "US Rig Count(Oil + Gas) vs. WTI price",
+    urlendpoint: "rigcount_wti",
+    use: "compare",
+    chartToCreate: false,
+    adjustYaxis: true,
+    tag: ["US", "WTISPLC"],
+    source: ["BakerHughes", "FRED"],
+    frequency: ["m","m"],
+    transformation: ["lin","lin"],
+    aggregation: ["avg","avg"],
+    adjustment: [1, 1],
+    units: [
+      "count",
+      "dollars"
+    ],
+    comparisonChartName: "WTISPLC",
+    // colors : ['#1f77b4', '#7f7f7f', "#FF00FF",'#8c564b', '#ff7f0e', '#9467bd', '#2ca02c', '#d62728' , '#e377c2'],
+  },
+
+
  
   
 ];

@@ -19,20 +19,13 @@ import {
   cftcList,
   nasdaqDataLinkList,
 } from "./data/dataList.js";
-import url from "url";
 import { permutation } from "js-combinatorics";
 import fs from "fs";
 import http from "http";
-import https from "https";
 import cftcAPIcreator from "./routes/requests/cftcAPI/cftcAPIcreator.js";
-import { log } from "console";
 import { tempList } from "./data/tempList.js";
-import e, { json } from "express";
-import { format } from "path";
 
-const axiosInstance = axios.create({
-  baseURL: "http://localhost:3000",
-});
+
 
 /**
  * Modify this list for FRED data on the main page
@@ -148,7 +141,7 @@ export async function updateEIADataset() {
         const response = await axios.get(apiurl);
         let json = response.data.response;
         let code = response.data.response.data[0].series;
-      
+
         // json.frequency = response.data.response.frequency;
         // json.description = response.data.response['series-description'];
         // // json.description = description;
@@ -167,61 +160,74 @@ export async function updateEIADataset() {
       }
     }
 
-    let gasolineStock = ""
-    let distillateStock = ""
-    let jetFuelStock = ""
+    let gasolineStock = "";
+    let distillateStock = "";
+    let jetFuelStock = "";
     let tempJson;
- 
-    for (let [key, url] of Object.entries(eiaDataPetroleumList)) {
 
+    for (let [key, url] of Object.entries(eiaDataPetroleumList)) {
       let result;
 
       try {
-        
         //special case : ProductBigThreeStorage
-        if(key == "Product Storage (Gasoline + Distillate + Jet Fuel)"){
-          
-          let samePeriodLength = Math.min(gasolineStock.length, distillateStock.length, jetFuelStock.length);
-          let bigThreeStock = gasolineStock.slice(-samePeriodLength).map((num, index) => num + distillateStock.slice(-samePeriodLength)[index] + jetFuelStock.slice(-samePeriodLength)[index]);
-      
+        if (key == "Product Storage (Gasoline + Distillate + Jet Fuel)") {
+          let samePeriodLength = Math.min(
+            gasolineStock.length,
+            distillateStock.length,
+            jetFuelStock.length
+          );
+          let bigThreeStock = gasolineStock
+            .slice(-samePeriodLength)
+            .map(
+              (num, index) =>
+                num +
+                distillateStock.slice(-samePeriodLength)[index] +
+                jetFuelStock.slice(-samePeriodLength)[index]
+            );
+
           let tempJsonForBigThree = {};
 
-          tempJsonForBigThree["date"] = tempJson.data.map((data) => data["period"]).slice(-samePeriodLength);
+          tempJsonForBigThree["date"] = tempJson.data
+            .map((data) => data["period"])
+            .slice(-samePeriodLength);
           tempJsonForBigThree["value"] = bigThreeStock;
-        
 
-          result = await getGraphInfo(tempJsonForBigThree, "BigThreeProductStorage", "EIA", "Petroleum");
-    
-          
+          result = await getGraphInfo(
+            tempJsonForBigThree,
+            "BigThreeProductStorage",
+            "EIA",
+            "Petroleum"
+          );
         } else {
-        const apiurl = url + "&api_key=" + eiaAPIKey;
-        const response = await axios.get(apiurl);
-        let json = response.data.response;
+          const apiurl = url + "&api_key=" + eiaAPIKey;
+          const response = await axios.get(apiurl);
+          let json = response.data.response;
 
-        let code = response.data.response.data[0].series;
+          let code = response.data.response.data[0].series;
 
-        result = await getGraphInfo(json, code, "EIA", "Petroleum");
-      
-        //gasoline stock as the shortest dataset
-        if(key == "U.S. Ending Stocks of Total Gasoline (Thousand Barrels)" ){
-          gasolineStock = json.data.map((data) => data["value"])
-          tempJson = json;
-     
-        } else if(key ==  "U.S. Ending Stocks of Distillate Fuel Oil (Thousand Barrels)"){
-          distillateStock =json.data.map((data) => data["value"])
-        
+          result = await getGraphInfo(json, code, "EIA", "Petroleum");
+
+          //gasoline stock as the shortest dataset
+          if (
+            key == "U.S. Ending Stocks of Total Gasoline (Thousand Barrels)"
+          ) {
+            gasolineStock = json.data.map((data) => data["value"]);
+            tempJson = json;
+          } else if (
+            key ==
+            "U.S. Ending Stocks of Distillate Fuel Oil (Thousand Barrels)"
+          ) {
+            distillateStock = json.data.map((data) => data["value"]);
+          } else if (
+            "U.S. Ending Stocks of Kerosene-Type Jet Fuel (Thousand Barrels)"
+          ) {
+            jetFuelStock = json.data.map((data) => data["value"]);
+          }
+
+          // await sendDataToRDS(result);
         }
-        else if("U.S. Ending Stocks of Kerosene-Type Jet Fuel (Thousand Barrels)"){
-          jetFuelStock =json.data.map((data) => data["value"])
-         
-        } 
-        
-   
-        // await sendDataToRDS(result);
-      }
 
-      await sendDataToRDS(result);
-        
+        await sendDataToRDS(result);
       } catch (error) {
         failedDataParams.push(["EIA", key]);
         console.log(error);
@@ -238,7 +244,7 @@ export async function updateEIADataset() {
 
         let result = await getGraphInfo(json, code, "EIA", "NG");
         // orderedData[key] = data;
-        
+
         await sendDataToRDS(result);
       } catch (error) {
         failedDataParams.push(["EIA", key]);
@@ -467,7 +473,7 @@ const transformationOptionstemp = [
   // "chg",
   "ch1",
   // "pch",
-  "pc1"
+  "pc1",
   // "pca",
   // "cch",
   // "cca",
@@ -693,13 +699,13 @@ export async function convertCopperCSVToJson() {
       });
 
       let json = {};
-      json.date = extractedData.map(row => {
+      json.date = extractedData.map((row) => {
         return row.date;
-      })
-      
-      json.value = extractedData.map(row => {
+      });
+
+      json.value = extractedData.map((row) => {
         return row.value;
-      })
+      });
       json.frequency = "d";
       json.code = "copper";
       json.last_updated_time = extractedData[extractedData.length - 1].date;
@@ -726,37 +732,207 @@ export async function getDataFromMetalsAPI() {
     process.env.getDataFromMetalsAPI;
 }
 
-// export async function getBakerHughesDataset(){
-//   const url = 'https://rigcount.bakerhughes.com/intl-rig-count'; // replace with the URL of the webpage to scrape
-//   const fileName = './src/js/data/excels/' +  'BakerHughes-rig-count' + formattedDate + '.xlsx';
+export async function getBakerHughesDataset() {
 
-//   https.get(url, response => {
+  //@TODO - fetch url automatically
+  const fileUrl = 'https://rigcount.bakerhughes.com/static-files/66ad1a03-195a-4d09-84ee-2229ee5ef32c';
 
-//     let data = '';
+  axios({
+    url: fileUrl,
+    method: "GET",
+    responseType: "arraybuffer",
+  }).then(async (response) => {
+    let fileName = 'Worldwide Rig Count'
+    let folderPath = "./src/js/data/excels/" 
+    const filePath = folderPath + fileName + ".xlsx"
 
-//     response.on('data', chunk => {
-//       data += chunk;
-//     });
+    fs.writeFileSync(filePath,
+      response.data
+    );
+    
+  
+    // 'International Rig Counts for May 2023.xlsx',
+    // const rigCountFilePattern = /^Worldwide Rig Count (\w+ \d{4})\.xlsx$/;
+      // const rigCountFilePattern = /^Worldwide Rig Count.xlsx$/;
 
-//     response.on('end', () => {
+  // fs.readdir(folderPath, (err, files) => {
+  //   if (err) {
+  //     console.error("Error occurred while reading directory:", err);
+  //     return;
+  //   }
+  //   const matchingFiles = files.filter((file) =>
+  //     rigCountFilePattern.test(file)
+  //   );
 
-//       const doc = new DOMParser().parseFromString(data, 'text/html');
+  //   if (matchingFiles.length === 0) {
+  //     console.log("No matching files found.");
+  //     return;
+  //   }
+  //   filePath = folderPath + matchingFiles.pop();
+  // })
 
-//       const href = doc.evaluate('/html/body/div[2]/div/div/div/div[2]/article/div/div[2]/div/div/div[1]/div/div/div/table/tbody/tr[1]/td[2]/div/div/article/div/div/div/div/span[1]/a', doc, null, XPathResult.STRING_TYPE, null).stringValue;
 
-//       https.get(href, response => {
-//         const contentLength = response.headers['content-length'];
-//         let downloadedLength = 0;
+    const rigCountExcelSheet = xlsx.readFile(filePath);
+    const sheetName = rigCountExcelSheet.SheetNames[0];
+    const worksheet = rigCountExcelSheet.Sheets[sheetName];
+    let csvContent = xlsx.utils.sheet_to_csv(worksheet);
 
-//         response.pipe(fs.createWriteStream(fileName)).on('finish', () => {
-//           console.log(`Downloaded file '${fileName}' from '${href}'`);
-//         });
-//         console.log(data);
-//         response.on('data', chunk => {
-//           downloadedLength += chunk.length;
-//           console.log(`Downloaded ${downloadedLength} of ${contentLength} bytes (${((downloadedLength / contentLength) * 100).toFixed(2)}%)`);
-//         });
-//       });
-//     });
-//   });
-// }
+    //starts from row 7 : year and continents
+    //monthly data : 8~19, average : 20
+    //space : 21
+    //total rows per year : 15;
+
+    const totalRegionNum = 9;
+    const dataStartRowIdx = 6;
+    const yearAndLocationIdx = 8;
+    const numOfDataRows = 15; //12 months and average
+    const regionNames = [
+      "latAm",
+      "europe",
+      "africa",
+      "middleEast",
+      "asiaPacific",
+      "totalInt",
+      "canada",
+      "US",
+      "totalWorld",
+    ];
+    let rigDatasetJson = [];
+    let latAm = [];
+    let europe = [];
+    let africa = [];
+    let middleEast = [];
+    let asiaPacific = [];
+    let totalInt = [];
+    let canada = [];
+    let US = [];
+    let totalWorld = [];
+
+    rigDatasetJson.push(
+      latAm,
+      europe,
+      africa,
+      middleEast,
+      asiaPacific,
+      totalInt,
+      canada,
+      US,
+      totalWorld
+    );
+    csvtojson({
+      noheader: true,
+      output: "csv",
+    })
+      .fromString(csvContent)
+      .then(async (csvRow) => {
+        let totalYears = (csvRow.length - 6) / 15;
+        const taskResults = [];
+
+        // Run asynchronous tasks
+        const tasks = [];
+        for (let i = 0; i < totalYears; i++) {
+          tasks.push(
+            readDataFromBakerHughesWorldRigCounts(
+              csvRow.slice(
+                dataStartRowIdx + i * numOfDataRows,
+                dataStartRowIdx + (i + 1) * numOfDataRows
+              )
+            )
+          );
+        }
+
+        let rigDataset = await Promise.all(tasks);
+
+        // for(let j = totalYears - 1; j >= 0 ; j--){
+        rigDataset = rigDataset.reverse();
+
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
+        let year = currentYear - totalYears + 1;
+
+        let regionIdx = 0;
+        for (let i = 0; i < totalYears; i++) {
+          for (let j = 0; j < totalRegionNum; j++) {
+            let temp = rigDataset[i][j].map((value, index) => {
+              let month = index;
+              let day = 2
+              let date = new Date(year, month, day)
+            
+              return [date, value];
+            });
+
+            rigDatasetJson[regionIdx].push(
+              ...temp.map(([date, value]) => ({ date, value }))
+            );
+            regionIdx++;
+          }
+          year++;
+          regionIdx = 0;
+        }
+
+      
+        for (let i = 0; i < totalRegionNum; i++) {
+          let json = {};
+
+          json.date = rigDatasetJson[i].map((row) => {
+            return row.date
+          });
+
+          
+          json.value = rigDatasetJson[i].map((row) => {
+            return row.value;
+          });
+
+          json.frequency = "m";
+          json.code = regionNames[i];
+          json.last_updated_time = `${currentYear}-${currentMonth}`;
+
+          json.description = "Number of rigs downloaded from Baker Hughes";
+          json.units = "counts";
+          json.output_type = ""; //use this as a default value for all EIA dataset
+          json.transformation = "lin"; //use this as a default value for all EIA dataset
+          json.aggregation = "avg"; //use this as a default value for all EIA dataset
+          json.source = "BakerHughes";
+          json.assetType = "rigs";
+        
+           await sendDataToRDS(json);  
+        }
+      });
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+}
+
+
+function readDataFromBakerHughesWorldRigCounts(rows) {
+  // An array to store the results of each task
+
+  // let year = rows[0][1]
+  let result = [];
+  for (let i = 0; i < 9; i++) {
+    result.push([]);
+  }
+  // 'Latin America', 'Europe', 'Africa', 'Middle East', 'Asia Pacific',  'Total Intl.', 'Canada','U.S.', 'Total World' ,'avg
+
+  //each months
+  for (let i = 1; i < 13; i++) {
+
+    let idx = 2;
+    if(rows[i][idx].replace("$", "") != ''){
+      result[0].push(rows[i][idx++].replace("$", ""));
+      result[1].push(rows[i][idx++].replace("$", ""));
+      result[2].push(rows[i][idx++].replace("$", ""));
+      result[3].push(rows[i][idx++].replace("$", ""));
+      result[4].push(rows[i][idx++].replace("$", ""));
+      result[5].push(rows[i][idx++].replace("$", ""));
+      result[6].push(rows[i][idx++].replace("$", ""));
+      result[7].push(rows[i][idx++].replace("$", ""));
+      result[8].push(rows[i][idx].replace("$", ""));
+      idx = 2;
+    } 
+    
+  }
+  //
+  return result;
+}

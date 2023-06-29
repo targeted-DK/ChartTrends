@@ -168,7 +168,6 @@ export function createHighcharts(convertedData, eiaTag, subcategory = "", tableN
       timeline = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     }
     
-  
     for(let i = numYearsToShow; i  > 0; i--){
       let year = currentYear - i + 1;
       recentFiveYearData[year] = convertedData[year];

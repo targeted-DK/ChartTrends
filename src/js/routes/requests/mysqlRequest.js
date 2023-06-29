@@ -177,6 +177,7 @@ export async function sendDataToRDS(mappedDataForRds) {
   //warning : DUC uses different format : data - region - date:values
   let tag = mappedDataForRds.code;
   let dateData = mappedDataForRds.date;
+  // console.log(dateData);
   let valueData = mappedDataForRds.value;
   let outputType = mappedDataForRds.output_type;
   let lastUpdatedTime = mappedDataForRds.last_updated_time;
@@ -193,6 +194,7 @@ export async function sendDataToRDS(mappedDataForRds) {
   // console.log(valueData);
 
   // TODO : get units and graph description from fred web using cheerio
+
   if (database.authorized) {
     console.log("Database Accessed");
 
@@ -300,6 +302,7 @@ export async function sendDataToRDS(mappedDataForRds) {
 
                     let data = dataset[region];
                     let dateData = Object.keys(data);
+                   
                     let values = Object.values(data);
                     let drilledData = values.map((item) =>
                       item.drilled == "--" ? 0 : item.drilled
@@ -531,7 +534,7 @@ export async function sendDataToRDS(mappedDataForRds) {
           // console.log("Today : " +  lastUpdatedTime);
          
           if (catalogQueryResult[0].last_updated_time != lastUpdatedTime) {
-            console.log(catalogQueryResult);
+            // console.log(catalogQueryResult);
             database.query(
               queries.UPDATE_CATALOG,
               [
@@ -590,9 +593,21 @@ export async function sendDataToRDS(mappedDataForRds) {
         }
       }
     );
+
+   
   } else {
     console.log("Does not have access to database");
+
+  // database.end((err) => {
+  //   if (err) {
+  //     console.error('Error closing MySQL connection:', err);
+  //   }
+  //   console.log('MySQL connection closed.');
+  // });
+
+
   }
+
 }
 
 export function sendEiaDataToRds() {}

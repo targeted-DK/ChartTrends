@@ -20,6 +20,7 @@ const connection = mysql.createConnection({
 connection.connect(function(error) {
   if (error) throw error;
   console.log("Connected to RDS Database on AWS");
+ 
 });
 
 //GRANT ALL PRIVILEGES ON *.* TO 'username'@'%' WITH GRANT OPTION;

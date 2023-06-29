@@ -23,6 +23,7 @@ axios
     for (let data of jsonData.values) {
      
       let convertedData = convertRDSDateFormatToHighCharts(data);
+     
       convertedDataList.push(convertedData);
     }
 
@@ -52,6 +53,7 @@ function convertRDSDateFormatToHighCharts(dataFromRds) {
  
  
   //convert and sort
+ 
   const convertedData = dataFromRds.map((item, index) => {
     const milliseconds = Date.parse(item.date);
     let result = [milliseconds, item.value];
@@ -95,6 +97,7 @@ function createFeaturedHighcharts(jsonData) {
   let use = jsonData.use;
   let adjustYaxis = jsonData.adjustYaxis;
   let newUnits = jsonData.newUnits;
+  let colors = jsonData.colors;
   let comparisonChartNameIndex =
     Object.values(names).indexOf(comparisonChartName);
   let desiredDay = "Wednesday"; //Used to align timestamp - some weekly data records on friday. Use Wendesday since its default value for many weekly indicators
@@ -372,7 +375,6 @@ function createFeaturedHighcharts(jsonData) {
   // newChartContainer.style.left = "20%";
 
   container.appendChild(newChartContainer);
-
   let chartOptions;
   //special case 1 : SP500_domestic_liquidity_indicator
   if (use == "case1") {
@@ -740,12 +742,13 @@ function createFeaturedHighcharts(jsonData) {
     }
     //enumerate case
   }else if(use == "diff_format"){
-  
+   
     chartOptions = {
       title: {
         text: title,
       },
       series: [
+       
         ...adjustedData.map((dataset, index) => ({
           name: names[index],
           data: dataset,
@@ -811,7 +814,7 @@ function createFeaturedHighcharts(jsonData) {
         ],
       },
 
-    
+      colors: colors,
       legend: {
         labelFormatter: function() {
           // Get the index of the series
