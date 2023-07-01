@@ -1,0 +1,3 @@
+FRED,WALCL,lin,d,avg
+FRED,WALCL,ch1,d,avg
+FRED,WALCL,pc1,d,avg

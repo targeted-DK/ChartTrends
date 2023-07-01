@@ -12,6 +12,7 @@ let macroList = [];
 let ratioList = [];
 let bondsList = [];
 let fedList = [];
+let oilList = [];
 
 let fredDataUrlendpoints = [];
 let featuredUrlendpoints = [];
@@ -19,21 +20,22 @@ let macroUrlendpoints = [];
 let ratioUrlendpoints = [];
 let bondsUrlendpoints = [];
 let fedUrlendpoints = [];
+let oilUrlendpoints = [];
 
 
 axios
   .get("/getSearchBarList")
   .then((res)=>{
+
     fredDataList = Object.keys(res.data.fredDataList);
     fredDataUrlendpoints = Object.values(res.data.fredDataList);
-
     featuredList = res.data.featuredList;
     macroList = res.data.macroList;
     ratioList = res.data.ratioList;
     bondsList = res.data.bondsList;
     fedList = res.data.fedList;
-    
-   
+    oilList = res.data.oilList;
+  
     // featuredUrlendpoints = res.data.featuredList.map((obj) => obj.urlendpoint)
     // macroUrlendpoints = res.data.macroList.map((obj) => obj.urlendpoint)
     // ratioUrlendpoints = res.data.ratioList.map((obj) => obj.urlendpoint)
@@ -116,8 +118,6 @@ inputElement.addEventListener("keydown", function (event) {
       // Store the reference to the currently selected button for the next iteration
       previousSelectedButton = selectedButton;
           
-       
-       
 }
 });
 
@@ -136,53 +136,90 @@ function onInputChange() {
 //       }
 
 //   })
+
+const trie = new Trie();
+
+
+
   fredDataList.forEach((dataName) => {
  
-    if (dataName.substr(0, key.length).toLowerCase() === key) {
-      filteredNames.push(dataName);
-    }
+    trie.insert(dataName)
+
+    const closestMatch = trie.findClosestMatch(dataName);
+
+    filteredNames.push(closestMatch);
+    // if (dataName.substr(0, key.length).toLowerCase() === key) {
+    //   filteredNames.push(dataName);
+    // }
   });
 
   featuredList.forEach((obj) => {
-    if (obj.title.substr(0, key.length).toLowerCase() === key) {
-      filteredNames.push(obj.title);
-    }
+
+    trie.insert(obj.title)
+    const closestMatch = trie.findClosestMatch(obj.title);
+    filteredNames.push(closestMatch);
+    // if (obj.title.substr(0, key.length).toLowerCase() === key) {
+    //   filteredNames.push(obj.title);
+    // }
   });
 
   macroList.forEach((obj) => {
-    if (obj.title.substr(0, key.length).toLowerCase() === key) {
-      filteredNames.push(obj.title);
-    }
+    trie.insert(obj.title)
+    const closestMatch = trie.findClosestMatch(obj.title);
+    filteredNames.push(closestMatch)
+    // if (obj.title.substr(0, key.length).toLowerCase() === key) {
+    //   filteredNames.push(obj.title);
+    // }
   });
 
   ratioList.forEach((obj) => {
-    if (obj.title.substr(0, key.length).toLowerCase() === key) {
-      filteredNames.push(obj.title);
-    }
+    trie.insert(obj.title)
+    const closestMatch = trie.findClosestMatch(obj.title);
+    filteredNames.push(closestMatch)
+    // if (obj.title.substr(0, key.length).toLowerCase() === key) {
+    //   filteredNames.push(obj.title);
+    // }
   });
 
   bondsList.forEach((obj) => {
-    if (obj.title.substr(0, key.length).toLowerCase() === key) {
-      filteredNames.push(obj.title);
-    }
+    trie.insert(obj.title)
+    const closestMatch = trie.findClosestMatch(obj.title);
+    filteredNames.push(closestMatch)
+    // if (obj.title.substr(0, key.length).toLowerCase() === key) {
+    //   filteredNames.push(obj.title);
+    // }
   });
 
   fedList.forEach((obj) => {
-    if (obj.title.substr(0, key.length).toLowerCase() === key) {
-      filteredNames.push(obj.title);
-    }
+    trie.insert(obj.title)
+    const closestMatch = trie.findClosestMatch(obj.title);
+    filteredNames.push(closestMatch)
+    // if (obj.title.substr(0, key.length).toLowerCase() === key) {
+    //   filteredNames.push(obj.title);
+    // }
   });
 
+  oilList.forEach((obj) => {
+    trie.insert(obj.title)
+    const closestMatch = trie.findClosestMatch(obj.title);
+    filteredNames.push(closestMatch)
+    // if (obj.title.substr(0, key.length).toLowerCase() === key) {
+    
+    //   filteredNames.push(obj.title);
+    // }
+  });
 
   createAutoCompleteDropDown(filteredNames);
 }
 
 function createAutoCompleteDropDown(list) {
+  
   const dropDownElement = document.createElement("ul");
   dropDownElement.className = "autocomplete-list";
   dropDownElement.id = "autocomplete-list";
 
   list.forEach((dataName) => {
+
     var listItem = document.createElement("li");
     var itemButton = document.createElement("button");
 
@@ -244,6 +281,7 @@ function onSubmitButtonClick() {
     // var foundItem = list.find((obj) => Object.keys(obj)[0] === key);
     let urlendpoint;
     let listType;
+  
     macroList.map((obj) => {
       if (obj.title === input) {
         urlendpoint = obj.urlendpoint;
@@ -291,12 +329,29 @@ function onSubmitButtonClick() {
       return;
     });
 
+    oilList.map((obj) => {
+      if (obj.title === input) {
+        urlendpoint = obj.urlendpoint;
+        listType = "EIA"
+        sendRequestAndNavigateCustomChart(listType, urlendpoint);
+      } 
+      return;
+    });
+
   }
 
   function sendRequestAndNavigateCustomChart(listType, urlendpoint) {
     var xhr = new XMLHttpRequest();
     
+
+    if(listType == "EIA"){
+      xhr.open("GET", "/chart/" + urlendpoint, true);
+    } else {
+
       xhr.open("GET", "/chart/" + listType + "/" + urlendpoint, true);
+    }
+    
+     
       xhr.onload = function () {
         if (xhr.status === 404) {
           // Display an error message or redirect to a custom 404 page
@@ -304,10 +359,82 @@ function onSubmitButtonClick() {
           window.location.href = "/404";
         } else {
           // Redirect to the requested page
-          window.location.href = "/chart/" + listType + "/" +  urlendpoint;
+
+            if(listType == "EIA"){
+              window.location.href = "/chart/" + urlendpoint;
+            } else {
+              window.location.href = "/chart/" + listType + "/" +  urlendpoint;
+            }
         }
       };
       xhr.send();
     } 
   }
  
+
+  class TrieNode {
+    constructor() {
+      this.children = {};
+      this.isEndOfWord = false;
+    }
+  }
+  
+  class Trie {
+    constructor() {
+      this.root = new TrieNode();
+    }
+  
+    insert(word) {
+      let node = this.root;
+      for (let i = 0; i < word.length; i++) {
+        const char = word[i];
+        if (!(char in node.children)) {
+          node.children[char] = new TrieNode();
+        }
+        node = node.children[char];
+      }
+      node.isEndOfWord = true;
+    }
+  
+    searchPrefix(prefix) {
+      let node = this.root;
+      for (let i = 0; i < prefix.length; i++) {
+        const char = prefix[i];
+        if (!(char in node.children)) {
+          return false;
+        }
+        node = node.children[char];
+      }
+      return true;
+    }
+  
+    findClosestMatch(key) {
+      let closestMatch = '';
+      let node = this.root;
+  
+      for (let i = 0; i < key.length; i++) {
+        const char = key[i];
+        if (char in node.children) {
+          closestMatch += char;
+          node = node.children[char];
+        } else {
+          break;
+        }
+      }
+  
+      const traverse = (node, prefix) => {
+        if (node.isEndOfWord) {
+          closestMatch = prefix;
+        }
+  
+        for (const char in node.children) {
+          traverse(node.children[char], prefix + char);
+        }
+      };
+  
+      traverse(node, closestMatch);
+  
+      return closestMatch;
+    }
+  }
+  
