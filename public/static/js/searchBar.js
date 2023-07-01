@@ -137,78 +137,76 @@ function onInputChange() {
 
 //   })
 
-const trie = new Trie();
+// const trie = new Trie();
 
 
 
   fredDataList.forEach((dataName) => {
  
-    trie.insert(dataName)
-
-    const closestMatch = trie.findClosestMatch(dataName);
-
-    filteredNames.push(closestMatch);
-    // if (dataName.substr(0, key.length).toLowerCase() === key) {
-    //   filteredNames.push(dataName);
-    // }
+     // trie.insert(obj.title)
+    // const closestMatch = trie.findClosestMatch(obj.title);
+    // filteredNames.push(closestMatch);
+    if (dataName.substr(0, key.length).toLowerCase() === key) {
+      filteredNames.push(dataName);
+    }
   });
 
   featuredList.forEach((obj) => {
 
-    trie.insert(obj.title)
-    const closestMatch = trie.findClosestMatch(obj.title);
-    filteredNames.push(closestMatch);
-    // if (obj.title.substr(0, key.length).toLowerCase() === key) {
-    //   filteredNames.push(obj.title);
-    // }
+    // trie.insert(obj.title)
+    // const closestMatch = trie.findClosestMatch(obj.title);
+    // filteredNames.push(closestMatch);
+    if (obj.title.substr(0, key.length).toLowerCase() === key) {
+      filteredNames.push(obj.title);
+    }
   });
 
   macroList.forEach((obj) => {
-    trie.insert(obj.title)
-    const closestMatch = trie.findClosestMatch(obj.title);
-    filteredNames.push(closestMatch)
-    // if (obj.title.substr(0, key.length).toLowerCase() === key) {
-    //   filteredNames.push(obj.title);
-    // }
+    // trie.insert(obj.title)
+    // const closestMatch = trie.findClosestMatch(obj.title);
+    // filteredNames.push(closestMatch)
+    if (obj.title.substr(0, key.length).toLowerCase() === key) {
+      filteredNames.push(obj.title);
+    }
   });
 
   ratioList.forEach((obj) => {
-    trie.insert(obj.title)
-    const closestMatch = trie.findClosestMatch(obj.title);
-    filteredNames.push(closestMatch)
-    // if (obj.title.substr(0, key.length).toLowerCase() === key) {
-    //   filteredNames.push(obj.title);
-    // }
+  //   trie.insert(obj.title)
+  //   const closestMatch = trie.findClosestMatch(obj.title);
+  //   filteredNames.push(closestMatch)
+    if (obj.title.substr(0, key.length).toLowerCase() === key) {
+      filteredNames.push(obj.title);
+    }
   });
 
   bondsList.forEach((obj) => {
-    trie.insert(obj.title)
-    const closestMatch = trie.findClosestMatch(obj.title);
-    filteredNames.push(closestMatch)
-    // if (obj.title.substr(0, key.length).toLowerCase() === key) {
-    //   filteredNames.push(obj.title);
-    // }
+    // trie.insert(obj.title)
+    // const closestMatch = trie.findClosestMatch(obj.title);
+    // filteredNames.push(closestMatch)
+    if (obj.title.substr(0, key.length).toLowerCase() === key) {
+      filteredNames.push(obj.title);
+    }
   });
 
   fedList.forEach((obj) => {
-    trie.insert(obj.title)
-    const closestMatch = trie.findClosestMatch(obj.title);
-    filteredNames.push(closestMatch)
-    // if (obj.title.substr(0, key.length).toLowerCase() === key) {
-    //   filteredNames.push(obj.title);
-    // }
+    // trie.insert(obj.title)
+    // const closestMatch = trie.findClosestMatch(obj.title);
+    // filteredNames.push(closestMatch)
+    if (obj.title.substr(0, key.length).toLowerCase() === key) {
+      filteredNames.push(obj.title);
+    }
   });
 
   oilList.forEach((obj) => {
-    trie.insert(obj.title)
-    const closestMatch = trie.findClosestMatch(obj.title);
-    filteredNames.push(closestMatch)
-    // if (obj.title.substr(0, key.length).toLowerCase() === key) {
+    // trie.insert(obj.title)
+    // const closestMatch = trie.findClosestMatch(obj.title);
+    // filteredNames.push(closestMatch)
+    if (obj.title.substr(0, key.length).toLowerCase() === key) {
     
-    //   filteredNames.push(obj.title);
-    // }
+      filteredNames.push(obj.title);
+    }
   });
-
+ 
   createAutoCompleteDropDown(filteredNames);
 }
 
@@ -371,70 +369,3 @@ function onSubmitButtonClick() {
     } 
   }
  
-
-  class TrieNode {
-    constructor() {
-      this.children = {};
-      this.isEndOfWord = false;
-    }
-  }
-  
-  class Trie {
-    constructor() {
-      this.root = new TrieNode();
-    }
-  
-    insert(word) {
-      let node = this.root;
-      for (let i = 0; i < word.length; i++) {
-        const char = word[i];
-        if (!(char in node.children)) {
-          node.children[char] = new TrieNode();
-        }
-        node = node.children[char];
-      }
-      node.isEndOfWord = true;
-    }
-  
-    searchPrefix(prefix) {
-      let node = this.root;
-      for (let i = 0; i < prefix.length; i++) {
-        const char = prefix[i];
-        if (!(char in node.children)) {
-          return false;
-        }
-        node = node.children[char];
-      }
-      return true;
-    }
-  
-    findClosestMatch(key) {
-      let closestMatch = '';
-      let node = this.root;
-  
-      for (let i = 0; i < key.length; i++) {
-        const char = key[i];
-        if (char in node.children) {
-          closestMatch += char;
-          node = node.children[char];
-        } else {
-          break;
-        }
-      }
-  
-      const traverse = (node, prefix) => {
-        if (node.isEndOfWord) {
-          closestMatch = prefix;
-        }
-  
-        for (const char in node.children) {
-          traverse(node.children[char], prefix + char);
-        }
-      };
-  
-      traverse(node, closestMatch);
-  
-      return closestMatch;
-    }
-  }
-  

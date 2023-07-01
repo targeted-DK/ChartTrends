@@ -5,6 +5,7 @@ import featuredList from "./data/featuredList.js";
 import macroList from "./data/macroList.js";
 import ratioList from "./data/ratioList.js";
 import { fredDataList } from "./dataList.js";
+import oilList from "./oilList.js";
 
 // import {featuredList} from "./featuredList.js";
 // localStorage.setItem("fredDataList", JSON.stringify(fredDataList));
@@ -143,6 +144,12 @@ function onInputChange() {
   });
 
   fedList.forEach((obj) => {
+    if (obj.title.substr(0, key.length).toLowerCase() === key) {
+      filteredNames.push(obj.title);
+    }
+  });
+
+  oilList.forEach((obj) => {
     if (obj.title.substr(0, key.length).toLowerCase() === key) {
       filteredNames.push(obj.title);
     }
