@@ -282,7 +282,7 @@ function onSubmitButtonClick() {
     });
 
     oilList.map((obj) => {
-      if (obj.title === input) {
+      if (obj.title === key) {
         urlendpoint = obj.urlendpoint;
         listType = "EIA"
         sendRequestAndNavigateCustomChart(listType, urlendpoint);
@@ -306,7 +306,6 @@ function onSubmitButtonClick() {
 
       xhr.open("GET", "/chart/" + listType + "/" + urlendpoint, true);
     }
-    
      
       xhr.onload = function () {
         if (xhr.status === 404) {
