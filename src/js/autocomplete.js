@@ -281,6 +281,16 @@ function onSubmitButtonClick() {
       return;
     });
 
+    oilList.map((obj) => {
+      if (obj.title === input) {
+        urlendpoint = obj.urlendpoint;
+        listType = "EIA"
+        sendRequestAndNavigateCustomChart(listType, urlendpoint);
+      } 
+      return;
+    });
+
+
 
 
 
@@ -289,7 +299,15 @@ function onSubmitButtonClick() {
   function sendRequestAndNavigateCustomChart(listType, urlendpoint) {
     var xhr = new XMLHttpRequest();
     
+
+    if(listType == "EIA"){
+      xhr.open("GET", "/chart/" + urlendpoint, true);
+    } else {
+
       xhr.open("GET", "/chart/" + listType + "/" + urlendpoint, true);
+    }
+    
+     
       xhr.onload = function () {
         if (xhr.status === 404) {
           // Display an error message or redirect to a custom 404 page
@@ -297,10 +315,16 @@ function onSubmitButtonClick() {
           window.location.href = "/404";
         } else {
           // Redirect to the requested page
-          window.location.href = "/chart/" + listType + "/" +  urlendpoint;
+
+            if(listType == "EIA"){
+              window.location.href = "/chart/" + urlendpoint;
+            } else {
+              window.location.href = "/chart/" + listType + "/" +  urlendpoint;
+            }
         }
       };
       xhr.send();
     } 
   }
+ 
  
