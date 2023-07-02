@@ -122,7 +122,7 @@ export const fredDataList = {
   //fed asset - interests etc.
   "Assets: Other: Other Assets, Consolidated Table: Wednesday Level": "WAOAL",
 
-  // "Federal Funds Effective Rate": "FEDFUNDS",
+  "Federal Funds Effective Rate": "FEDFUNDS",
   "Assets: Central Bank Liquidity Swaps: Central Bank Liquidity Swaps: Wednesday Level":
     "SWPT",
   "Secured Overnight Financing Rate": "SOFR",

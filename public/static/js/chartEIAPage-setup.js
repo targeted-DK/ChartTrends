@@ -182,6 +182,13 @@ export function createHighcharts(convertedData, eiaTag, subcategory = "", tableN
         title: {
           text: tableName + ' 5-Year'
         },
+        credits: {
+          enabled: false,
+       
+        },
+      subtitle: {
+        text: "Sources : " + "EIA"
+    },
         xAxis: {
           categories: timeline
         },
@@ -221,6 +228,13 @@ export function createHighcharts(convertedData, eiaTag, subcategory = "", tableN
         chart: {
           type: 'line'
         },
+        credits: {
+          enabled: false,
+       
+        },
+      subtitle: {
+        text: "Sources : " + "EIA"
+    },
         title: {
           text: tableName
         },
@@ -242,106 +256,10 @@ export function createHighcharts(convertedData, eiaTag, subcategory = "", tableN
         },
       
       
-        // tooltip: {
-        //   xDateFormat: "%Y-%m-%d",
-        // },
-
-        // rangeSelector: {
-        //   selected: 3, // Set the default range (0 = first, 1 = second, etc.)
-        //   buttons: [
-        //     {
-        //       type: "day",
-        //       count: 1,
-        //       text: "1d",
-        //     },
-        //     {
-        //       type: "week",
-        //       count: 1,
-        //       text: "1w",
-        //     },
-        //     {
-        //       type: "month",
-        //       count: 1,
-        //       text: "1m",
-        //     },
-        //     {
-        //       type: "year",
-        //       count: 2,
-        //       text: "2y",
-        //     },
-        //     {
-        //       type: "all",
-        //       text: "All",
-        //     },
-        //   ],
-        // },
-        // tooltip: {
-        //   labelFormatter: function() {
-
-
-        //     return yearList[this.index];;
-        //   },
-        //     },
-        // legend: {
-        //   labelFormatter: function() {
-
-
-        //     return yearList[this.index];;
-        //   },
-        //   enabled: true, // Set enabled to true to show legends
-        // },
+      
       });
       return;
     }
 
-      // {
-        //       name: "Drilled",
-        //       data: parsedData.map((row) => [row[0], row[1]]),
-        //       yAxis: 0,
-        //     },
-    
+
   }
-
-//   // console.log(convertedData);
-//   Highcharts.stockChart(newChartContainer.className, {
-//     rangeSelector: {
-//       selected: 1,
-//     },
-
-//     title: {
-//       text: subcategory,
-//     },
-
-//     yAxis: [
-//       {
-//         title: {
-//           text: unit,
-//         },
-//         top: "15%",
-//         height: "85%",
-//       },
-//       {
-//         height: "15%",
-//       },
-//     ],
-
-//     plotOptions: {
-//       flags: {
-//         accessibility: {
-//           exposeAsGroupOnly: true,
-//           description: "Flagged events.",
-//         },
-//       },
-//     },
-
-//     series: [
-//       {
-//         data: convertedData,
-//         id: "dataseries",
-//         tooltip: {
-//           valueDecimals: 4,
-//         },
-//       },
-//     ],
-//   });
-// }

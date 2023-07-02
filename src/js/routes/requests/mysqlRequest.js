@@ -746,6 +746,7 @@ export function getDataFromRDS(json) {
           result.names = tags;
           result.namesForTag = namesForTag;
           result.chartToCreateName = chartToCreateName;
+          result.sources = source;
           result.chartMethod = chartMethod;
           result.adjustYaxis = adjustYaxis;
           result.frequency = frequency;

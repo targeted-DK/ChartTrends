@@ -91,6 +91,8 @@ function createFeaturedHighcharts(jsonData) {
   let chartToCreate = jsonData.chartToCreate;
   let chartToCreateName = jsonData.chartToCreateName;
   let chartMethod = jsonData.chartMethod;
+  let sources = jsonData.sources;
+  let uniqueSources = [...new Set(sources)];
   let units = jsonData.units;
   let use = jsonData.use;
   let adjustYaxis = jsonData.adjustYaxis;
@@ -376,6 +378,13 @@ function createFeaturedHighcharts(jsonData) {
         text: title,
       },
 
+      credits: {
+        enabled: false,
+     
+      },
+    subtitle: {
+      text: "Sources : " + uniqueSources
+  },
       series: [
         ...adjustedData.map((dataset, index) => ({
           name: names[index],
@@ -475,6 +484,13 @@ function createFeaturedHighcharts(jsonData) {
       title: {
         text: title,
       },
+      credits: {
+        enabled: false,
+     
+      },
+    subtitle: {
+      text: "Sources : " + uniqueSources
+  },
       series: [
         ...adjustedData.map((dataset, index) => ({
           name: names[index],
@@ -563,6 +579,13 @@ function createFeaturedHighcharts(jsonData) {
         title: {
           text: title,
         },
+        credits: {
+          enabled: false,
+       
+        },
+      subtitle: {
+        text: "Sources : " + uniqueSources
+    },
         series: [
           ...adjustedData.map((dataset, index) => ({
             name: names[index],
@@ -646,6 +669,13 @@ function createFeaturedHighcharts(jsonData) {
         title: {
           text: title,
         },
+        credits: {
+          enabled: false,
+       
+        },
+      subtitle: {
+        text: "Sources : " + uniqueSources
+    },
         series: [
           ...adjustedData.map((dataset, index) => ({
             name: names[index],
@@ -740,6 +770,13 @@ function createFeaturedHighcharts(jsonData) {
       title: {
         text: title,
       },
+      credits: {
+        enabled: false,
+     
+      },
+    subtitle: {
+      text: "Sources : " + uniqueSources
+  },
       series: [
         ...adjustedData.map((dataset, index) => ({
           name: names[index],
@@ -826,6 +863,13 @@ function createFeaturedHighcharts(jsonData) {
       title: {
         text: title,
       },
+      credits: {
+        enabled: false,
+     
+      },
+    subtitle: {
+      text: "Sources : " + uniqueSources
+  },
       series: [
         ...adjustedData.map((dataset, index) => ({
           name: names[index],

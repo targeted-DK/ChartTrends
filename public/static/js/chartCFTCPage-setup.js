@@ -121,7 +121,13 @@ export function createHighcharts(
     title: {
       text: catalog.description,
     },
-
+    credits: {
+      enabled: false,
+   
+    },
+  subtitle: {
+    text: "Sources : " + "CFTC"
+},
     xAxis: {
       type: "datetime",
     },

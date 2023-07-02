@@ -93,6 +93,8 @@ function createFeaturedHighcharts(jsonData) {
   let chartToCreate = jsonData.chartToCreate;
   let chartToCreateName = jsonData.chartToCreateName;
   let chartMethod = jsonData.chartMethod;
+  let sources = jsonData.sources;
+  let uniqueSources = [...new Set(sources)];
   let units = jsonData.units;
   let use = jsonData.use;
   let adjustYaxis = jsonData.adjustYaxis;
@@ -378,11 +380,19 @@ function createFeaturedHighcharts(jsonData) {
   let chartOptions;
   //special case 1 : SP500_domestic_liquidity_indicator
   if (use == "case1") {
+  
     chartOptions = {
       title: {
         text: title,
       },
-
+      credits: {
+        enabled: false,
+        // text: 'Data source: www.example.com',
+        // href: 'https://www.example.com'
+      },
+    subtitle: {
+      text: "Sources : " + uniqueSources
+  },
       series: [
         ...adjustedData.map((dataset, index) => ({
           name: names[index],
@@ -482,6 +492,14 @@ function createFeaturedHighcharts(jsonData) {
       title: {
         text: title,
       },
+      credits: {
+        enabled: false,
+        // text: 'Data source: www.example.com',
+        // href: 'https://www.example.com'
+      },
+    subtitle: {
+      text: "Sources : " + uniqueSources
+  },
       series: [
         ...adjustedData.map((dataset, index) => ({
           name: names[index],
@@ -570,6 +588,14 @@ function createFeaturedHighcharts(jsonData) {
         title: {
           text: title,
         },
+        credits: {
+          enabled: false,
+          // text: 'Data source: www.example.com',
+          // href: 'https://www.example.com'
+        },
+      subtitle: {
+        text: "Sources : " + uniqueSources
+    },
         series: [
           ...adjustedData.map((dataset, index) => ({
             name: names[index],
@@ -653,6 +679,14 @@ function createFeaturedHighcharts(jsonData) {
         title: {
           text: title,
         },
+        credits: {
+          enabled: false,
+          // text: 'Data source: www.example.com',
+          // href: 'https://www.example.com'
+        },
+      subtitle: {
+        text: "Sources : " + uniqueSources
+    },
         series: [
           ...adjustedData.map((dataset, index) => ({
             name: names[index],
@@ -724,7 +758,7 @@ function createFeaturedHighcharts(jsonData) {
             },
           ],
         },
-
+     
        
       legend: {
         labelFormatter: function() {
@@ -742,11 +776,21 @@ function createFeaturedHighcharts(jsonData) {
     }
     //enumerate case
   }else if(use == "diff_format"){
+    
    
     chartOptions = {
+
+      
       title: {
         text: title,
       },
+      credits: {
+        enabled: false,
+     
+      },
+    subtitle: {
+      text: "Sources : " + uniqueSources
+  },
       series: [
        
         ...adjustedData.map((dataset, index) => ({
@@ -834,6 +878,14 @@ function createFeaturedHighcharts(jsonData) {
       title: {
         text: title,
       },
+      credits: {
+        enabled: false,
+        // text: 'Data source: www.example.com',
+        // href: 'https://www.example.com'
+      },
+    subtitle: {
+      text: "Sources : " + uniqueSources
+  },
       series: [
         ...adjustedData.map((dataset, index) => ({
           name: names[index],
@@ -891,6 +943,7 @@ function createFeaturedHighcharts(jsonData) {
         ],
       },
 
+      
     
       legend: {
         labelFormatter: function() {
