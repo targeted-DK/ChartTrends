@@ -61,7 +61,7 @@ router.post("/mysqlRequest", async (req, res) => {
 
       res.status(200).send(dataFromRds);
     } catch (error) {
-      res.status(500).send({ message: "Error fetching data from RDS" });
+      res.status(500).send({ message: "Error fetching data from RDS", error });
     }
   }
 
@@ -71,7 +71,7 @@ router.post("/mysqlRequest", async (req, res) => {
       // res.status(200).send({ data: dataFromRds, message: 'Data fetched from RDS' });
       res.status(200).send(dataFromRds);
     } catch (error) {
-      res.status(500).send({ message: "Error fetching data from RDS" });
+      res.status(500).send({ message: "Error fetching data from RDS", error });
     }
   }
   //EIA DATA - FIX IT
@@ -80,7 +80,7 @@ router.post("/mysqlRequest", async (req, res) => {
       const results = await getDataFromRDS(req.body);
       res.status(200).send(results);
     } catch (error) {
-      res.status(500).send({ message: "Error fetching data from RDS" });
+      res.status(500).send({ message: "Error fetching data from RDS", error });
     }
   }
 
@@ -89,7 +89,7 @@ router.post("/mysqlRequest", async (req, res) => {
       const results = await getDataFromRDS(req.body);
       res.status(200).send(results);
     } catch (error) {
-      res.status(500).send({ message: "Error fetching data from RDS" });
+      res.status(500).send({ message: "Error fetching data from RDS", error });
     }
   }
 
@@ -98,7 +98,7 @@ router.post("/mysqlRequest", async (req, res) => {
       const results = await getDataFromRDS(req.body);
       res.status(200).send(results);
     } catch (error) {
-      res.status(500).send({ message: "Error fetching data from RDS" });
+      res.status(500).send({ message: "Error fetching data from RDS", error });
     }
   }
 
@@ -107,7 +107,7 @@ router.post("/mysqlRequest", async (req, res) => {
       const results = await getDataFromRDS(req.body);
       res.status(200).send(results);
     } catch (error) {
-      res.status(500).send({ message: "Error fetching data from RDS" });
+      res.status(500).send({ message: "Error fetching data from RDS", error });
     }
   }
 
@@ -116,7 +116,7 @@ router.post("/mysqlRequest", async (req, res) => {
       const results = await getDataFromRDS(req.body);
       res.status(200).send(results);
     } catch (error) {
-      res.status(500).send({ message: "Error fetching data from RDS" });
+      res.status(500).send({ message: "Error fetching data from RDS", error });
     }
   }
 
@@ -125,7 +125,7 @@ router.post("/mysqlRequest", async (req, res) => {
       const results = await getDataFromRDS(req.body);
       res.status(200).send(results);
     } catch (error) {
-      res.status(500).send({ message: "Error fetching data from RDS" });
+      res.status(500).send({ message: "Error fetching data from RDS", error });
     }
   }
 
@@ -134,7 +134,8 @@ router.post("/mysqlRequest", async (req, res) => {
       const results = await getDataFromRDS(req.body);
       res.status(200).send(results);
     } catch (error) {
-      res.status(500).send({ message: "Error fetching data from RDS" });
+      console.log(error);
+      res.status(500).send({ message: "Error fetching data from RDS", error });
     }
   }
 
@@ -143,7 +144,7 @@ router.post("/mysqlRequest", async (req, res) => {
       const results = await getDataFromRDS(req.body);
       res.status(200).send(results);
     } catch (error) {
-      res.status(500).send({ message: "Error fetching data from RDS" });
+      res.status(500).send({ message: "Error fetching data from RDS", error });
     }
   }
 
@@ -152,7 +153,7 @@ router.post("/mysqlRequest", async (req, res) => {
       const results = await getDataFromRDS(req.body);
       res.status(200).send(results);
     } catch (error) {
-      res.status(500).send({ message: "Error fetching data from RDS" });
+      res.status(500).send({ message: "Error fetching data from RDS", error });
     }
   }
 
@@ -162,7 +163,7 @@ router.post("/mysqlRequest", async (req, res) => {
       await sendDataToRDS(req.body);
       res.status(200).send({ message: "Fetched data inserted to RDS" });
     } catch (error) {
-      res.status(500).send({ message: "Error sending data from RDS" });
+      res.status(500).send({ message: "Error sending data from RDS", error });
     }
   }
 });
@@ -701,7 +702,7 @@ export function getDataFromRDS(json) {
         }
 
         chartNames.push(tag_instance);
-
+       
         let promise = new Promise((resolve, reject) => {
           database.query(
             queries.SELECT_ALL_ROWS_FROM_TABLE,
@@ -711,6 +712,8 @@ export function getDataFromRDS(json) {
                 console.log(error);
                 reject(error.stack);
               } else {
+
+            
                 resolve(results);
               }
             }
@@ -719,7 +722,7 @@ export function getDataFromRDS(json) {
 
         promises.push(promise); // Add the promise to the array
       }
-
+    
       let namesForTag = [];
       for (let i = 0; i < tags.length; i++) {
         if (source[i] == "FRED") {
@@ -728,12 +731,14 @@ export function getDataFromRDS(json) {
           const nameForTag = Object.entries(fredDataList).filter(
             ([key, value]) => value === tag
           );
-
+         
           namesForTag.push(nameForTag[0][0]);
         } else {
           namesForTag.push(tags[i]);
         }
       }
+
+ 
       // Await the resolution of all promises using Promise.all()
       Promise.all(promises)
         .then((chain) => {
@@ -757,6 +762,8 @@ export function getDataFromRDS(json) {
           result.units = units;
           result.newUnits = newUnits;
           result.comparisonChartName = comparisonChartName;
+
+        
 
           // Here, you have an array of resolved results from all the promises
           resolve(result);

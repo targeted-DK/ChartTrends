@@ -32,6 +32,21 @@ export const tempList = {
 // "Motor Vehicle Retail Sales: Heavy Weight Trucks" : "HTRUCKSSAAR",
 // "Unemployment Level - Permanent Job Losers" : "LNS13026638",
 
-"Assets: Total Assets: Total Assets (Less Eliminations from Consolidation): Wednesday Level":
-    "WALCL",
+// "Assets: Total Assets: Total Assets (Less Eliminations from Consolidation): Wednesday Level":
+//     "WALCL",
+
+// "Monthly Supply of New Houses in the United States" : "MSACSR",
+// "Real Gross Domestic Product" : "GDPC1",
+// "Wilshire 5000 Total Market Full Cap Index" : "WILL5000INDFC",
+
+// "Job Openings: Total Nonfarm" : "JTSJOL",
+
+
+// "Money Market Funds; Total Financial Assets, Level" : "MMMFFAQ027S",
+// "Global price of Copper" : "PCOPPUSDM",
+"Gross Domestic Product for World" : "NYGDPMKTPCDWLD",
+
+// "Exports: Value Goods for the Republic of Korea" : "XTEXVA01KRM667S",
+
+
 };

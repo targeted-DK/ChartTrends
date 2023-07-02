@@ -6,7 +6,7 @@ let bondsList = [
       urlendpoint: "3m_10yr_yields",
       use : "singlechart",
       chartToCreate : false,
-      fitGraph : false,
+      adjustYaxis : false,
       tag: ["T10Y3M"],
       source :  ["FRED"],
       frequency :[ "d"],
@@ -14,6 +14,25 @@ let bondsList = [
       aggregation : ["avg"],
       adjustment: [1],
       units : ["percent"],
+      comparisonChartName : null
+
+    },
+
+
+    {
+      title: "Money Market Funds Cap and Rate 10Y-3M Yield",
+      urlendpoint: "mmfcap_yield",
+      use : "enumerate",
+      chartToCreate: false,
+      chartToCreateName :  null,
+      adjustYaxis : false,
+      tag: ["MMMFFAQ027S", "T10Y3M"],
+      source :  ["FRED", "FRED"],
+      frequency :["q", "q"],
+      transformation : ["pc1", "lin"],
+      aggregation : ["avg", "avg"],
+      adjustment: [1,1],
+      units : ["percent", "percent"],
       comparisonChartName : null
 
     },

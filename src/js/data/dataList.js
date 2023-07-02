@@ -8,6 +8,7 @@ export const fredDataList = {
     "USREC",
   //Index stuff
   "Wilshire 5000 Price Index": "WILL5000PR",
+  "Wilshire 5000 Total Market Full Cap Index" : "WILL5000INDFC",
   "S&P 500": "SP500",
   "NASDAQ Composite Index": "NASDAQCOM",
   "Nikkei Stock Average, Nikkei 225": "NIKKEI225",
@@ -57,7 +58,9 @@ export const fredDataList = {
   "Liabilities and Capital: Liabilities: Deposits with F.R. Banks, Other Than Reserve Balances: U.S. Treasury, General Account: Week Average":
     "WTREGEN",
   "Gross Domestic Product": "GDP",
-  M2: "WM2NS",
+  "Real Gross Domestic Product" : "GDPC1",
+  "Gross Domestic Product for World" : "NYGDPMKTPCDWLD",
+  "M2": "WM2NS",
   "Real M2 Money Stock": "M2REAL",
   "Sticky Price Consumer Price Index less Food and Energy":
     "CORESTICKM159SFRBATL",
@@ -140,6 +143,7 @@ export const fredDataList = {
 
   //mmf - check https://www.ici.org/research/stats/mmfassets
   "Retail Money Market Funds": "RMFSL",
+  "Money Market Funds; Total Financial Assets, Level" : "MMMFFAQ027S",
 
   //Government Debt Stuff
   "Federal Debt: Total Public Debt": "GFDEBTN",
@@ -233,8 +237,11 @@ export const fredDataList = {
     "DCOILWTICO",
   "Crude Oil Prices: Brent - Europe": "DCOILBRENTEU",
 
+  //housing
+  "Monthly Supply of New Houses in the United States" : "MSACSR",
+
   //commodity(monthly)
-  // Global price of Copper (PCOPPUSDM)
+  "Global price of Copper" : "PCOPPUSDM",
   // Global price of Natural gas, EU (PNGASEUUSDM)
   // Global price of Wheat (PWHEAMTUSDM)
   // Global price of LNG, Asia (PNGASJPUSDM)
@@ -257,17 +264,21 @@ export const fredDataList = {
   "Nikkei Stock Average, Nikkei 225": "NIKKEI225",
   "Consumer Price Index of All Items in Japan": "JPNCPIALLMINMEI",
   "Real Residential Property Prices for Republic of Korea": "QKRR628BIS",
+  "Exports: Value Goods for the Republic of Korea" : "XTEXVA01KRM667S",
+
 
   // "M2 for Japan" :  "MYAGM2JPM189S", - discontinued
 
   //Labor Market
-  Population: "POPTHM",
+  "Population" : "POPTHM",
   "Unemployment Rate": "UNRATE",
   "Employment-Population Ratio": "EMRATIO",
   "Employment Rate: Aged 15-64: All Persons for the United States":
     "LREM64TTUSM156S",
   "Total Unemployed, Plus All Persons Marginally Attached to the Labor Force, Plus Total Employed Part Time for Economic Reasons, as a Percent of the Civilian Labor Force Plus All Persons Marginally Attached to the Labor Force (U-6)":
     "U6RATE",
+    "Job Openings: Total Nonfarm" : "JTSJOL",
+
   "All Employees, Total Private": "USPRIV",
   "All Employees, Total Nonfarm": "PAYEMS",
   "All Employees, Government": "USGOVT",

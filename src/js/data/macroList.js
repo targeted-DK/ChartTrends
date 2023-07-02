@@ -89,6 +89,142 @@ let macroList = [
     comparisonChartName: null,
     description : "Recession indicators from bond market"
   },
+
+  {
+    title: "Supply of New Home Sales and Real GDP QoQ",
+    urlendpoint: "homesupply_gdp",
+    use: "enumerate",
+    chartToCreate: false,
+    chartToCreateName :  null,
+    adjustYaxis: false,
+    // chartMethod : "Division",
+    tag: ["MSACSR", "GDPC1"],
+    source :  ["FRED", "FRED"],
+    frequency: ["m", "q"],
+    transformation: ["pc1", "pc1"],
+    aggregation: ["avg", "avg"],
+    adjustment: [1, 1],
+    units: ["percent", "percent"],
+    comparisonChartName: null,
+    // description 
+  },
+
+
+  {
+    title: "Stock Market Cap and Total Job Openings",
+    urlendpoint: "mktcap_jobs",
+    use: "compare",
+    chartToCreate: false,
+    chartToCreateName :  null,
+    adjustYaxis: true,
+    // chartMethod : "Division",
+    tag: ["WILL5000INDFC", "JTSJOL"],
+    source :  ["FRED", "FRED"],
+    frequency: ["m", "m"],
+    transformation: ["lin", "lin"],
+    aggregation: ["avg", "avg"],
+    adjustment: [1, 1],
+    units: ["index", "thousands"],
+    comparisonChartName: "JTSJOL",
+    // description 
+  },
+
+
+  {
+    title: "Gold and Unemployment",
+    urlendpoint: "gold_unemployment",
+    use: "compare",
+    chartToCreate: false,
+    chartToCreateName :  null,
+    adjustYaxis: true,
+    // chartMethod : "Division",
+    tag: ["GOLD", "UNRATE"],
+    source :  ["NDL", "FRED"],
+    frequency: ["d", "m"],
+    transformation: ["lin", "lin"],
+    aggregation: ["avg", "avg"],
+    adjustment: [1, 1],
+    units: ["dollars", "percent"],
+    comparisonChartName: "UNRATE",
+    // description 
+  },
+
+
+  {
+    title: "Rate Inversion and Unemployment",
+    urlendpoint: "rateinv_unemployment",
+    use: "emuerate",
+    chartToCreate: false,
+    chartToCreateName :  null,
+    adjustYaxis: false,
+    // chartMethod : "Division",
+    tag: ["T10Y3M", "UNRATE"],
+    source :  ["FRED", "FRED"],
+    frequency: ["m", "m"],
+    transformation: ["lin", "lin"],
+    aggregation: ["avg", "avg"],
+    adjustment: [1, 1],
+    units: ["percent", "percent"],
+    comparisonChartName: null,
+    // description 
+  },
+
+  //@TODO - later use data from metals api 
+  {
+    title: "Copper Price and World GDP",
+    urlendpoint: "copper_worldgdp",
+    use: "compare",
+    chartToCreate: false,
+    chartToCreateName :  null,
+    adjustYaxis: true,
+    // chartMethod : "Division",
+    tag: ["PCOPPUSDM", "NYGDPMKTPCDWLD"],
+    source :  ["FRED", "FRED"],
+    frequency: ["q", "a"],
+    transformation: ["lin", "pc1"],
+    aggregation: ["avg", "avg"],
+    adjustment: [1, 1],
+    units: ["US Dollars per Metric Ton", "percent"],
+    comparisonChartName: "NYGDPMKTPCDWLD",
+    // description 
+  },
+
+  {
+    title: "Copper Price and World GDP",
+    urlendpoint: "copper_worldgdp",
+    use: "compare",
+    chartToCreate: false,
+    chartToCreateName :  null,
+    adjustYaxis: true,
+    // chartMethod : "Division",
+    tag: ["PCOPPUSDM", "NYGDPMKTPCDWLD"],
+    source :  ["FRED", "FRED"],
+    frequency: ["q", "a"],
+    transformation: ["lin", "pc1"],
+    aggregation: ["avg", "avg"],
+    adjustment: [1, 1],
+    units: ["US Dollars per Metric Ton", "percent"],
+    comparisonChartName: "NYGDPMKTPCDWLD",
+    // description 
+  },
+  {
+    title: "Korean Export and US Market Cap percent change",
+    urlendpoint: "koreanexp_usmktcap",
+    use: "enumerate",
+    chartToCreate: false,
+    chartToCreateName :  null,
+    adjustYaxis: false,
+    // chartMethod : "Division",
+    tag: ["XTEXVA01KRM667S", "WILL5000INDFC"],
+    source :  ["FRED", "FRED"],
+    frequency: ["m", "m"],
+    transformation: ["pc1", "pc1"],
+    aggregation: ["avg", "avg"],
+    adjustment: [1, 1],
+    units: ["percent", "percent"],
+    comparisonChartName: null,
+    // description 
+  },
   ];
   
   
