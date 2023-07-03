@@ -25,7 +25,7 @@ let macroList = [
         urlendpoint : "ffer_unemployment_cpi",
         use : "enumerate",
         chartToCreate : false,
-        tag: ["FEDFUNDS" , "UNRATE" , "CPIAUCSL" ],
+        tag: ["DFF" , "UNRATE" , "CPIAUCSL" ],
         source :  ["FRED", "FRED", "FRED"],
         frequency : ["q", "q", "q"],
         transformation :["lin", "lin", "pc1"],
