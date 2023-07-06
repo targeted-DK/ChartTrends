@@ -229,6 +229,7 @@ let fedList = [
     units: ["Billions of dollars", "percent"],
     newUnits: null,
     comparisonChartName: "DGS1MO",
+    yaxistype : [0,1],
     description:
       "The Level of inflow to RRP from MMF depends on the short term interest rates and t-bill.",
   },

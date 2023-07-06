@@ -6,6 +6,7 @@ import bondsList from "../data/bondsList.js";
 import macroList from "../data/macroList.js";
 import bankList from "../data/bankList.js";
 import fedList from "../data/fedList.js";
+import usgovList from "../data/usgovList.js"
 import {
   eiaDataNGTags,
   eiaDataOilTags,
@@ -22,6 +23,7 @@ const categoryList = [
   "ratio",
   "CFTC",
   "EIA",
+  "usgov",
   // "NG",
   // "Petroleum",
   "",
@@ -57,75 +59,99 @@ router.get("/:tag", function (req, res) {
   }
 });
 
-router.get("/featured/:subject", (req, res, next) => {
-  const featuredSubject = req.params.subject;
-  const fileName = "chartFeaturedTemplate";
+router.get("/featured/:tag", (req, res, next) => {
+  const tag = req.params.tag;
+  // const use = req.params.use;
+  const fileName = "chartMainTemplate";
+  
   const list = featuredList.map((item) => item.urlendpoint);
-  if (list.includes(featuredSubject)) {
-    res.render(fileName, { tag: featuredSubject });
+
+
+  if (list.includes(tag)) {
+
+    res.render(fileName, {use : "featured", tag: tag });
   } else {
     res.status(404).render("404", { error: "Page not found" });
   }
 });
 
-router.get("/ratio/:subject", (req, res, next) => {
-  const ratioSubject = req.params.subject;
+router.get("/usgov/:tag", (req, res, next) => {
+  // const source = req.params.source;
+  const tag = req.params.tag;
+  const fileName = "chartMainTemplate";
+  const list = usgovList.map((item) => item.urlendpoint);
+  if (list.includes(tag)) {
+    
+ 
+    res.render(fileName, {use : "usgov", tag: tag });
+  } else {
+    //define error message later
+    res.status(404).render("404", {});
+  }
+});
+
+
+router.get("/ratio/:tag", (req, res, next) => {
+  const ratioSubject = req.params.tag;
 
   const fileName = "chartRatioTemplate";
   const list = ratioList.map((item) => item.urlendpoint);
   if (list.includes(ratioSubject)) {
-    res.render(fileName, { tag: ratioSubject });
+    res.render(fileName, { tag: tag });
   } else {
     res.status(404).render("404", { error: "Page not found" });
   }
 });
 
-router.get("/bonds/:subject", (req, res, next) => {
-  const bondsSubject = req.params.subject;
+router.get("/bonds/:tag", (req, res, next) => {
+  const tag = req.params.tag;
 
-  const fileName = "chartBondsTemplate";
+  const fileName = "chartMainTemplate";
   const list = bondsList.map((item) => item.urlendpoint);
 
-  if (list.includes(bondsSubject)) {
-    res.render(fileName, { tag: bondsSubject });
+  if (list.includes(tag)) {
+    res.render(fileName, {use : "bonds", tag: tag });
   } else {
     res.status(404).render("404", { error: "Page not found" });
   }
 });
 
-router.get("/macro/:subject", (req, res, next) => {
-  const macroSubject = req.params.subject;
-  const fileName = "chartMacroTemplate";
+router.get("/macro/:tag", (req, res, next) => {
+  const tag = req.params.tag;
+  
+  const fileName = "chartMainTemplate";
+
   const list = macroList.map((item) => item.urlendpoint);
 
-  if (list.includes(macroSubject)) {
-    res.render(fileName, { tag: macroSubject });
+  if (list.includes(tag)) {
+  
+     res.render(fileName, {use : "macro", tag: tag });
   } else {
     res.status(404).render("404", { error: "Page not found" });
   }
 });
 
-router.get("/bank/:subject", (req, res, next) => {
-  const bankSubject = req.params.subject;
+router.get("/bank/:tag", (req, res, next) => {
+  const tag = req.params.tag;
 
-  const fileName = "chartBankTemplate";
+  const fileName = "chartMainTemplate";
   const list = bankList.map((item) => item.urlendpoint);
 
-  if (list.includes(bankSubject)) {
-    res.render(fileName, { tag: bankSubject });
+  if (list.includes(tag)) {
+    res.render(fileName, {use : "bank", tag: tag });
   } else {
     res.status(404).render("404", { error: "Page not found" });
   }
 });
 
-router.get("/fed/:subject", (req, res, next) => {
-  const fedSubject = req.params.subject;
+router.get("/fed/:tag", (req, res, next) => {
+  const tag = req.params.tag;
 
-  const fileName = "chartFEDTemplate";
+  const fileName = "chartMainTemplate";
   const list = fedList.map((item) => item.urlendpoint);
 
-  if (list.includes(fedSubject)) {
-    res.render(fileName, { tag: fedSubject });
+  if (list.includes(tag)) {
+    res.render(fileName, {use : "fed", tag: tag });
   } else {
     res.status(404).render("404", { error: "Page not found" });
   }
@@ -144,6 +170,7 @@ router.get("/CFTC/:tag", (req, res, next) => {
     res.status(404).render("404", {});
   }
 });
+
 
 
 

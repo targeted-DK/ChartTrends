@@ -463,7 +463,8 @@ export async function updateNDLDataset() {
 
 // const transformationOptionstemp = ["lin"];
 // const frequencyOptionstemp = ["d", "w", "bw", "m", "q", "sa", "a"];
-const frequencyOptionstemp = ["d", "w", "m", "q"];
+const frequencyOptionstemp = ["d", "w", "m", "q"
+];
 
 // const frequencyOptionstemp = ["d", "w", "m"];
 // const aggregationOptionstemp = ["avg", "sum", "eop"];

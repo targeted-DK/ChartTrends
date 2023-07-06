@@ -46,11 +46,27 @@ import bondsList from "../../data/bondsList.js";
 import macroList from "../../data/macroList.js";
 import bankList from "../../data/bankList.js";
 import fedList from "../../data/fedList.js";
+import usgovList from "../../data/usgovList.js";
+import parseDataForHighChart from "../../charts/parseDataForHighchart.js";
 
 router.use(bodyParser.json());
 
 //Request from the client-side : 1) create highcharts 2) show correlation between charts 3) TODO
 router.post("/mysqlRequest", async (req, res) => {
+
+
+  //use this block from now on 
+  if (req.body.use == "usgov") {
+   
+  try {
+   
+    const results = await getDataFromRDS(req.body);
+    res.status(200).send(results);
+  } catch (error) {
+    res.status(500).send({ message: "Error fetching data from RDS", error });
+  }
+}
+
   if (req.body.use == "FRED") {
     try {
       // console.log(req.body);
@@ -104,6 +120,7 @@ router.post("/mysqlRequest", async (req, res) => {
 
   if (req.body.use == "featured") {
     try {
+      
       const results = await getDataFromRDS(req.body);
       res.status(200).send(results);
     } catch (error) {
@@ -166,6 +183,7 @@ router.post("/mysqlRequest", async (req, res) => {
       res.status(500).send({ message: "Error sending data from RDS", error });
     }
   }
+
 });
 
 /**
@@ -198,7 +216,7 @@ export async function sendDataToRDS(mappedDataForRds) {
 
   if (database.authorized) {
     console.log("Database Accessed");
-
+  
     //DATABASE SET UPS
     //create catalog database if not exists
     database.query(
@@ -622,6 +640,7 @@ export function sendEiaDataToRds() {}
 export function getDataFromRDS(json) {
   // const fredTagsArray = Object.values(fredDataList);
   //Modify this code everytime you add source
+  
   const source = json.use;
   const tag = json.tag;
   //this may or may not exist depending on routes
@@ -644,6 +663,8 @@ export function getDataFromRDS(json) {
       list = bankList;
     } else if (source == "fed") {
       list = fedList;
+    } else if (source == "usgov"){
+      list = usgovList;
     }
 
     return new Promise((resolve, reject) => {
@@ -657,6 +678,7 @@ export function getDataFromRDS(json) {
       let source = feature.source;
       let adjustment = feature.adjustment;
       let chartToCreate = feature.chartToCreate;
+      let numChartToCreate = feature.numChartToCreate;
       let chartToCreateName = feature.chartToCreateName;
       let frequency = feature.frequency;
       let transformation = feature.transformation;
@@ -666,6 +688,7 @@ export function getDataFromRDS(json) {
       let newUnits = feature.newUnits;
       let adjustYaxis = feature.adjustYaxis;
       let comparisonChartName = feature.comparisonChartName;
+      let yaxistype = feature.yaxistype;
       let chartNames = [];
       let promises = []; // Array to store the promises
       let result = {};
@@ -738,6 +761,7 @@ export function getDataFromRDS(json) {
         }
       }
 
+      
  
       // Await the resolution of all promises using Promise.all()
       Promise.all(promises)
@@ -751,6 +775,7 @@ export function getDataFromRDS(json) {
           result.names = tags;
           result.namesForTag = namesForTag;
           result.chartToCreateName = chartToCreateName;
+          result.numChartToCreate = numChartToCreate;
           result.sources = source;
           result.chartMethod = chartMethod;
           result.adjustYaxis = adjustYaxis;
@@ -759,14 +784,30 @@ export function getDataFromRDS(json) {
           result.aggregation = aggregation;
           result.chartToCreate = chartToCreate;
           result.adjustment = adjustment;
+          result.yaxistype = yaxistype;
           result.units = units;
           result.newUnits = newUnits;
           result.comparisonChartName = comparisonChartName;
 
         
-
+        
           // Here, you have an array of resolved results from all the promises
-          resolve(result);
+          return result
+          // resolve(parsedData);
+        })
+        .then((result)=>{
+          
+          // if(json.use == "usgov" || json.use == "featured"){
+            
+            let chartOptions = parseDataForHighChart(result);
+           
+          
+            resolve(chartOptions); 
+          // } else {
+            // resolve(result)
+          // }
+      
+          
         })
         .catch((error) => {
           reject(error);

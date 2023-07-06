@@ -65,7 +65,9 @@
 
 <!-- Two containers merged into one, to make 'tag' accessible from both js files -->
 <div id="container">
-  <script>let tag = "<%= tag %>";</script>
+  <script>let tag = "<%= tag %>";
+          let use = "<%= use %>";
+  </script>
   <div class="chart-container" id="chart-container">
     <div class="loading" id ="loading">
         <img src="/static/images/loading.gif" alt="Loading...">

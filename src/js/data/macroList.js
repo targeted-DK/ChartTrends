@@ -68,6 +68,7 @@ let macroList = [
     aggregation: ["avg", "avg"],
     adjustment: [1, 1],
     units: ["dollars", ""],
+    yaxistype : [0,1],
     comparisonChartName: "DTWEXBGS",
   },
 
@@ -125,6 +126,7 @@ let macroList = [
     aggregation: ["avg", "avg"],
     adjustment: [1, 1],
     units: ["index", "thousands"],
+    yaxistype : [0,1],
     comparisonChartName: "JTSJOL",
     // description 
   },
@@ -145,6 +147,7 @@ let macroList = [
     aggregation: ["avg", "avg"],
     adjustment: [1, 1],
     units: ["dollars", "percent"],
+    yaxistype : [0,1],
     comparisonChartName: "UNRATE",
     // description 
   },
@@ -185,6 +188,7 @@ let macroList = [
     aggregation: ["avg", "avg"],
     adjustment: [1, 1],
     units: ["US Dollars per Metric Ton", "percent"],
+    yaxistype : [0,1],
     comparisonChartName: "NYGDPMKTPCDWLD",
     // description 
   },
@@ -204,6 +208,7 @@ let macroList = [
     aggregation: ["avg", "avg"],
     adjustment: [1, 1],
     units: ["US Dollars per Metric Ton", "percent"],
+    yaxistype : [0,1],
     comparisonChartName: "NYGDPMKTPCDWLD",
     // description 
   },
