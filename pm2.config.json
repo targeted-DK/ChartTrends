@@ -1,0 +1,9 @@
+{
+  "apps": [
+    {
+      "name": "chartuncharted.com-server-aws",
+      "script": "server.js",
+      "cron_restart": "0 0 * * *"
+    }
+  ]
+}

@@ -64,7 +64,6 @@ function convertRDSDateFormatToHighCharts(dataFromRds) {
  * Creates highchart with given array
  */
 function createHighChartsOptions(jsonData) {
-
   let title = jsonData.title;
   let names = jsonData.names;
   let namesForTag = jsonData.namesForTag;
@@ -182,7 +181,6 @@ function createHighChartsOptions(jsonData) {
       units.unshift(units[0]);
       comparisonChartNameIndex++;
 
-    
     } else if (use == "case3" || use == "case4" ) {
   
         summedData = [];
@@ -325,7 +323,6 @@ function createHighChartsOptions(jsonData) {
   //special case 1 : SP500_domestic_liquidity_indicator
   if (use == "case1") {
    
-  
     chartOptions = {
       title: {
         text: title,

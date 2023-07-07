@@ -77,7 +77,9 @@ router.post("/mysqlRequest", async (req, res) => {
 
       res.status(200).send(dataFromRds);
     } catch (error) {
-      res.status(500).send({ message: "Error fetching data from RDS", error });
+  	console.log(error);
+
+	    res.status(500).send({ message: "Error fetching data from RDS", error });
     }
   }
 
@@ -124,8 +126,10 @@ router.post("/mysqlRequest", async (req, res) => {
       const results = await getDataFromRDS(req.body);
       res.status(200).send(results);
     } catch (error) {
-      res.status(500).send({ message: "Error fetching data from RDS", error });
+     console.log(error);
+	    res.status(500).send({ message: "Error fetching data from RDS", error });
     }
+
   }
 
   if (req.body.use == "ratio") {
@@ -612,7 +616,8 @@ export async function sendDataToRDS(mappedDataForRds) {
         }
       }
     );
-
+	  console.log("closing connection to mysql database")
+database.close()
    
   } else {
     console.log("Does not have access to database");
@@ -647,7 +652,9 @@ export function getDataFromRDS(json) {
   const subcategory = json.subcategory;
   console.log(source);
   console.log(tag);
-  // /chart/featured, ratio, bonds, bank, fed case
+  console.log(subcategory)  
+
+// /chart/featured, ratio, bonds, bank, fed case
   // 'eia', 'cftc category is different
   if (chartCategoryList.includes(source)) {
     let list = [];
@@ -671,8 +678,8 @@ export function getDataFromRDS(json) {
     return new Promise((resolve, reject) => {
       // for (let feature of list) {
 
-      const feature = list.filter(({ urlendpoint }) => urlendpoint === tag)[0];
-
+      let feature = list.filter(({ urlendpoint }) => urlendpoint === tag)[0];
+	console.log(feature)
       let title = feature.title;
       let tags = feature.tag;
       let use = feature.use;
@@ -697,13 +704,12 @@ export function getDataFromRDS(json) {
       for (let i = 0; i < Object.keys(frequency).length; i++) {
         //When you use same data but with different format etc,
         // tag object in list.js does not allow duplicate
-
         let j = i;
         // if(Object.keys(tags).length < Object.keys(frequency).length){
         //   j = 0;
         // }
         let tag_instance = tags[i];
-
+console.log(tag_instance)
         let source_instance = source[i];
         let frequency_instance = frequency[i];
         let transformation_instance = transformation[i];
@@ -751,11 +757,10 @@ export function getDataFromRDS(json) {
       for (let i = 0; i < tags.length; i++) {
         if (source[i] == "FRED") {
           let tag = tags[i];
-
           const nameForTag = Object.entries(fredDataList).filter(
             ([key, value]) => value === tag
           );
-         
+     		
           namesForTag.push(nameForTag[0][0]);
         } else {
           namesForTag.push(tags[i]);
@@ -802,16 +807,16 @@ export function getDataFromRDS(json) {
             
             let chartOptions = parseDataForHighChart(result);
            
-          
+         
             resolve(chartOptions); 
           // } else {
             // resolve(result)
           // }
-      
           
         })
         .catch((error) => {
-          reject(error);
+          	console.log(error);
+		reject(error);
         });
     });
   }
@@ -1226,6 +1231,7 @@ export function getDataFromRDS(json) {
       }
     );
   });
+
 }
 
 export default router;
