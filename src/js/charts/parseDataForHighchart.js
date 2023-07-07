@@ -64,7 +64,7 @@ function convertRDSDateFormatToHighCharts(dataFromRds) {
  * Creates highchart with given array
  */
 function createHighChartsOptions(jsonData) {
- 
+  console.log(jsonData.names);
   let title = jsonData.title;
   let names = [...jsonData.names];
   let namesForTag = [...jsonData.namesForTag];

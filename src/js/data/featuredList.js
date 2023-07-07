@@ -131,7 +131,7 @@ let featuredList = [
     urlendpoint: "Wil5000_DomesticLiquidityIndicator",
     use: "case1",
     chartToCreate: true,
-    chartToCreateName : "Domestic Liquidity Indicator",
+    chartToCreateName : ["Domestic Liquidity Indicator"],
     chartMethod : "Addition",
     adjustYaxis: true,
     tag: [ "WALCL", "WTREGEN" , "RRPONTSYD" , "WILL5000PR" ],
