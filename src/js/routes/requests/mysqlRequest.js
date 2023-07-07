@@ -645,14 +645,12 @@ export function sendEiaDataToRds() {}
 export function getDataFromRDS(json) {
   // const fredTagsArray = Object.values(fredDataList);
   //Modify this code everytime you add source
-  
+ 
   const source = json.use;
   const tag = json.tag;
   //this may or may not exist depending on routes
   const subcategory = json.subcategory;
-  console.log(source);
-  console.log(tag);
-  console.log(subcategory)  
+ 
 
 // /chart/featured, ratio, bonds, bank, fed case
   // 'eia', 'cftc category is different
@@ -674,12 +672,12 @@ export function getDataFromRDS(json) {
     } else if (source == "usgov"){
       list = usgovList;
     }
-
+    
     return new Promise((resolve, reject) => {
       // for (let feature of list) {
 
       let feature = list.filter(({ urlendpoint }) => urlendpoint === tag)[0];
-	console.log(feature)
+
       let title = feature.title;
       let tags = feature.tag;
       let use = feature.use;
@@ -709,7 +707,7 @@ export function getDataFromRDS(json) {
         //   j = 0;
         // }
         let tag_instance = tags[i];
-console.log(tag_instance)
+
         let source_instance = source[i];
         let frequency_instance = frequency[i];
         let transformation_instance = transformation[i];
@@ -766,7 +764,7 @@ console.log(tag_instance)
           namesForTag.push(tags[i]);
         }
       }
-
+    
       
  
       // Await the resolution of all promises using Promise.all()
@@ -804,9 +802,9 @@ console.log(tag_instance)
         .then((result)=>{
           
           // if(json.use == "usgov" || json.use == "featured"){
-            
+         
             let chartOptions = parseDataForHighChart(result);
-           
+          
          
             resolve(chartOptions); 
           // } else {

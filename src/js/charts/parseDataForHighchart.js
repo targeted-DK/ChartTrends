@@ -2,7 +2,7 @@ import moment from "moment";
 
 
 export function parseDataForHighChart(json){
-    // console.log(json);
+    
     
     // let jsonData = Object.assign({}, json.data);
     let convertedDataList = [];
@@ -18,7 +18,7 @@ export function parseDataForHighChart(json){
 
         json.values = convertedDataList
     let chartOptions = createHighChartsOptions(json);
-      
+   
     return chartOptions;
 }
 
@@ -64,21 +64,22 @@ function convertRDSDateFormatToHighCharts(dataFromRds) {
  * Creates highchart with given array
  */
 function createHighChartsOptions(jsonData) {
+ 
   let title = jsonData.title;
-  let names = jsonData.names;
-  let namesForTag = jsonData.namesForTag;
+  let names = [...jsonData.names];
+  let namesForTag = [...jsonData.namesForTag];
   let comparisonChartName = jsonData.comparisonChartName;
   let frequency = jsonData.frequency[0];
   let chartToCreate = jsonData.chartToCreate;
-  let chartToCreateName = jsonData.chartToCreateName;
+  let chartToCreateName =[... jsonData.chartToCreateName]
   let numChartToCreate = jsonData.numChartToCreate;
   let chartMethod = jsonData.chartMethod;
   let yaxistype = jsonData.yaxistype;
-  let sources = jsonData.sources;
+  let sources =[...jsonData.sources]
   let uniqueSources = [...new Set(sources)];
-  let units = jsonData.units;
+  let units =[... jsonData.units]
   let use = jsonData.use;
-  let adjustYaxis = jsonData.adjustYaxis;
+  let adjustYaxis =jsonData.adjustYaxis;
   let newUnits = jsonData.newUnits;
   let colors = jsonData.colors;
   let comparisonChartNameIndex =   Object.values(names).indexOf(comparisonChartName) !==   Object.values(names).lastIndexOf(comparisonChartName) ?   Object.values(names).lastIndexOf(comparisonChartName) :   Object.values(names).indexOf(comparisonChartName);
@@ -175,11 +176,15 @@ function createHighChartsOptions(jsonData) {
         arr.map((innerArr) => [innerArr[0], Math.abs(innerArr[1])])
       );
 
+      
       names.unshift(chartToCreateName);
+    
       namesForTag.unshift(chartToCreateName);
       adjustedData.unshift(summedDataArray);
       units.unshift(units[0]);
       comparisonChartNameIndex++;
+
+    
 
     } else if (use == "case3" || use == "case4" ) {
   

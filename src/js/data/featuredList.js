@@ -141,6 +141,7 @@ let featuredList = [
     aggregation: ["avg", "avg", "avg", "avg"],
     adjustment: [1, -1000, -1000, 1],
     units: ["Million USD", "Billion USD", "Billion USD", "Points"],
+    // adjustYaxis 
     comparisonChartName: "WILL5000PR",
   },
 
