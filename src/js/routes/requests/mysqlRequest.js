@@ -645,7 +645,8 @@ export function getDataFromRDS(json) {
   const tag = json.tag;
   //this may or may not exist depending on routes
   const subcategory = json.subcategory;
-
+  console.log(source);
+  console.log(tag);
   // /chart/featured, ratio, bonds, bank, fed case
   // 'eia', 'cftc category is different
   if (chartCategoryList.includes(source)) {

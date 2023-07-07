@@ -937,3 +937,50 @@ function readDataFromBakerHughesWorldRigCounts(rows) {
   //
   return result;
 }
+
+
+export async function updateBOKDataset(){
+
+  let apiKey = process.env.bokAPIKey;
+  let bokAPIurl = "https://ecos.bok.or.kr/api/"
+  // let bokAPIurl = "https://ecos.bok.or.kr/api/StatisticSearch/" + apiKey + "/json/en/1/1000/101Y003/M/195301/202306/BBHS00"
+  let bokStatsAPI = "StatisticSearch/"
+  let bokImportantListAPI = "KeyStatisticList/"
+
+  let finalAPIurl = bokAPIurl + bokImportantListAPI + apiKey + "/json/en/1/100"
+  // console.log(finalAPIurl);
+  let test = await axios.get(finalAPIurl)
+  // "/xml/kr/1/10/102Y004"
+  console.log(test.data)
+  console.log(test.data.KeyStatisticList.row);
+
+
+  return;
+  // for (let name in nasdaqDataLinkList) {
+  //   //LBMA/GOLD
+  //   let databasedataset = nasdaqDataLinkList[name];
+  //   await axios
+  //     .get(
+  //       "https://data.nasdaq.com/api/v3/datasets/" +
+  //         databasedataset +
+  //         ".json?api_key =" +
+  //         apiKey,
+  //       {
+  //         params: {
+  //           // order
+  //           // transform
+  //         },
+  //       }
+  //     )
+  //     .then(async (response) => {
+  //       let json = response.data.dataset;
+  //       //GOLD
+  //       let tag = json.dataset_code;
+  //       console.log("Data fetched from Nasdaq API :" + tag);
+
+  //       let result = await getGraphInfo(json, tag, "NDL");
+  //       await sendDataToRDS(result);
+  //     });
+
+  //   }
+}

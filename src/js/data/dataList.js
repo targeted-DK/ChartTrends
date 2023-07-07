@@ -541,6 +541,12 @@ export const nasdaqDataLinkList = {
   "Silver Price: London Fixing": "LBMA/SILVER",
 };
 
+export const bokList = {
+
+  "M2 Supply(SA)" : ["101Y003", "BBGA00"],
+  
+}
+
 export default {
   fredDataList,
   eiaDataOilList,
@@ -548,4 +554,8 @@ export default {
   eiaDataNGList,
   eiaDUCList,
   cftcList,
+  nasdaqDataLinkList,
+  bokList
 };
+
+
