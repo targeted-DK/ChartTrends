@@ -71,7 +71,7 @@ function createHighChartsOptions(jsonData) {
   let comparisonChartName = jsonData.comparisonChartName;
   let frequency = jsonData.frequency[0];
   let chartToCreate = jsonData.chartToCreate;
-  let chartToCreateName =[... jsonData.chartToCreateName]
+  let chartToCreateName = jsonData.chartToCreateName
   let numChartToCreate = jsonData.numChartToCreate;
   let chartMethod = jsonData.chartMethod;
   let yaxistype = jsonData.yaxistype;
