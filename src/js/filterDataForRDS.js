@@ -3,7 +3,13 @@
  * @param {JSON} JSON Object, code, source
  * @returns {Array<{date, value}>} a list of {date, value}, code, and other configurations
  */
-function getGraphInfo(jsonObject, code, source, assetType = "") {
+function getGraphInfo(
+  jsonObject,
+  code,
+  source,
+  assetType = "",
+  frequency = ""
+) {
   if (source == "FRED") {
     return new Promise((resolve, reject) => {
       try {
@@ -31,18 +37,15 @@ function getGraphInfo(jsonObject, code, source, assetType = "") {
     });
   } else if (source == "EIA") {
     return new Promise((resolve, reject) => {
-
       //special case
-    
-      if(code == "BigThreeProductStorage"){
-    
+
+      if (code == "BigThreeProductStorage") {
         const newGraphObj = {
-          date:
-            jsonObject.date,
+          date: jsonObject.date,
           value: jsonObject.value,
           code: code,
-          frequency : "w",
-          last_updated_time: jsonObject.date[jsonObject.date.length -1], //this exists as 'realtime_end' in FRED dataset, basically both means the latest updated date.
+          frequency: "w",
+          last_updated_time: jsonObject.date[jsonObject.date.length - 1], //this exists as 'realtime_end' in FRED dataset, basically both means the latest updated date.
           description: "Product Storage (Gasoline + Distillate + Jet Fuel)",
           units: "MBBL",
           output_type: "", //use this as a default value for all EIA dataset
@@ -93,7 +96,7 @@ function getGraphInfo(jsonObject, code, source, assetType = "") {
           source: source,
           assetType: assetType,
         };
-       
+
         resolve(newGraphObj);
       } catch (error) {
         reject(error);
@@ -177,6 +180,67 @@ function getGraphInfo(jsonObject, code, source, assetType = "") {
         reject(error);
       }
     });
+  } else if (source == "BOK") {
+    //  console.log(jsonObject);
+    let value = jsonObject.map((data) => data.DATA_VALUE);
+    // let stat = jsonObject[0].STAT_NAME;
+
+    let statName = jsonObject[0].STAT_NAME.replace(/[^a-zA-Z]/g, "");
+    let statCode = jsonObject[0].STAT_CODE;
+    let itemName = jsonObject[0].ITEM_NAME1;
+    let itemCode = jsonObject[0].ITEM_CODE1;
+
+    let unit = jsonObject[0].UNIT_NAME;
+    let lastUpdatedTime = jsonObject[jsonObject.length - 1].TIME;
+  
+   
+
+    return new Promise((resolve, reject) => {
+      try {
+        const newGraphObj = {
+          value: jsonObject.map((data) => data.DATA_VALUE),
+          date: jsonObject.map((data) => data.TIME),
+          code: statCode + "_" + itemCode,
+          description: statName + "_" + itemName,
+          last_updated_time: lastUpdatedTime,
+          units: unit,
+          output_type: null,
+          transformation: "lin",
+          frequency: frequency,
+          aggregation: "avg",
+          source: source,
+          assetType: assetType,
+        };
+
+        resolve(newGraphObj);
+      } catch (error) {
+        reject(error);
+      }
+    });
+    // return new Promise((resolve, reject) => {
+    //   try {
+    //     const newGraphObj = {
+    //       date: jsonObject.observations.map((data) =>
+    //         data["date"].slice(0, 10)
+    //       ),
+    //       value: jsonObject.observations.map((data) => data["value"]),
+    //       code: code,
+    //       description: jsonObject.description,
+    //       last_updated_time: jsonObject.realtime_end,
+    //       units: "N/A", //@TODO - work on fred units as well - cheerio?
+    //       output_type: jsonObject.output_type,
+    //       transformation: jsonObject.transformation,
+    //       frequency: jsonObject.frequency,
+    //       aggregation: jsonObject.aggregation,
+    //       source: source,
+    //       assetType: assetType,
+    //     };
+
+    //     resolve(newGraphObj);
+    //   } catch (error) {
+    //     reject(error);
+    //   }
+    // });
   }
 }
 

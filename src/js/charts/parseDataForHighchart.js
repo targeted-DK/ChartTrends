@@ -1,36 +1,27 @@
 import moment from "moment";
 
+export function parseDataForHighChart(json) {
+  // let jsonData = Object.assign({}, json.data);
+  let convertedDataList = [];
+  for (let data of json.values) {
+    let convertedData = convertRDSDateFormatToHighCharts(data);
 
-export function parseDataForHighChart(json){
-    
-    
-    // let jsonData = Object.assign({}, json.data);
-    let convertedDataList = [];
-        for (let data of json.values) {
-         
-          let convertedData = convertRDSDateFormatToHighCharts(data);
-         
-          convertedDataList.push(convertedData);
-        }
+    convertedDataList.push(convertedData);
+  }
 
+  json.values = convertedDataList;
+  let chartOptions = createHighChartsOptions(json);
 
-    
-
-        json.values = convertedDataList
-    let chartOptions = createHighChartsOptions(json);
-   
-    return chartOptions;
+  return chartOptions;
 }
 
 export default parseDataForHighChart;
-
 
 function convertRDSDateFormatToHighCharts(dataFromRds) {
   if (dataFromRds == []) {
     return [];
   }
 
- 
   //convert and sort
   const convertedData = dataFromRds.map((item, index) => {
     const milliseconds = Date.parse(item.date);
@@ -48,11 +39,10 @@ function convertRDSDateFormatToHighCharts(dataFromRds) {
       result[1] = count > 0 ? sum / count : null;
       // result[1] = null; //connectnulls in highcharts options
     }
-    
+
     return result;
   });
 
-  
   convertedData.sort((a, b) => a[0] - b[0]);
 
   return convertedData;
@@ -64,49 +54,50 @@ function convertRDSDateFormatToHighCharts(dataFromRds) {
  * Creates highchart with given array
  */
 function createHighChartsOptions(jsonData) {
-  console.log(jsonData.names);
+ 
   let title = jsonData.title;
   let names = [...jsonData.names];
   let namesForTag = [...jsonData.namesForTag];
   let comparisonChartName = jsonData.comparisonChartName;
   let frequency = jsonData.frequency[0];
   let chartToCreate = jsonData.chartToCreate;
-  let chartToCreateName = jsonData.chartToCreateName
+  let chartToCreateName = jsonData.chartToCreateName;
   let numChartToCreate = jsonData.numChartToCreate;
   let chartMethod = jsonData.chartMethod;
   let yaxistype = jsonData.yaxistype;
-  let sources =[...jsonData.sources]
+  let sources = [...jsonData.sources];
   let uniqueSources = [...new Set(sources)];
-  let units =[... jsonData.units]
+  let units = [...jsonData.units];
   let use = jsonData.use;
-  let adjustYaxis =jsonData.adjustYaxis;
+  let adjustYaxis = jsonData.adjustYaxis;
   let newUnits = jsonData.newUnits;
   let colors = jsonData.colors;
-  let comparisonChartNameIndex =   Object.values(names).indexOf(comparisonChartName) !==   Object.values(names).lastIndexOf(comparisonChartName) ?   Object.values(names).lastIndexOf(comparisonChartName) :   Object.values(names).indexOf(comparisonChartName);
+  let comparisonChartNameIndex =
+    Object.values(names).indexOf(comparisonChartName) !==
+    Object.values(names).lastIndexOf(comparisonChartName)
+      ? Object.values(names).lastIndexOf(comparisonChartName)
+      : Object.values(names).indexOf(comparisonChartName);
   let desiredDay = "Wednesday"; //Used to align timestamp - some weekly data records on friday. Use Wendesday since its default value for many weekly indicators
-  
+
   let alignedData = jsonData.values;
+  //this variable is later used in case4 to create new array of chart data after creating new ones.
+  let totalChartsUsed = 0;
 
-
-//@TODO - comparisonChartName still uses tag, not a real name
+  //@TODO - comparisonChartName still uses tag, not a real name
   // names = namesForTag;
   // comparisonChartName = namesForTag[comparisonChartNameIndex];
- //match timestamp for weeklydata
-  
+  //match timestamp for weeklydata
   if (frequency == "w") {
     alignedData = jsonData.values.map((dataset) => {
-   
       return dataset.map(([timestamp, value]) => {
-       
         const adjustedTimestamp = moment(timestamp)
           .isoWeekday(desiredDay)
           .valueOf();
-         
+
         return [adjustedTimestamp, value];
       });
     });
   }
-  
 
   //multiply values by adjustment factor
   let adjustedData = alignedData.map((arr, index) =>
@@ -115,6 +106,8 @@ function createHighChartsOptions(jsonData) {
       innerArr[1] * jsonData.adjustment[index],
     ])
   );
+
+  
   let summedData;
   let summedDataArray;
   let comparionChartData;
@@ -135,23 +128,51 @@ function createHighChartsOptions(jsonData) {
             }
           });
         });
-      } else if (chartMethod == "Division") {
-      
+      } else if (chartMethod == "Subtraction") {
+        adjustedData.forEach((dataset) => {
+          dataset.forEach(([timestamp, value]) => {
+            if (summedData.hasOwnProperty(timestamp)) {
+              summedData[timestamp] -= value;
+            } else {
+              summedData[timestamp] = -value;
+            }
+          });
+        });
+      } else if (chartMethod == "Multiplication") {
         let firstDataset = Object.values(adjustedData[0]).sort(
           (a, b) => a[0] - b[0]
         );
         let secondDataset = Object.values(adjustedData[1]).sort(
           (a, b) => a[0] - b[0]
         );
-      
+
+        const multipliedData = [];
+
+        for (const [timestamp, value] of firstDataset) {
+          if (secondDataset.hasOwnProperty(timestamp)) {
+            const multipliedValue = value * secondDataset[timestamp];
+            multipliedData.push([timestamp, multipliedValue]);
+          } else {
+            multipliedData.push([timestamp, null]);
+          }
+        }
+
+        summedData = multipliedData;
+      } else if (chartMethod == "Division") {
+        let firstDataset = Object.values(adjustedData[0]).sort(
+          (a, b) => a[0] - b[0]
+        );
+        let secondDataset = Object.values(adjustedData[1]).sort(
+          (a, b) => a[0] - b[0]
+        );
 
         const dividedData = [];
-      
+
         for (const [timestamp, value] of firstDataset) {
           // console.log(timestamp);
           if (secondDataset.hasOwnProperty(timestamp)) {
             //  console.log(secondDataset[timestamp]);
-         
+
             const dividedValue = value / secondDataset[timestamp];
             dividedData.push([timestamp, dividedValue]);
           } else {
@@ -160,7 +181,6 @@ function createHighChartsOptions(jsonData) {
         }
 
         summedData = dividedData;
-        // console.log(summedData);
       }
 
       summedDataArray = Object.entries(summedData).map(([timestamp, value]) => [
@@ -176,95 +196,116 @@ function createHighChartsOptions(jsonData) {
         arr.map((innerArr) => [innerArr[0], Math.abs(innerArr[1])])
       );
 
-      
       names.unshift(chartToCreateName);
-    
+
       namesForTag.unshift(chartToCreateName);
       adjustedData.unshift(summedDataArray);
       units.unshift(units[0]);
       comparisonChartNameIndex++;
+    } else if (use == "case3" || use == "case4") {
+      summedData = [];
 
     
 
-    } else if (use == "case3" || use == "case4" ) {
-  
-        summedData = [];
-        let firstDataset ;
-        let secondDataset ;
-     
-
-      for(let i = 0; i < numChartToCreate; i++){
-
-       let chartNum = i*2;
+      // console.log(lastElements);
+   
+      for (let i = 0; i < numChartToCreate; i++) {
+        
+        let numberOfOperations = chartMethod[i].length;
+        // let numberOfPreviousOperations;
+        // if( i > 0){
+        //   numberOfPreviousOperations = chartMethod[i-1].length
+        //   console.log(numberOfPreviousOperations);
+        // }
+        totalChartsUsed += (numberOfOperations+1);
+          let chartNum;
+        if(i == 0){
+          chartNum = 0 + i * (numberOfOperations + 1); 
+        } else {
+        chartNum = 0 + i * (chartMethod[i-1].length + 1); 
+        }
        
-        firstDataset = adjustedData[chartNum];
-        secondDataset = adjustedData[chartNum + 1];
        
+        let previousDataset = adjustedData[chartNum];
         let temp = [];
-
-        firstDataset.forEach(([timestamp, value]) => {
-      
-            const correspondingValue = secondDataset.find(
+    
+        for (let j = 0; j < chartMethod[i].length; j++) {
+          let currentOperation = chartMethod[i][j];
+          let currentDataset = adjustedData[chartNum + j + 1];
+          // console.log(currentOperation);
+          //   console.log(chartNum + j + 1);
+          let calculatedDataset = [];
+         
+          previousDataset.forEach(([timestamp, value]) => {
+            const correspondingValue = currentDataset.find(
               (data) => data[0] === timestamp
             )?.[1];
-    
-            if (correspondingValue !== undefined) {
            
-              const dividedValue = value / correspondingValue;
-              // if(dividedValue != Infinity){
-              // }            
+          
+            let calculatedValue;
+            if (correspondingValue !== undefined) {
+              
+              if (currentOperation == "Division") {
+                calculatedValue = value / correspondingValue;
+              } else if (currentOperation == "Addition") {
+                calculatedValue = value + correspondingValue;
+              } else if (currentOperation == "Subtraction") {
+                calculatedValue = value - correspondingValue;
+              } else if (currentOperation == "Multiplication") {
+                calculatedValue = value * correspondingValue;
+              }
 
-              temp.push([timestamp, dividedValue]);
-
+              calculatedDataset.push([timestamp, calculatedValue]);
             }
           });
-          summedData.push(temp);
-          
-      }
-      
-    } else if(use == "case5"){
+        
+          previousDataset = calculatedDataset;
+          temp = calculatedDataset; 
 
-    
+       
+        }
+        summedData.push(temp);
+        
+      }
+
+      
+    } else if (use == "case5") {
       let newCharts = [];
 
-      for(let i = 0; i < numChartToCreate; i++){
-        let chartNum = i*2;
+      for (let i = 0; i < numChartToCreate; i++) {
+        let chartNum = i * 2;
         let nominatorData = adjustedData[chartNum];
-        let denominatorData = adjustedData[chartNum+1];
+        let denominatorData = adjustedData[chartNum + 1];
 
         let newChart = [];
-        nominatorData.forEach(datapoint1 => {
+        nominatorData.forEach((datapoint1) => {
           const timestamp1 = datapoint1[0];
           const value1 = datapoint1[1];
 
-          const matchingDataPoint2 = denominatorData.find(datapoint2 => datapoint2[0] == timestamp1);
-          if(matchingDataPoint2){
+          const matchingDataPoint2 = denominatorData.find(
+            (datapoint2) => datapoint2[0] == timestamp1
+          );
+          if (matchingDataPoint2) {
             const value2 = matchingDataPoint2[1];
 
             const result = value1 / value2;
 
-            
-            if(result != Infinity){
+            if (result != Infinity) {
               const newDataPoint = [timestamp1, result];
               newChart.push(newDataPoint);
             }
-            
-
           }
-
-        })
+        });
         newCharts.push(newChart);
+      }
 
+      adjustedData = newCharts;
+      units = newUnits;
+      names = chartToCreateName;
+      use = "enumerate";
+    } else if(use == "case6"){
+      
     }
-
-    adjustedData = newCharts;
-    units = newUnits;
-    names = chartToCreateName;
-    use = "enumerate";
-
-  }
-    
- 
   }
 
   //final data consolidation
@@ -280,54 +321,70 @@ function createHighChartsOptions(jsonData) {
     comparionChartData.sort((a, b) => a[0] - b[0]);
   }
 
-
-
+ 
   // console.log(names);
-  if(use == "case3"){
+  if (use == "case3") {
     adjustedData.pop();
     units.pop();
     names.pop();
     namesForTag.pop();
 
     // adjustedData.push(summedData);
-  
+
     // names.push(chartToCreateName);
     // namesForTag.push(chartToCreateName);
     units.push("percent");
-    comparionChartData = summedData
+    comparionChartData = summedData;
     comparisonChartName = chartToCreateName;
     use = "compare";
-
-  } else if(use == "case4"){
-   
-   
-    
+  } else if (use == "case4") {
     //delete data that are used to create new charts
-    for(let i = 0; i < numChartToCreate*2; i++){
-      adjustedData.shift();
-      names.shift(); 
-      namesForTag.shift();
-      
-    }
    
+    // for (let i = 0; i < numChartToCreate * 2; i++) {
+    //   adjustedData.shift();
+    //   names.shift();
+    //   namesForTag.shift();
+    // }
 
     //put new data back
-    for(let i = 0; i < numChartToCreate; i++){     
-      adjustedData.unshift(summedData[i]);
-      names.unshift(chartToCreateName[i]);
-      namesForTag.unshift(chartToCreateName[i]);
-    } 
+    let finalData = [];
+    let finalNames = [];
+    let finalNamesForTag = [];
+    
+    //add created charts
+    for (let i = 0; i < numChartToCreate; i++) {
+    
+      finalData.push(summedData[i]);
+      finalNames.push(chartToCreateName[i]);
+      finalNamesForTag.push(chartToCreateName[i]);
+    }
+    //add normal charts
+    for(let i = totalChartsUsed; i < adjustedData.length; i++){
+    
+      finalData.push(adjustedData[i]);
+      finalNames.push(names[i]);
+      finalNamesForTag.push(namesForTag[i]);
+    }
+
+  
+    adjustedData = finalData;
+    names = finalNames;
+    namesForTag = finalNamesForTag;
+    // console.log(adjustedData);
+    // console.log(names);
+    // console.log(namesForTag);
     //이름 같은경우엔 names, chartToCreateName
     //레전드같은 경우엔 namesForTag에 다 포함
-   
+
     comparisonChartNameIndex = numChartToCreate;
+
+    console.log(adjustedData);
     use = "compare";
-  } 
- 
+  }
+
   let chartOptions = "";
   //special case 1 : SP500_domestic_liquidity_indicator
   if (use == "case1") {
-   
     chartOptions = {
       title: {
         text: title,
@@ -337,13 +394,13 @@ function createHighChartsOptions(jsonData) {
         // text: 'Data source: www.example.com',
         // href: 'https://www.example.com'
       },
-    subtitle: {
-      text: "Sources : " + uniqueSources
-  },
+      subtitle: {
+        text: "Sources : " + uniqueSources,
+      },
       series: [
         ...adjustedData.map((dataset, index) => ({
           name: names[index],
-          
+
           // legendName : namesForTag[index],
           data: dataset,
 
@@ -379,7 +436,6 @@ function createHighChartsOptions(jsonData) {
       ],
 
       tooltip: {
-      
         xDateFormat: "%Y-%m-%d",
       },
 
@@ -421,13 +477,13 @@ function createHighChartsOptions(jsonData) {
 
       legend: {
         enabled: true, // Set enabled to true to show legends
-        legendTags : namesForTag
+        legendTags: namesForTag,
         // labelFormatter:
         // function() {
         //   // Get the index of the series
-          
+
         //   const seriesIndex = this.chart.series.indexOf(this);
-          
+
         //   // Use the custom name if available, otherwise use the original series name
         //   const name = namesForTag[seriesIndex] || this.name;
 
@@ -438,7 +494,6 @@ function createHighChartsOptions(jsonData) {
   }
   // title: "Nominal Comparison of SP500, Oil, Gold",
   else if (use == "case2") {
-   
     chartOptions = {
       title: {
         text: title,
@@ -448,15 +503,15 @@ function createHighChartsOptions(jsonData) {
         // text: 'Data source: www.example.com',
         // href: 'https://www.example.com'
       },
-    subtitle: {
-      text: "Sources : " + uniqueSources
-  },
+      subtitle: {
+        text: "Sources : " + uniqueSources,
+      },
       series: [
         ...adjustedData.map((dataset, index) => ({
           name: names[index],
           data: dataset,
 
-          yAxis: yaxistype[index]
+          yAxis: yaxistype[index],
         })),
       ],
       xAxis: {
@@ -479,8 +534,6 @@ function createHighChartsOptions(jsonData) {
           opposite: true, // Position on the right
         },
       ],
-
-     
 
       tooltip: {
         xDateFormat: "%Y-%m-%d",
@@ -515,16 +568,15 @@ function createHighChartsOptions(jsonData) {
         ],
       },
 
-    
       legend: {
-        legendTags : namesForTag,
+        legendTags: namesForTag,
         // labelFormatter: function() {
         //   // Get the index of the series
         //   const seriesIndex = this.chart.series.indexOf(this);
-          
+
         //   // Use the custom name if available, otherwise use the original series name
         //   const name = namesForTag[seriesIndex] || this.name;
-          
+
         //   return name;
         // },
         enabled: true, // Set enabled to true to show legends
@@ -535,8 +587,6 @@ function createHighChartsOptions(jsonData) {
   else if (use == "compare") {
     //case for comparing two graphs with same y-axis
     if (!adjustYaxis) {
-
-    
       chartOptions = {
         title: {
           text: title,
@@ -546,20 +596,20 @@ function createHighChartsOptions(jsonData) {
           // text: 'Data source: www.example.com',
           // href: 'https://www.example.com'
         },
-      subtitle: {
-        text: "Sources : " + uniqueSources
-    },
+        subtitle: {
+          text: "Sources : " + uniqueSources,
+        },
         series: [
           ...adjustedData.map((dataset, index) => ({
             name: names[index],
             data: dataset,
-            yAxis: yaxistype[index]
+            yAxis: yaxistype[index],
             // connectNulls: false
           })),
           {
             name: comparisonChartName,
             data: comparionChartData,
-            yAxis: yaxistype[comparisonChartNameIndex]
+            yAxis: yaxistype[comparisonChartNameIndex],
           },
         ],
         xAxis: {
@@ -609,26 +659,23 @@ function createHighChartsOptions(jsonData) {
             },
           ],
         },
+        colors: colors,
 
-      
         legend: {
           // labelFormatter: function() {
           //   // Get the index of the series
           //   const seriesIndex = this.chart.series.indexOf(this);
-            
+
           //   // Use the custom name if available, otherwise use the original series name
           //   const name = namesForTag[seriesIndex] || this.name;
-            
+
           //   return name;
           // },
-          legendTags : namesForTag,
+          legendTags: namesForTag,
           enabled: true, // Set enabled to true to show legends
         },
       };
     } else {
-      
-     
- 
       //case for comparing two graphs with different y-axis
       chartOptions = {
         title: {
@@ -639,21 +686,20 @@ function createHighChartsOptions(jsonData) {
           // text: 'Data source: www.example.com',
           // href: 'https://www.example.com'
         },
-      subtitle: {
-        text: "Sources : " + uniqueSources
-    },
+        subtitle: {
+          text: "Sources : " + uniqueSources,
+        },
         series: [
           ...adjustedData.map((dataset, index) => ({
-          
             name: names[index],
             data: dataset,
-            yAxis: yaxistype[index]
+            yAxis: yaxistype[index],
             // connectNulls: false
           })),
           {
             name: comparisonChartName,
             data: comparionChartData,
-            yAxis: yaxistype[comparisonChartNameIndex]
+            yAxis: yaxistype[comparisonChartNameIndex],
             // connectNulls: false
           },
         ],
@@ -714,50 +760,42 @@ function createHighChartsOptions(jsonData) {
             },
           ],
         },
-     
-      legend: {
-      
-        // labelFormatter:
-        
-        // function() {
-        //   // Get the index of the series
-        //   const seriesIndex = 1;
-    
-        //   // Use the custom name if available, otherwise use the original series name
-        //   const name = namesForTag[seriesIndex] || this.name;
-          
-        //   return name;
-        // },
-        legendTags : namesForTag,
-        enabled: true, // Set enabled to true to show legends
-      },
+        colors: colors,
+        legend: {
+          // labelFormatter:
+
+          // function() {
+          //   // Get the index of the series
+          //   const seriesIndex = 1;
+
+          //   // Use the custom name if available, otherwise use the original series name
+          //   const name = namesForTag[seriesIndex] || this.name;
+
+          //   return name;
+          // },
+          legendTags: namesForTag,
+          enabled: true, // Set enabled to true to show legends
+        },
       };
     }
     //enumerate case
-  }else if(use == "diff_format"){
-    
-   
+  } else if (use == "diff_format") {
     chartOptions = {
-
-      
       title: {
         text: title,
       },
       credits: {
         enabled: false,
-     
       },
-    subtitle: {
-      text: "Sources : " + uniqueSources
-  },
+      subtitle: {
+        text: "Sources : " + uniqueSources,
+      },
       series: [
-       
         ...adjustedData.map((dataset, index) => ({
           name: names[index],
           data: dataset,
           yAxis: index,
         })),
-        
       ],
       xAxis: {
         type: "datetime",
@@ -822,20 +860,20 @@ function createHighChartsOptions(jsonData) {
         // labelFormatter: function() {
         //   // Get the index of the series
         //   const seriesIndex = this.chart.series.indexOf(this);
-          
+
         //   // Use the custom name if available, otherwise use the original series name
         //   const name = namesForTag[seriesIndex] || this.name;
-          
+
         //   return name;
         // },
-        legendTags : namesForTag,
+        legendTags: namesForTag,
         enabled: true, // Set enabled to true to show legends
       },
     };
   } else {
     //case for comparing two graphs with different y-axis(or same)
-    //enumerate case 
-  
+    //enumerate case
+
     chartOptions = {
       title: {
         text: title,
@@ -845,9 +883,9 @@ function createHighChartsOptions(jsonData) {
         // text: 'Data source: www.example.com',
         // href: 'https://www.example.com'
       },
-    subtitle: {
-      text: "Sources : " + uniqueSources
-  },
+      subtitle: {
+        text: "Sources : " + uniqueSources,
+      },
       series: [
         ...adjustedData.map((dataset, index) => ({
           name: names[index],
@@ -905,20 +943,20 @@ function createHighChartsOptions(jsonData) {
         ],
       },
 
-      
-    
+      colors: colors,
+
       legend: {
         // labelFormatter: function() {
         //   // Get the index of the series
-          
+
         //   const seriesIndex = this.chart.index;
-      
+
         //   // Use the custom name if available, otherwise use the original series name
         //   const name = namesForTag[seriesIndex] || this.name;
-          
+
         //   return name;
         // },
-        legendTags : namesForTag,
+        legendTags: namesForTag,
         enabled: true, // Set enabled to true to show legends
       },
     };

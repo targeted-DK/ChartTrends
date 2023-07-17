@@ -197,6 +197,8 @@ router.post("/mysqlRequest", async (req, res) => {
  */
 export async function sendDataToRDS(mappedDataForRds) {
   console.log("Sending data to RDS");
+
+  console.log(mappedDataForRds);
   //warning : DUC uses different format : data - region - date:values
   let tag = mappedDataForRds.code;
   let dateData = mappedDataForRds.date;
@@ -211,6 +213,8 @@ export async function sendDataToRDS(mappedDataForRds) {
   let frequency = mappedDataForRds.frequency;
   let aggregation = mappedDataForRds.aggregation;
   let assetType = mappedDataForRds.assetType;
+
+  
   // console.log(DATABASE_NAME);
 
   // console.log(dateData);
@@ -411,6 +415,13 @@ export async function sendDataToRDS(mappedDataForRds) {
       assetType,
     ];
 
+    console.log("here");
+    console.log(DATABASE_NAME);
+    console.log(tag);
+    console.log(frequency);
+    console.log(transformation);
+    console.log(aggregation);
+    console.log(assetType);
     database.query(
       queries.FIND_DUPLICATE_IN_INDICATOR_TABLE,
       [DATABASE_NAME, tag, frequency, transformation, aggregation, assetType],
@@ -507,7 +518,7 @@ export async function sendDataToRDS(mappedDataForRds) {
                           return;
                         } else {
                           console.log("CREATE_DATA_TABLE executed");
-                          console.log("INSERT_DATA_TO_TABLE executed");
+                          console.log("INSERT_DATA_TO_TABLE_CFTC executed");
                         }
                       }
                     );
@@ -590,7 +601,7 @@ export async function sendDataToRDS(mappedDataForRds) {
                             row[1],
                             catalogQueryResult[0].indicator_id,
                           ]);
-
+                   
                         database.query(
                           queries.INSERT_DATA_TO_TABLE,
                           [DATABASE_NAME, newTableName, tuples],
@@ -616,8 +627,7 @@ export async function sendDataToRDS(mappedDataForRds) {
         }
       }
     );
-	  console.log("closing connection to mysql database")
-database.close()
+
    
   } else {
     console.log("Does not have access to database");
@@ -686,6 +696,7 @@ export function getDataFromRDS(json) {
       let chartToCreate = feature.chartToCreate;
       let numChartToCreate = feature.numChartToCreate;
       let chartToCreateName = feature.chartToCreateName;
+
       let frequency = feature.frequency;
       let transformation = feature.transformation;
       let aggregation = feature.aggregation;
@@ -693,6 +704,7 @@ export function getDataFromRDS(json) {
       let units = feature.units;
       let newUnits = feature.newUnits;
       let adjustYaxis = feature.adjustYaxis;
+      let colors = feature.colors;
       let comparisonChartName = feature.comparisonChartName;
       let yaxistype = feature.yaxistype;
       let chartNames = [];
@@ -765,7 +777,7 @@ export function getDataFromRDS(json) {
         }
       }
     
-      
+    
  
       // Await the resolution of all promises using Promise.all()
       Promise.all(promises)
@@ -791,6 +803,7 @@ export function getDataFromRDS(json) {
           result.yaxistype = yaxistype;
           result.units = units;
           result.newUnits = newUnits;
+          result.colors= colors;
           result.comparisonChartName = comparisonChartName;
 
         

@@ -15,7 +15,7 @@ axios
     tag: assetType,
   })
   .then((response) => {
-    // console.log(response);
+    console.log(response);
     const indicators = response.data.indicators;
     const dataFromRds = response.data.jsonCFTCDataArrays;
     const tagsInIndicators = indicators.map((item) => item.tag);
@@ -34,8 +34,9 @@ axios
       const catalog = indicators[tagIndexInIndicators];
 
       const convertedData = convertCFTCDateFormatToHighCharts(dataArray);
-
+  
       let graphnames = Object.keys(convertedData[1]);
+    
       graphnames.pop();
       graphnames.shift();
      

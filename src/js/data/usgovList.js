@@ -13,7 +13,7 @@ let usgovList = [
       use : "case4",
       chartToCreate : true,
       chartToCreateName : ["US Government Expenditure as a % of GDP", "US Government Tax Receipt as a % of GDP"],
-      chartMethod : "Division",
+      chartMethod : [["Division"], ["Division"]],
       numChartToCreate : 2,
       adjustYaxis: true,
       tag: ["W006RC1Q027SBEA", "GDP", "FGEXPND", "GDP", "DGS3MO" ],

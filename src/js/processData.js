@@ -11,21 +11,20 @@ import {
   getDataFromRDS,
   sendDataToRDS,
 } from "./routes/requests/mysqlRequest.js";
-import {
+import dataList, {
   fredDataList,
   eiaDataOilList,
   eiaDataPetroleumList,
   eiaDataNGList,
   cftcList,
   nasdaqDataLinkList,
+  bokList,
 } from "./data/dataList.js";
 import { permutation } from "js-combinatorics";
 import fs from "fs";
 import http from "http";
 import cftcAPIcreator from "./routes/requests/cftcAPI/cftcAPIcreator.js";
 import { tempList } from "./data/tempList.js";
-
-
 
 /**
  * Modify this list for FRED data on the main page
@@ -463,8 +462,7 @@ export async function updateNDLDataset() {
 
 // const transformationOptionstemp = ["lin"];
 // const frequencyOptionstemp = ["d", "w", "bw", "m", "q", "sa", "a"];
-const frequencyOptionstemp = ["d", "w", "m", "q"
-];
+const frequencyOptionstemp = ["d", "w", "m", "q"];
 
 // const frequencyOptionstemp = ["d", "w", "m"];
 // const aggregationOptionstemp = ["avg", "sum", "eop"];
@@ -734,177 +732,171 @@ export async function getDataFromMetalsAPI() {
 }
 
 export async function getBakerHughesDataset() {
-
   //@TODO - fetch url automatically
-  const fileUrl = 'https://rigcount.bakerhughes.com/static-files/66ad1a03-195a-4d09-84ee-2229ee5ef32c';
+  const fileUrl =
+    "https://rigcount.bakerhughes.com/static-files/66ad1a03-195a-4d09-84ee-2229ee5ef32c";
 
   axios({
     url: fileUrl,
     method: "GET",
     responseType: "arraybuffer",
-  }).then(async (response) => {
-    let fileName = 'Worldwide Rig Count'
-    let folderPath = "./src/js/data/excels/" 
-    const filePath = folderPath + fileName + ".xlsx"
+  })
+    .then(async (response) => {
+      let fileName = "Worldwide Rig Count";
+      let folderPath = "./src/js/data/excels/";
+      const filePath = folderPath + fileName + ".xlsx";
 
-    fs.writeFileSync(filePath,
-      response.data
-    );
-    
-  
-    // 'International Rig Counts for May 2023.xlsx',
-    // const rigCountFilePattern = /^Worldwide Rig Count (\w+ \d{4})\.xlsx$/;
+      fs.writeFileSync(filePath, response.data);
+
+      // 'International Rig Counts for May 2023.xlsx',
+      // const rigCountFilePattern = /^Worldwide Rig Count (\w+ \d{4})\.xlsx$/;
       // const rigCountFilePattern = /^Worldwide Rig Count.xlsx$/;
 
-  // fs.readdir(folderPath, (err, files) => {
-  //   if (err) {
-  //     console.error("Error occurred while reading directory:", err);
-  //     return;
-  //   }
-  //   const matchingFiles = files.filter((file) =>
-  //     rigCountFilePattern.test(file)
-  //   );
+      // fs.readdir(folderPath, (err, files) => {
+      //   if (err) {
+      //     console.error("Error occurred while reading directory:", err);
+      //     return;
+      //   }
+      //   const matchingFiles = files.filter((file) =>
+      //     rigCountFilePattern.test(file)
+      //   );
 
-  //   if (matchingFiles.length === 0) {
-  //     console.log("No matching files found.");
-  //     return;
-  //   }
-  //   filePath = folderPath + matchingFiles.pop();
-  // })
+      //   if (matchingFiles.length === 0) {
+      //     console.log("No matching files found.");
+      //     return;
+      //   }
+      //   filePath = folderPath + matchingFiles.pop();
+      // })
 
+      const rigCountExcelSheet = xlsx.readFile(filePath);
+      const sheetName = rigCountExcelSheet.SheetNames[0];
+      const worksheet = rigCountExcelSheet.Sheets[sheetName];
+      let csvContent = xlsx.utils.sheet_to_csv(worksheet);
 
-    const rigCountExcelSheet = xlsx.readFile(filePath);
-    const sheetName = rigCountExcelSheet.SheetNames[0];
-    const worksheet = rigCountExcelSheet.Sheets[sheetName];
-    let csvContent = xlsx.utils.sheet_to_csv(worksheet);
+      //starts from row 7 : year and continents
+      //monthly data : 8~19, average : 20
+      //space : 21
+      //total rows per year : 15;
 
-    //starts from row 7 : year and continents
-    //monthly data : 8~19, average : 20
-    //space : 21
-    //total rows per year : 15;
+      const totalRegionNum = 9;
+      const dataStartRowIdx = 6;
+      const yearAndLocationIdx = 8;
+      const numOfDataRows = 15; //12 months and average
+      const regionNames = [
+        "latAm",
+        "europe",
+        "africa",
+        "middleEast",
+        "asiaPacific",
+        "totalInt",
+        "canada",
+        "US",
+        "totalWorld",
+      ];
+      let rigDatasetJson = [];
+      let latAm = [];
+      let europe = [];
+      let africa = [];
+      let middleEast = [];
+      let asiaPacific = [];
+      let totalInt = [];
+      let canada = [];
+      let US = [];
+      let totalWorld = [];
 
-    const totalRegionNum = 9;
-    const dataStartRowIdx = 6;
-    const yearAndLocationIdx = 8;
-    const numOfDataRows = 15; //12 months and average
-    const regionNames = [
-      "latAm",
-      "europe",
-      "africa",
-      "middleEast",
-      "asiaPacific",
-      "totalInt",
-      "canada",
-      "US",
-      "totalWorld",
-    ];
-    let rigDatasetJson = [];
-    let latAm = [];
-    let europe = [];
-    let africa = [];
-    let middleEast = [];
-    let asiaPacific = [];
-    let totalInt = [];
-    let canada = [];
-    let US = [];
-    let totalWorld = [];
+      rigDatasetJson.push(
+        latAm,
+        europe,
+        africa,
+        middleEast,
+        asiaPacific,
+        totalInt,
+        canada,
+        US,
+        totalWorld
+      );
+      csvtojson({
+        noheader: true,
+        output: "csv",
+      })
+        .fromString(csvContent)
+        .then(async (csvRow) => {
+          let totalYears = (csvRow.length - 6) / 15;
+          const taskResults = [];
 
-    rigDatasetJson.push(
-      latAm,
-      europe,
-      africa,
-      middleEast,
-      asiaPacific,
-      totalInt,
-      canada,
-      US,
-      totalWorld
-    );
-    csvtojson({
-      noheader: true,
-      output: "csv",
-    })
-      .fromString(csvContent)
-      .then(async (csvRow) => {
-        let totalYears = (csvRow.length - 6) / 15;
-        const taskResults = [];
-
-        // Run asynchronous tasks
-        const tasks = [];
-        for (let i = 0; i < totalYears; i++) {
-          tasks.push(
-            readDataFromBakerHughesWorldRigCounts(
-              csvRow.slice(
-                dataStartRowIdx + i * numOfDataRows,
-                dataStartRowIdx + (i + 1) * numOfDataRows
+          // Run asynchronous tasks
+          const tasks = [];
+          for (let i = 0; i < totalYears; i++) {
+            tasks.push(
+              readDataFromBakerHughesWorldRigCounts(
+                csvRow.slice(
+                  dataStartRowIdx + i * numOfDataRows,
+                  dataStartRowIdx + (i + 1) * numOfDataRows
+                )
               )
-            )
-          );
-        }
+            );
+          }
 
-        let rigDataset = await Promise.all(tasks);
+          let rigDataset = await Promise.all(tasks);
 
-        // for(let j = totalYears - 1; j >= 0 ; j--){
-        rigDataset = rigDataset.reverse();
+          // for(let j = totalYears - 1; j >= 0 ; j--){
+          rigDataset = rigDataset.reverse();
 
-        let currentYear = new Date().getFullYear();
-        let currentMonth = new Date().getMonth();
-        let year = currentYear - totalYears + 1;
+          let currentYear = new Date().getFullYear();
+          let currentMonth = new Date().getMonth();
+          let year = currentYear - totalYears + 1;
 
-        let regionIdx = 0;
-        for (let i = 0; i < totalYears; i++) {
-          for (let j = 0; j < totalRegionNum; j++) {
-            let temp = rigDataset[i][j].map((value, index) => {
-              let month = index;
-              let day = 2
-              let date = new Date(year, month, day)
-            
-              return [date, value];
+          let regionIdx = 0;
+          for (let i = 0; i < totalYears; i++) {
+            for (let j = 0; j < totalRegionNum; j++) {
+              let temp = rigDataset[i][j].map((value, index) => {
+                let month = index;
+                let day = 2;
+                let date = new Date(year, month, day);
+
+                return [date, value];
+              });
+
+              rigDatasetJson[regionIdx].push(
+                ...temp.map(([date, value]) => ({ date, value }))
+              );
+              regionIdx++;
+            }
+            year++;
+            regionIdx = 0;
+          }
+
+          for (let i = 0; i < totalRegionNum; i++) {
+            let json = {};
+
+            json.date = rigDatasetJson[i].map((row) => {
+              return row.date;
             });
 
-            rigDatasetJson[regionIdx].push(
-              ...temp.map(([date, value]) => ({ date, value }))
-            );
-            regionIdx++;
+            json.value = rigDatasetJson[i].map((row) => {
+              return row.value;
+            });
+
+            json.frequency = "m";
+            json.code = regionNames[i];
+            json.last_updated_time = `${currentYear}-${currentMonth}`;
+
+            json.description = "Number of rigs downloaded from Baker Hughes";
+            json.units = "counts";
+            json.output_type = ""; //use this as a default value for all EIA dataset
+            json.transformation = "lin"; //use this as a default value for all EIA dataset
+            json.aggregation = "avg"; //use this as a default value for all EIA dataset
+            json.source = "BakerHughes";
+            json.assetType = "rigs";
+
+            await sendDataToRDS(json);
           }
-          year++;
-          regionIdx = 0;
-        }
-
-      
-        for (let i = 0; i < totalRegionNum; i++) {
-          let json = {};
-
-          json.date = rigDatasetJson[i].map((row) => {
-            return row.date
-          });
-
-          
-          json.value = rigDatasetJson[i].map((row) => {
-            return row.value;
-          });
-
-          json.frequency = "m";
-          json.code = regionNames[i];
-          json.last_updated_time = `${currentYear}-${currentMonth}`;
-
-          json.description = "Number of rigs downloaded from Baker Hughes";
-          json.units = "counts";
-          json.output_type = ""; //use this as a default value for all EIA dataset
-          json.transformation = "lin"; //use this as a default value for all EIA dataset
-          json.aggregation = "avg"; //use this as a default value for all EIA dataset
-          json.source = "BakerHughes";
-          json.assetType = "rigs";
-        
-           await sendDataToRDS(json);  
-        }
-      });
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+        });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }
-
 
 function readDataFromBakerHughesWorldRigCounts(rows) {
   // An array to store the results of each task
@@ -918,9 +910,8 @@ function readDataFromBakerHughesWorldRigCounts(rows) {
 
   //each months
   for (let i = 1; i < 13; i++) {
-
     let idx = 2;
-    if(rows[i][idx].replace("$", "") != ''){
+    if (rows[i][idx].replace("$", "") != "") {
       result[0].push(rows[i][idx++].replace("$", ""));
       result[1].push(rows[i][idx++].replace("$", ""));
       result[2].push(rows[i][idx++].replace("$", ""));
@@ -931,56 +922,79 @@ function readDataFromBakerHughesWorldRigCounts(rows) {
       result[7].push(rows[i][idx++].replace("$", ""));
       result[8].push(rows[i][idx].replace("$", ""));
       idx = 2;
-    } 
-    
+    }
   }
   //
   return result;
 }
 
-
-export async function updateBOKDataset(){
-
+export async function updateBOKDataset() {
   let apiKey = process.env.bokAPIKey;
-  let bokAPIurl = "https://ecos.bok.or.kr/api/"
+  let bokAPIurl = "https://ecos.bok.or.kr/api/";
   // let bokAPIurl = "https://ecos.bok.or.kr/api/StatisticSearch/" + apiKey + "/json/en/1/1000/101Y003/M/195301/202306/BBHS00"
-  let bokStatsAPI = "StatisticSearch/"
-  let bokImportantListAPI = "KeyStatisticList/"
+  let bokStatsAPI = "StatisticSearch/";
+  let bokImportantListAPI = "KeyStatisticList/";
 
-  let finalAPIurl = bokAPIurl + bokImportantListAPI + apiKey + "/json/en/1/100"
-  // console.log(finalAPIurl);
-  let test = await axios.get(finalAPIurl)
-  // "/xml/kr/1/10/102Y004"
-  console.log(test.data)
-  console.log(test.data.KeyStatisticList.row);
+  let frequencyOptions = ["M", "A"];
 
+  let finalAPIurl = "";
+  let currentDate = new Date();
 
+  for (const category in bokList) {
+    for (const name in bokList[category]) {
+      let code = bokList[category]["info"].code;
+      if (name !== "info") {
+        let item = bokList[category][name];
+
+        for (let i = 0; i < frequencyOptions.length; i++) {
+          let frequency = frequencyOptions[i];
+
+          let startEndDateInBOKFormat =
+            formatCurrentDateForBOKDataset(frequency);
+          finalAPIurl =
+            bokAPIurl +
+            bokStatsAPI +
+            apiKey +
+            "/json/en/1/5000/" +
+            code +
+            "/" +
+            frequency +
+            "/" +
+            startEndDateInBOKFormat +
+            "/" +
+            item;         
+          try {
+            await axios.get(finalAPIurl).then(async (response) => {
+              console.log(
+                "Got data from Bank of Korea and saving data to the AWS RDS"
+              );
+
+              let json = response.data.StatisticSearch.row;
+
+              let result = await getGraphInfo(json, "", "BOK", "", frequency);
+
+              await sendDataToRDS(result);
+            });
+          } catch (error) {
+            console.error("An error occurred:", error);
+            // throw error;
+          }
+        }
+      }
+    }
+  }
+  console.log("done")
   return;
-  // for (let name in nasdaqDataLinkList) {
-  //   //LBMA/GOLD
-  //   let databasedataset = nasdaqDataLinkList[name];
-  //   await axios
-  //     .get(
-  //       "https://data.nasdaq.com/api/v3/datasets/" +
-  //         databasedataset +
-  //         ".json?api_key =" +
-  //         apiKey,
-  //       {
-  //         params: {
-  //           // order
-  //           // transform
-  //         },
-  //       }
-  //     )
-  //     .then(async (response) => {
-  //       let json = response.data.dataset;
-  //       //GOLD
-  //       let tag = json.dataset_code;
-  //       console.log("Data fetched from Nasdaq API :" + tag);
-
-  //       let result = await getGraphInfo(json, tag, "NDL");
-  //       await sendDataToRDS(result);
-  //     });
-
-  //   }
+}
+function formatCurrentDateForBOKDataset(frequency) {
+  if (frequency == "D" || frequency == "W") {
+    return (
+      "19500101/" + new Date().toISOString().slice(0, 10).replace(/-/g, "")
+    );
+  } else if (frequency == "M") {
+    return "195001/" + new Date().toISOString().slice(0, 8).replace(/-/g, "");
+  } else if (frequency == "A") {
+    return "1950/" + new Date().toISOString().slice(0, 4).replace(/-/g, "");
+  }
+  return new Error("Specified frequency does not exist");
 }
