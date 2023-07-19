@@ -32,6 +32,7 @@ import {
   EIAPetroleumSubCategoryList,
 } from "../../data/chartSubCategoryList.js";
 import dataList, {
+  cftcFinancialDerivativesList,
   cftcList,
   eiaDUCList,
   eiaDataNGTags,
@@ -198,7 +199,6 @@ router.post("/mysqlRequest", async (req, res) => {
 export async function sendDataToRDS(mappedDataForRds) {
   console.log("Sending data to RDS");
 
-  console.log(mappedDataForRds);
   //warning : DUC uses different format : data - region - date:values
   let tag = mappedDataForRds.code;
   let dateData = mappedDataForRds.date;
@@ -415,13 +415,7 @@ export async function sendDataToRDS(mappedDataForRds) {
       assetType,
     ];
 
-    console.log("here");
-    console.log(DATABASE_NAME);
-    console.log(tag);
-    console.log(frequency);
-    console.log(transformation);
-    console.log(aggregation);
-    console.log(assetType);
+   
     database.query(
       queries.FIND_DUPLICATE_IN_INDICATOR_TABLE,
       [DATABASE_NAME, tag, frequency, transformation, aggregation, assetType],
@@ -471,59 +465,139 @@ export async function sendDataToRDS(mappedDataForRds) {
               // }
               let indicator_id = result.insertId;
 
+
+              console.log("0");
               if (DATABASE_NAME == "CFTC") {
-                database.query(
-                  queries.CREATE_DATA_TABLE_CFTC,
-                  [DATABASE_NAME, newTableName, DATABASE_NAME],
-                  function (err, result, field) {
-                    if (err) {
-                      console.error("ERROR EXECUTING CREATE_DATA_TABLE", err);
-                      return;
-                    }
+                console.log("1");
 
-                    const open_interest_all = valueData[0];
-                    const m_money_positions_long_all = valueData[1];
-                    const m_money_positions_short_all = valueData[2];
-                    const change_in_m_money_long_all = valueData[3];
-                    const change_in_m_money_short_all = valueData[4];
-
-                    let tuples = lodash
-                      .zip(
-                        dateData,
-                        open_interest_all,
-                        m_money_positions_long_all,
-                        m_money_positions_short_all,
-                        change_in_m_money_long_all,
-                        change_in_m_money_short_all
-                      )
-                      .map((row) => [
-                        row[0],
-                        row[1],
-                        row[2],
-                        row[3],
-                        row[4],
-                        row[5],
-                        indicator_id,
-                      ]);
-
-                    database.query(
-                      queries.INSERT_DATA_TO_TABLE_CFTC,
-                      [DATABASE_NAME, newTableName, tuples],
-                      function (err, result, field) {
-                        if (err) {
-                          console.error(
-                            "ERROR EXECUTING INSERT_DATA_TO_TABLE_CFTC",
-                            err
-                          );
-                          return;
-                        } else {
-                          console.log("CREATE_DATA_TABLE executed");
-                          console.log("INSERT_DATA_TO_TABLE_CFTC executed");
-                        }
+                //tag = code
+                if(cftcList.includes(tag)){
+                  console.log("2");
+                  database.query(
+                    queries.CREATE_DATA_TABLE_CFTC_COMMODITY,
+                    [DATABASE_NAME, newTableName, DATABASE_NAME],
+                    function (err, result, field) {
+                      if (err) {
+                        console.error("ERROR EXECUTING CREATE_DATA_TABLE", err);
+                        return;
                       }
-                    );
-                  }
-                );
+  
+  
+                      const open_interest_all = valueData[0];
+                      const m_money_positions_long_all = valueData[1];
+                      const m_money_positions_short_all = valueData[2];
+                      const change_in_m_money_long_all = valueData[3];
+                      const change_in_m_money_short_all = valueData[4];
+  
+                      let tuples = lodash
+                        .zip(
+                          dateData,
+                          open_interest_all,
+                          m_money_positions_long_all,
+                          m_money_positions_short_all,
+                          change_in_m_money_long_all,
+                          change_in_m_money_short_all
+                        )
+                        .map((row) => [
+                          row[0],
+                          row[1],
+                          row[2],
+                          row[3],
+                          row[4],
+                          row[5],
+                          indicator_id,
+                        ]);
+  
+                      database.query(
+                        queries.INSERT_DATA_TO_TABLE_CFTC_COMMODITY,
+                        [DATABASE_NAME, newTableName, tuples],
+                        function (err, result, field) {
+                          if (err) {
+                            console.error(
+                              "ERROR EXECUTING INSERT_DATA_TO_TABLE_CFTC_COMMODITY",
+                              err
+                            );
+                            return;
+                          } else {
+                            console.log("CREATE_DATA_TABLE executed");
+                            console.log("INSERT_DATA_TO_TABLE_CFTC_COMMODITY executed");
+                          }
+                        }
+                      );
+                    }
+                  );
+
+                  
+                } else if(cftcFinancialDerivativesList.includes(tag)){
+                  console.log("3");
+                  database.query(
+                    queries.CREATE_DATA_TABLE_CFTC_FINANCIALDERIVATIVE,
+                    [DATABASE_NAME, newTableName, DATABASE_NAME],
+                    function (err, result, field) {
+                      if (err) {
+                        console.error("ERROR EXECUTING CREATE_DATA_TABLE", err);
+                        return;
+                      }
+  
+                    
+                      const open_interest_all = valueData[0];
+                      const noncomm_positions_long_all = valueData[1];
+                      const noncomm_positions_short_all = valueData[2];
+                      const comm_positions_long_all = valueData[3];
+                      const comm_positions_short_all = valueData[4];
+                      const tot_rept_positions_long_all = valueData[5];
+                      const tot_rept_positions_short = valueData[6];
+                      const nonrept_positions_long_all = valueData[7];
+                      const nonrept_positions_short_all = valueData[8];
+  
+                      let tuples = lodash
+                        .zip(
+                          dateData,
+                          open_interest_all,
+                           noncomm_positions_long_all ,
+                           noncomm_positions_short_all ,
+                           comm_positions_long_all ,
+                           comm_positions_short_all ,
+                           tot_rept_positions_long_all,
+                           tot_rept_positions_short,
+                           nonrept_positions_long_all,
+                           nonrept_positions_short_all,
+                        )
+                        .map((row) => [
+                          row[0],
+                          row[1],
+                          row[2],
+                          row[3],
+                          row[4],
+                          row[5],
+                          row[6],
+                          row[7],
+                          row[8],
+                          row[9],
+                          indicator_id,
+                        ]);
+  
+                      database.query(
+                        queries.INSERT_DATA_TO_TABLE_CFTC_FINANCIALDERIVATIVES,
+                        [DATABASE_NAME, newTableName, tuples],
+                        function (err, result, field) {
+                          if (err) {
+                            console.error(
+                              "ERROR EXECUTING INSERT_DATA_TO_TABLE_CFTC_FINANCIALDERIVATIVES",
+                              err
+                            );
+                            return;
+                          } else {
+                            console.log("CREATE_DATA_TABLE executed");
+                            console.log("INSERT_DATA_TO_TABLE_CFTC_FINANCIALDERIVATIVES executed");
+                          }
+                        }
+                      );
+                    }
+                  );
+
+                }
+              
               } else {
                 database.query(
                   queries.CREATE_DATA_TABLE,
@@ -1046,7 +1120,7 @@ export function getDataFromRDS(json) {
          
           let tableName =
             tag + "_" + frequency + "_" + transformation + "_" + aggregation;
-          console.log(tableName);
+         
           database.query(
             queries.SELECT_UNITS_FROM_CATALOG,
             [source, tag, frequency, transformation, aggregation],
@@ -1158,62 +1232,75 @@ export function getDataFromRDS(json) {
     // });
   } else if (source == "CFTC") {
     return new Promise((resolve, reject) => {
-      let indicators;
-      let assetType = tag;
+      let indicators
+    
 
       let jsonCFTCDataArrays = {};
 
-      database.query(
-        queries.SELECT_ALL_INDICATOR_ROWS_FROM_SOURCE,
-        source,
-        (error, results) => {
-          if (error) {
-            console.log(error.stack);
-          }
-          indicators = results;
-        }
-      );
+      // database.query(
+      //   queries.SELECT_ALL_INDICATOR_ROWS_FROM_SOURCE,
+      //   source,
+      //   (error, results) => {
+      //     if (error) {
+      //       console.log(error.stack);
+      //     }
+      //     indicators = results;
+       
+      //   }
+      // );
 
-      database.query(queries.SHOW_ALL_TABLES, source, (error, tables) => {
+     
+      let catalog;
+      database.query(queries.SELECT_AN_INDICATOR_ROW_BY_TAG, [source,[tag]], (error, row) => {
         if (error) {
           console.error("Error fetching tables: " + error.stack);
           reject(error);
           return;
         }
+        catalog = row;
+      })
 
-        const promises = tables.map((table) => {
-          const tableName = table["Tables_in_CFTC"];
+        // const promises = tables.map((table) => {
+        //   const tableName = table["Tables_in_CFTC"];
 
           return new Promise((resolve, reject) => {
             database.query(
               queries.SELECT_ALL_ROWS_FROM_TABLE,
-              [source, tableName],
+              [source, tag],
               (err, rows) => {
                 if (err) {
                   console.log(
-                    `Error fetching rows from ${tableName}: ${err.stack}`
+                    `Error fetching rows from ${tag}: ${err.stack}`
                   );
                   reject(err);
                   return;
                 }
-
+               
                 // Add the rows data to the jsonCFTCDataArrays object
-                jsonCFTCDataArrays[tableName.split("_")[0]] = rows;
-                resolve();
+                jsonCFTCDataArrays[tag.split("_")[0]] = rows;
+                resolve({ jsonCFTCDataArrays, catalog });
               }
             );
+          })
+          .then((promise) => {
+            // Handle the resolved promise here
+            resolve(promise)
+          })
+          .catch((error) => {
+            // Handle the rejected promise here
+            console.log("Promise rejected:", error);
           });
-        });
+        // });
 
         Promise.all(promises)
           .then(() => {
-            resolve({ jsonCFTCDataArrays, indicators });
+            resolve({ jsonCFTCDataArrays, tag });
           })
           .catch((error) => {
             console.log(`Error fetching data: ${error.stack}`);
             reject(error);
           });
-      });
+      // });
     });
   }
   //or else just fetch one graph

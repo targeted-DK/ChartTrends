@@ -1,5 +1,5 @@
 import express from "express";
-import dataList, { cftcList, fredDataList } from "../data/dataList.js";
+import dataList, { cftcFinancialDerivativesList, cftcList, fredDataList } from "../data/dataList.js";
 import featuredList from "../data/featuredList.js";
 import ratioList from "../data/ratioList.js";
 import bondsList from "../data/bondsList.js";
@@ -161,7 +161,7 @@ router.get("/CFTC/:tag", (req, res, next) => {
   const source = req.params.source;
   const tag = req.params.tag;
 
-  if (cftcList.includes(tag)) {
+  if (cftcList.includes(tag) || cftcFinancialDerivativesList.includes(tag)) {
     const fileName = "chart" + "CFTC" + "Template";
 
     res.render(fileName, { tag: tag });

@@ -19,6 +19,7 @@ import dataList, {
   cftcList,
   nasdaqDataLinkList,
   bokList,
+  cftcFinancialDerivativesList,
 } from "./data/dataList.js";
 import { permutation } from "js-combinatorics";
 import fs from "fs";
@@ -302,6 +303,61 @@ export async function updateCFTCDataset() {
     );
     extractedData.last_updated_time =
       extractedData[0].report_date_as_yyyy_mm_dd.slice(0, 10);
+    extractedData.units = excelAsJson[0].contract_units;
+    extractedData.description = excelAsJson[0].market_and_exchange_names;
+    extractedData.frequency = "weekly";
+
+    // console.log(extractedData);
+    try {
+      let result = await getGraphInfo(extractedData, code, "CFTC");
+
+      await sendDataToRDS(result);
+    } catch (error) {
+      failedDataParams.push(["CFTC", key]);
+      console.log(error);
+    }
+  }
+
+
+  for (const derivative  of cftcFinancialDerivativesList) {
+    let response = await cftcAPIcreator.sendRequestToCFTC(derivative);
+    // console.log(response);
+    let excelAsJson = response.data;
+   
+    let code = excelAsJson[0].contract_market_name;
+   
+    const extractedData = excelAsJson.map(
+      ({
+        report_date_as_yyyy_mm_dd,
+        open_interest_all,
+        noncomm_positions_long_all,
+        noncomm_positions_short_all,
+        comm_positions_long_all,
+        comm_positions_short_all,
+        tot_rept_positions_long_all,
+        tot_rept_positions_short,
+        nonrept_positions_long_all,
+        nonrept_positions_short_all,
+      }) => ({
+        report_date_as_yyyy_mm_dd,
+        open_interest_all,
+        noncomm_positions_long_all,
+        noncomm_positions_short_all,
+        comm_positions_long_all,
+        comm_positions_short_all,
+        tot_rept_positions_long_all,
+        tot_rept_positions_short,
+        nonrept_positions_long_all,
+        nonrept_positions_short_all,
+      })
+    );
+    extractedData.sort(
+      (a, b) =>
+        new Date(b.report_date_as_yyyy_mm_dd) -
+        new Date(a.report_date_as_yyyy_mm_dd)
+    );
+    extractedData.last_updated_time =
+    extractedData[0].report_date_as_yyyy_mm_dd.slice(0, 10);
     extractedData.units = excelAsJson[0].contract_units;
     extractedData.description = excelAsJson[0].market_and_exchange_names;
     extractedData.frequency = "weekly";

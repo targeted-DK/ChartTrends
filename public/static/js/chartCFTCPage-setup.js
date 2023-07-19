@@ -15,50 +15,88 @@ axios
     tag: assetType,
   })
   .then((response) => {
-    console.log(response);
-    const indicators = response.data.indicators;
+    const catalogs = response.data.catalog;
+  
     const dataFromRds = response.data.jsonCFTCDataArrays;
-    const tagsInIndicators = indicators.map((item) => item.tag);
+    const tagsInCatalog = catalogs.map((item) => item.tag);
     const tableNames = Object.keys(dataFromRds);
     let count = 0;
 
     for (const dataArray of Object.values(dataFromRds)) {
       const CFTCTableName = tableNames[count];
-      const tagIndexInIndicators = tagsInIndicators.indexOf(CFTCTableName);
+      const tagIndexInCatalog = tagsInCatalog.indexOf(CFTCTableName);
 
-      if (tagIndexInIndicators == -1) {
+      if (tagIndexInCatalog == -1) {
         count++;
         continue;
       }
 
-      const catalog = indicators[tagIndexInIndicators];
+      const catalog = catalogs[tagIndexInCatalog];
 
       const convertedData = convertCFTCDateFormatToHighCharts(dataArray);
-  
+
       let graphnames = Object.keys(convertedData[1]);
-    
+
       graphnames.pop();
       graphnames.shift();
-     
+
+      let seriesData = [];
+
       // let arrays = convertedData.map(obj => properties.map(prop => obj[prop]));
       // ['date', 'open_interest_all', 'm_money_positions_long_all', 'm_money_positions_short_all', 'change_in_m_money_long_all', 'change_in_m_money_short_all']
       const timestamps = convertedData.map((obj) => obj.date);
       const values1 = convertedData.map((obj) => obj.open_interest_all);
-      const values2 = convertedData.map((obj) => obj.m_money_positions_long_all);
-      const values3 = convertedData.map((obj) => obj.m_money_positions_short_all);
-      const values4 = convertedData.map((obj) => obj.change_in_m_money_long_all);
-      const values5 = convertedData.map((obj) => obj.change_in_m_money_short_all);
+      seriesData.push(timestamps);
+      seriesData.push(values1);
      
-    
-      let seriesData = [];
-      seriesData.push(timestamps)
-      seriesData.push(values1)
-      seriesData.push(values2)
-      seriesData.push(values3)
-      seriesData.push(values4)
-      seriesData.push(values5)
-     
-  
+      if (catalog.asset_type == "commodity") {
+        let values2 = convertedData.map(
+          (obj) => obj.m_money_positions_long_all
+        );
+        let values3 = convertedData.map(
+          (obj) => obj.m_money_positions_short_all
+        );
+        let values4 = convertedData.map(
+          (obj) => obj.change_in_m_money_long_all
+        );
+        let values5 = convertedData.map(
+          (obj) => obj.change_in_m_money_short_all
+        );
+        seriesData.push(values2);
+        seriesData.push(values3);
+        seriesData.push(values4);
+        seriesData.push(values5);
+      } else if (catalog.asset_type == "derivative") {
+        console.log(convertedData);
+        let values2_ = convertedData.map(
+          (obj) => obj.noncomm_positions_long_all
+        );
+        let values3_ = convertedData.map(
+          (obj) => obj.noncomm_positions_short_all
+        );
+        let values4_ = convertedData.map((obj) => obj.comm_positions_long_all);
+        let values5_ = convertedData.map((obj) => obj.comm_positions_short_all);
+        let values6_ = convertedData.map(
+          (obj) => obj.tot_rept_positions_long_all
+        );
+        let values7_ = convertedData.map((obj) => obj.tot_rept_positions_short);
+        let values8_ = convertedData.map(
+          (obj) => obj.nonrept_positions_long_all
+        );
+        let values9_ = convertedData.map(
+          (obj) => obj.nonrept_positions_short_all
+        );
+
+        seriesData.push(values2_);
+        seriesData.push(values3_);
+        seriesData.push(values4_);
+        seriesData.push(values5_);
+        seriesData.push(values6_);
+        seriesData.push(values7_);
+        seriesData.push(values8_);
+        seriesData.push(values9_);
+      }
+
       createHighcharts(seriesData, graphnames, CFTCTableName, catalog);
       count++;
     }
@@ -77,6 +115,7 @@ axios
  * Drops id, and parameter names, and convert date into miliseconds.
  */
 export function convertCFTCDateFormatToHighCharts(dataFromRds) {
+  
   const convertedData = dataFromRds.map((item) => {
     const milliseconds = Date.parse(item.date);
     item.date = milliseconds;
@@ -117,18 +156,15 @@ export function createHighcharts(
 
   // console.log(seriesData);
   Highcharts.stockChart(newChartContainer.className, {
-    
-
     title: {
       text: catalog.description,
     },
     credits: {
       enabled: false,
-   
     },
-  subtitle: {
-    text: "Sources : " + "CFTC"
-},
+    subtitle: {
+      text: "Sources : " + "CFTC",
+    },
     xAxis: {
       type: "datetime",
     },
@@ -157,11 +193,11 @@ export function createHighcharts(
     series: [
       ...seriesData.map((dataset, index) => ({
         name: graphnames[index],
-       
+
         data: dataset.map((value, i) => ({
           x: date[i], // Add the date for each data point
           y: value, // The corresponding value
-        }))
+        })),
 
         // yAxis: index === 0 ? 0 : 1, // Alternate between the two y-axes
       })),

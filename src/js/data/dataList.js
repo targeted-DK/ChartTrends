@@ -11,7 +11,8 @@ export const fredDataList = {
 "30-Year Fixed Rate Mortgage Average in the United States" :  "MORTGAGE30US",
 "Personal Income" : "PI",
 "Mortgage Debt Service Payments as a Percent of Disposable Personal Income"  :  "MDSP",
-
+"US Regular All Formulations Gas Price" : "GASREGW",
+"Average Hourly Earnings of Production and Nonsupervisory Employees, Total Private" :"AHETPI",
   //Index stuff
   "Wilshire 5000 Price Index": "WILL5000PR",
   "Wilshire 5000 Total Market Full Cap Index": "WILL5000INDFC",
@@ -538,6 +539,29 @@ export const cftcList = [
   "GOLD",
   "COPPER- #1",
 ];
+
+//didnt bring all from cot list
+export const cftcFinancialDerivativesList = [
+  "CANADIAN DOLLAR",
+  "SWISS FRANC",
+  "BRITISH POUND",
+  "JAPANESE YEN",
+  "EURO FX",
+  "AUSTRALIAN DOLLAR",
+  "MEXICAN PESO",
+  "BRAZILIAN REAL",
+  "NZ DOLLAR",
+  "S&P 500 Consolidated",
+  "NASDAQ-100 Consolidated",
+  "NIKKEI STOCK AVERAGE",
+  "NIKKEI STOCK AVERAGE YEN DENOM",
+  "UST BOND",
+  "ULTRA UST BOND",
+  "UST 2Y NOTE",
+  "UST 10Y NOTE",
+  "UST 5Y NOTE",
+  "FED FUNDS"
+]
 
 //database/dataset
 export const nasdaqDataLinkList = {
@@ -1085,6 +1109,7 @@ export default {
   eiaDataNGList,
   eiaDUCList,
   cftcList,
+  cftcFinancialDerivativesList,
   nasdaqDataLinkList,
   bokList,
 };

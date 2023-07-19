@@ -2,7 +2,6 @@ const queries = {
   // CREATE TABLES IN MYSQL FOR THE FIRST TIME
   CREATE_DATABASE: `CREATE DATABASE IF NOT EXISTS ??`,
 
-
   // DATABASE_NAME VARCHAR(20) deleted from check_indicator_table_if_exists
   //because catalog.?? is already an DATABASE_NAME;
   CHECK_INDICATOR_TABLE_IF_EXISTS: `CREATE TABLE IF NOT EXISTS catalog.?? (
@@ -25,7 +24,7 @@ const queries = {
       FOREIGN KEY (indicator_id) REFERENCES catalog.??(indicator_id)
     )`,
 
-  CREATE_DATA_TABLE_CFTC: `CREATE TABLE IF NOT EXISTS ??.?? (
+  CREATE_DATA_TABLE_CFTC_COMMODITY: `CREATE TABLE IF NOT EXISTS ??.?? (
       id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
       date DATETIME,
       open_interest_all DOUBLE,
@@ -33,6 +32,21 @@ const queries = {
       m_money_positions_short_all DOUBLE,
       change_in_m_money_long_all DOUBLE,
       change_in_m_money_short_all DOUBLE,
+      indicator_id INT,
+      FOREIGN KEY (indicator_id) REFERENCES catalog.??(indicator_id)
+    )`,
+  CREATE_DATA_TABLE_CFTC_FINANCIALDERIVATIVE: `CREATE TABLE IF NOT EXISTS ??.?? (
+      id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+      date DATETIME,
+      open_interest_all DOUBLE,
+    noncomm_positions_long_all DOUBLE,
+    noncomm_positions_short_all DOUBLE,
+    comm_positions_long_all DOUBLE,
+    comm_positions_short_all DOUBLE,
+    tot_rept_positions_long_all DOUBLE,
+    tot_rept_positions_short DOUBLE,
+    nonrept_positions_long_all DOUBLE,
+    nonrept_positions_short_all DOUBLE,
       indicator_id INT,
       FOREIGN KEY (indicator_id) REFERENCES catalog.??(indicator_id)
     )`,
@@ -49,19 +63,34 @@ const queries = {
     )`,
 
   INSERT_DATA_TO_TABLE: `INSERT INTO ??.?? (date, value, indicator_id) VALUES ?`,
-  INSERT_DATA_TO_TABLE_CFTC: `INSERT INTO ??.?? (date, 
+  INSERT_DATA_TO_TABLE_CFTC_COMMODITY: `INSERT INTO ??.?? (date, 
     open_interest_all,    
     m_money_positions_long_all,
     m_money_positions_short_all,
     change_in_m_money_long_all,
     change_in_m_money_short_all, 
     indicator_id) VALUES ?`,
+  INSERT_DATA_TO_TABLE_CFTC_FINANCIALDERIVATIVES: `INSERT INTO ??.?? (date, 
+      open_interest_all,    
+      noncomm_positions_long_all ,
+      noncomm_positions_short_all ,
+      comm_positions_long_all ,
+      comm_positions_short_all ,
+      tot_rept_positions_long_all,
+      tot_rept_positions_short,
+      nonrept_positions_long_all,
+      nonrept_positions_short_all,
+      indicator_id) VALUES ?`,
+
   INSERT_DATA_TO_TABLE_DUC: `INSERT INTO ??.?? (date, drilled, completed, DUC, indicator_id) VALUES ?`,
 
   SHOW_ALL_TABLES: `SHOW TABLES FROM ??`,
 
   SELECT_ALL_INDICATOR_ROWS_FROM_SOURCE: `SELECT * FROM catalog.??`,
 
+  SELECT_AN_INDICATOR_ROW_BY_TAG: `SELECT * 
+  FROM catalog.??
+  WHERE tag = ?`,
   //basically getting data for one graph
   SELECT_ALL_ROWS_FROM_TABLE: `SELECT * FROM ??.??`,
 
@@ -69,12 +98,13 @@ const queries = {
                                             FROM catalog.??
                                             WHERE asset_type = ?`,
 
-  SELECT_UNITS_FROM_CATALOG : `SELECT units FROM catalog.?? WHERE tag = ? AND frequency = ? AND transformation = ? AND aggregation = ? `                  ,  
+                                          
+
+  SELECT_UNITS_FROM_CATALOG: `SELECT units FROM catalog.?? WHERE tag = ? AND frequency = ? AND transformation = ? AND aggregation = ? `,
 
   // SELECT_INDICATOR_FROM_EIA_INDICATORS : `SELECT DATABASE_NAME, description, frequency, aggregation, units, last_updated_time
   //                     FROM catalog.EIA
   //                     WHERE tag = ?`,
-
 
   FIND_DUPLICATE_IN_INDICATOR_TABLE: `SELECT indicator_id, tag, description, frequency, transformation, aggregation, units, last_updated_time, asset_type 
   FROM catalog.?? 

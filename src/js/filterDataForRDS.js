@@ -1,3 +1,5 @@
+import { cftcFinancialDerivativesList, cftcList } from "./data/dataList.js";
+
 /**
  * Converts JSON object into a list of lists.
  * @param {JSON} JSON Object, code, source
@@ -103,45 +105,95 @@ function getGraphInfo(
       }
     });
   } else if (source == "CFTC") {
-    return new Promise((resolve, reject) => {
-      try {
-        // console.log(jsonObject.data);\
 
-        const newGraphObj = {
-          date: jsonObject.map((data) => data["report_date_as_yyyy_mm_dd"]),
-          value: [
-            jsonObject.map((data) => data["open_interest_all"]),
-            jsonObject.map((data) => data["m_money_positions_long_all"]),
-            jsonObject.map((data) => data["m_money_positions_short_all"]),
-            jsonObject.map((data) => data["change_in_m_money_long_all"]),
-            jsonObject.map((data) => data["change_in_m_money_short_all"]),
-          ],
-          code: code,
-          frequency:
-            jsonObject.frequency === "weekly"
-              ? "w"
-              : jsonObject.frequency === "monthly"
-              ? "m"
-              : jsonObject.frequency === "daily"
-              ? "d"
-              : jsonObject.frequency === "annual"
-              ? "a"
-              : null,
-          last_updated_time: jsonObject.last_updated_time, //this exists as 'realtime_end' in FRED dataset, basically both means the latest updated date.
-          description: jsonObject.description,
-          units: jsonObject.units,
-          output_type: "", //use this as a default value for all cftc dataset
-          transformation: "lin", //use this as a default value for all cftc dataset
-          aggregation: "avg", //use this as a default value for all cftc dataset
-          source: source,
-          assetType: assetType,
-        };
 
-        resolve(newGraphObj);
-      } catch (error) {
-        reject(error);
-      }
-    });
+    if(cftcList.includes(code)){
+      return new Promise((resolve, reject) => {
+        try {
+          // console.log(jsonObject.data);\
+  
+          const newGraphObj = {
+            date: jsonObject.map((data) => data["report_date_as_yyyy_mm_dd"]),
+            value: [
+              jsonObject.map((data) => data["open_interest_all"]),
+              jsonObject.map((data) => data["m_money_positions_long_all"]),
+              jsonObject.map((data) => data["m_money_positions_short_all"]),
+              jsonObject.map((data) => data["change_in_m_money_long_all"]),
+              jsonObject.map((data) => data["change_in_m_money_short_all"]),
+            ],
+            code: code,
+            frequency:
+              jsonObject.frequency === "weekly"
+                ? "w"
+                : jsonObject.frequency === "monthly"
+                ? "m"
+                : jsonObject.frequency === "daily"
+                ? "d"
+                : jsonObject.frequency === "annual"
+                ? "a"
+                : null,
+            last_updated_time: jsonObject.last_updated_time, //this exists as 'realtime_end' in FRED dataset, basically both means the latest updated date.
+            description: jsonObject.description,
+            units: jsonObject.units,
+            output_type: "", //use this as a default value for all cftc dataset
+            transformation: "lin", //use this as a default value for all cftc dataset
+            aggregation: "avg", //use this as a default value for all cftc dataset
+            source: source,
+            assetType: "commodity",
+          };
+  
+          resolve(newGraphObj);
+        } catch (error) {
+          reject(error);
+        }
+      });
+
+
+    } else if(cftcFinancialDerivativesList.includes(code)){
+
+      return new Promise((resolve, reject) => {
+        try {
+          const newGraphObj = {
+            date: jsonObject.map((data) => data["report_date_as_yyyy_mm_dd"]),
+            value: [
+              jsonObject.map((data) => data["open_interest_all"]),
+              jsonObject.map((data) => data["noncomm_positions_long_all"]),
+              jsonObject.map((data) => data["noncomm_positions_short_all"]),
+              jsonObject.map((data) => data["comm_positions_long_all"]),
+              jsonObject.map((data) => data["comm_positions_short_all"]),
+              jsonObject.map((data) => data["tot_rept_positions_long_all"]),
+              jsonObject.map((data) => data["tot_rept_positions_short"]),
+              jsonObject.map((data) => data["nonrept_positions_long_all"]),
+              jsonObject.map((data) => data["nonrept_positions_short_all"]),
+            ],
+            code: code,
+            frequency:
+              jsonObject.frequency === "weekly"
+                ? "w"
+                : jsonObject.frequency === "monthly"
+                ? "m"
+                : jsonObject.frequency === "daily"
+                ? "d"
+                : jsonObject.frequency === "annual"
+                ? "a"
+                : null,
+            last_updated_time: jsonObject.last_updated_time, //this exists as 'realtime_end' in FRED dataset, basically both means the latest updated date.
+            description: jsonObject.description,
+            units: jsonObject.units,
+            output_type: "", //use this as a default value for all cftc dataset
+            transformation: "lin", //use this as a default value for all cftc dataset
+            aggregation: "avg", //use this as a default value for all cftc dataset
+            source: source,
+            assetType: "derivative",
+          };
+  
+          resolve(newGraphObj);
+        } catch (error) {
+          reject(error);
+        }
+      });
+    }
+  
     //Nasdaq Data Link
   } else if (source == "NDL") {
     let size = Object.keys(jsonObject.data).length;

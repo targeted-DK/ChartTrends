@@ -622,7 +622,32 @@ let featuredList = [
       "Values"
     ],
     yaxistype : [0,0,0],
-    comparisonChartName: null,
+    comparisonChartName: "MDSP",
+    reference : "https://fredblog.stlouisfed.org/2023/07/inflation-and-the-cost-of-tighter-monetary-policy/?utm_source=twitter&utm_medium=SM&utm_content=stlouisfed&utm_campaign=7f0a5639-cbeb-4b2a-b0f0-4a182c5b0ac1"
+    // colors : ['#1f77b4', '#7f7f7f', "#FF00FF",'#8c564b', '#ff7f0e', '#9467bd', '#2ca02c', '#d62728' , '#e377c2'],
+  },
+
+  {
+    title: "Gasoline prices in respect to CPI and Wage",
+    urlendpoint: "gasolinerelativecost",
+    use: "case4",
+    chartToCreate: true,
+    numChartToCreate : 2, //length of chartmethod
+    chartToCreateName : ["Gasoline price in respect to CPI(CPI at 1990)", "Gasoline price in respect to Average Hourly Wage(no units)"],
+    chartMethod : [["Division"], ["Division"]],
+    adjustYaxis: true,
+    tag: ["GASREGW",  "CPIAUCSL","GASREGW", "AHETPI", "GASREGW"],
+    source: ["FRED","FRED", "FRED", "FRED","FRED"],
+    frequency: ["m","m","m", "m", "m"],
+    transformation: ["lin","lin","lin", "lin","lin"],
+    aggregation: ["avg","avg","avg", "avg","avg"],
+    adjustment: [127.5, 1, 60, 1,1],
+    units: [
+      "$ per Gallon adjusted to CPI", "$/Gallon"
+    ],
+    yaxistype : [0,0,1],
+    comparisonChartName: "GASREGW",
+    reference : "https://fredblog.stlouisfed.org/2023/07/are-real-gasoline-prices-really-higher/"
     // colors : ['#1f77b4', '#7f7f7f', "#FF00FF",'#8c564b', '#ff7f0e', '#9467bd', '#2ca02c', '#d62728' , '#e377c2'],
   },
 

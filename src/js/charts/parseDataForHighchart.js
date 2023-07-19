@@ -378,7 +378,7 @@ function createHighChartsOptions(jsonData) {
 
     comparisonChartNameIndex = numChartToCreate;
 
-    console.log(adjustedData);
+   
     use = "compare";
   }
 

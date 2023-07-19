@@ -42,6 +42,8 @@ export const tempList = {
 
 // "Job Openings: Total Nonfarm" : "JTSJOL",
 
+"US Regular All Formulations Gas Price" : "GASREGW",
+"Average Hourly Earnings of Production and Nonsupervisory Employees, Total Private" :"AHETPI",
 
 // "Money Market Funds; Total Financial Assets, Level" : "MMMFFAQ027S",
 // "Global price of Copper" : "PCOPPUSDM",
