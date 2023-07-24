@@ -165,25 +165,32 @@ app.get('*',function(req, res, next){
  * 1) Gets data from mainPageData.js and loads charts on the main webpage using drawCharts.js
  */
 async function main(){
-  // const job = schedule.scheduleJob('0 0 0,12 * *', updateEntireDatabase);
-  // updateEntireDatabase();
-  // processData.convertCopperCSVToJson();
-// await processData.updateFredDatasettemp();
-
+  schedule.scheduleJob('0 0 * * 5', async function(){
+    
+    console.log('Running a task at midnight every Friday');
+    // Add the code you want to run here
+    try {
+      await updateEntireDatabase();
+    } catch (error) {
+      console.error('An error occurred when updating the entire database:', error);
+      // Consider additional error handling here
+    }
+  });
+ 
 };
 
 async function updateEntireDatabase(){
-  // await processData.getDUCDataset();
+  await processData.getDUCDataset();
   // await processData.updateFredDatasettemp();
-  // await processData.updateNDLDataset();
+  await processData.updateNDLDataset();
   // // // // // await processData.getShillerDataset();
-  //  await processData.getBakerHughesDataset();
+   await processData.getBakerHughesDataset();
    
   // // await processData.convertCopperCSVToJson();
-  // await processData.updateFredDataset();
+  await processData.updateFredDataset();
   await processData.updateCFTCDataset();
-  // await processData.updateEIADataset();
-  // await processData.updateBOKDataset();
+  await processData.updateEIADataset();
+  await processData.updateBOKDataset();
 }
 
 

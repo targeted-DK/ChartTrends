@@ -13,9 +13,6 @@ export function parseDataForHighChart(json) {
     return columnName
   });
 
-  
- 
-  
   for(let i = 0; i < cftcColumnName.length; i++){
     console.log(cftcColumnName[i]);
     cftcColumnName[i].push("date");
@@ -34,7 +31,6 @@ export function parseDataForHighChart(json) {
       let transformedObj = {};
   
       // cftcColumnName is contained in an array, so destruct array by [0]
-    
       cftcColumnName[0].forEach((col, index) => {
         if(col != "date"){
           transformedObj["value"] = obj[col];
@@ -52,9 +48,6 @@ export function parseDataForHighChart(json) {
     json.values[index__] = extractedData
   })
 
-  
-  // console.log(json.values);
- 
 
   for (let data of json.values) {
     let convertedData = convertRDSDateFormatToHighCharts(data,  cftcColumnName[0]);
