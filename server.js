@@ -197,6 +197,12 @@ async function updateEntireDatabase(){
 /**
  * Client Connection
  */
+// app.enable('trust proxy');
+
+// app.use((req, res, next) => {
+//   console.log(`IP: ${req.headers['x-forwarded-for'] || req.ip}`);
+//   next();
+// });
 
 const IP_ADDRESS = '0.0.0.0'; // Listen on all IP addresses
 const PORT = 3000; // Port number

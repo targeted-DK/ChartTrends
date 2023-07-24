@@ -7,7 +7,7 @@
 //enmerate : compare multiple charts with same units
 
 //for 2-chart graphs, we need comparisonChartName in case of different units
-let featuredList = [
+const featuredList = [
   {
     title: "M2 vs. CPI",
     urlendpoint: "M2_CPI",

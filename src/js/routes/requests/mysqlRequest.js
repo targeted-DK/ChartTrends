@@ -466,13 +466,13 @@ export async function sendDataToRDS(mappedDataForRds) {
               let indicator_id = result.insertId;
 
 
-              console.log("0");
+             
               if (DATABASE_NAME == "CFTC") {
-                console.log("1");
+            
 
                 //tag = code
                 if(cftcList.includes(tag)){
-                  console.log("2");
+                 
                   database.query(
                     queries.CREATE_DATA_TABLE_CFTC_LEGACYFUTONLY,
                     [DATABASE_NAME, newTableName, DATABASE_NAME],
@@ -821,7 +821,8 @@ export function getDataFromRDS(json) {
     return new Promise((resolve, reject) => {
       // for (let feature of list) {
 
-      let feature = list.filter(({ urlendpoint }) => urlendpoint === tag)[0];
+      let feature = JSON.parse(JSON.stringify(list.filter(({ urlendpoint }) => urlendpoint === tag)[0]));
+
 
       let title = feature.title;
       let tags = feature.tag;

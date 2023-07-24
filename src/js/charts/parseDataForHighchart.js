@@ -2,6 +2,7 @@ import moment from "moment";
 
 export function parseDataForHighChart(json) {
   // let jsonData = Object.assign({}, json.data);
+ 
   let convertedDataList = [];
 
   //extract cftc data that graphs requires
