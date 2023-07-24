@@ -553,6 +553,7 @@ export const cftcFinancialDerivativesList = [
   "NZ DOLLAR",
   "S&P 500 Consolidated",
   "NASDAQ-100 Consolidated",
+  "NASDAQ MINI",
   "NIKKEI STOCK AVERAGE",
   "NIKKEI STOCK AVERAGE YEN DENOM",
   "UST BOND",

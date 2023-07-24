@@ -11,7 +11,7 @@ const queries = {
       frequency VARCHAR(10),
       transformation VARCHAR(10),
       aggregation VARCHAR(10),
-      units VARCHAR(10),
+      units VARCHAR(30),
       last_updated_time VARCHAR(20),
       asset_type VARCHAR(20)
     )`,
@@ -24,18 +24,7 @@ const queries = {
       FOREIGN KEY (indicator_id) REFERENCES catalog.??(indicator_id)
     )`,
 
-  CREATE_DATA_TABLE_CFTC_COMMODITY: `CREATE TABLE IF NOT EXISTS ??.?? (
-      id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-      date DATETIME,
-      open_interest_all DOUBLE,
-      m_money_positions_long_all DOUBLE,
-      m_money_positions_short_all DOUBLE,
-      change_in_m_money_long_all DOUBLE,
-      change_in_m_money_short_all DOUBLE,
-      indicator_id INT,
-      FOREIGN KEY (indicator_id) REFERENCES catalog.??(indicator_id)
-    )`,
-  CREATE_DATA_TABLE_CFTC_FINANCIALDERIVATIVE: `CREATE TABLE IF NOT EXISTS ??.?? (
+  CREATE_DATA_TABLE_CFTC_LEGACYFUTONLY: `CREATE TABLE IF NOT EXISTS ??.?? (
       id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
       date DATETIME,
       open_interest_all DOUBLE,
@@ -47,6 +36,23 @@ const queries = {
     tot_rept_positions_short DOUBLE,
     nonrept_positions_long_all DOUBLE,
     nonrept_positions_short_all DOUBLE,
+      noncomm_positions_net DOUBLE,
+      comm_positions_net DOUBLE,
+      tot_rept_positions_net DOUBLE,
+      nonrept_positions_net DOUBLE,
+    
+      indicator_id INT,
+      FOREIGN KEY (indicator_id) REFERENCES catalog.??(indicator_id)
+    )`,
+
+  CREATE_DATA_TABLE_CFTC_DISAGGREGATEDFUTONLY: `CREATE TABLE IF NOT EXISTS ??.?? (
+      id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+      date DATETIME,
+      open_interest_all DOUBLE,
+      m_money_positions_long_all DOUBLE,
+      m_money_positions_short_all DOUBLE,
+      change_in_m_money_long_all DOUBLE,
+      change_in_m_money_short_all DOUBLE,
       indicator_id INT,
       FOREIGN KEY (indicator_id) REFERENCES catalog.??(indicator_id)
     )`,
@@ -63,23 +69,27 @@ const queries = {
     )`,
 
   INSERT_DATA_TO_TABLE: `INSERT INTO ??.?? (date, value, indicator_id) VALUES ?`,
-  INSERT_DATA_TO_TABLE_CFTC_COMMODITY: `INSERT INTO ??.?? (date, 
+  INSERT_DATA_TO_TABLE_CFTC_DISAGGREGATEDFUTONLY: `INSERT INTO ??.?? (date, 
     open_interest_all,    
     m_money_positions_long_all,
     m_money_positions_short_all,
     change_in_m_money_long_all,
     change_in_m_money_short_all, 
     indicator_id) VALUES ?`,
-  INSERT_DATA_TO_TABLE_CFTC_FINANCIALDERIVATIVES: `INSERT INTO ??.?? (date, 
+  INSERT_DATA_TO_TABLE_CFTC_LEGACYFUTONLY: `INSERT INTO ??.?? (date, 
       open_interest_all,    
-      noncomm_positions_long_all ,
-      noncomm_positions_short_all ,
-      comm_positions_long_all ,
-      comm_positions_short_all ,
+      noncomm_positions_long_all,
+      noncomm_positions_short_all,
+      comm_positions_long_all,
+      comm_positions_short_all,
       tot_rept_positions_long_all,
       tot_rept_positions_short,
       nonrept_positions_long_all,
       nonrept_positions_short_all,
+      noncomm_positions_net,
+      comm_positions_net,
+      tot_rept_positions_net,
+      nonrept_positions_net,
       indicator_id) VALUES ?`,
 
   INSERT_DATA_TO_TABLE_DUC: `INSERT INTO ??.?? (date, drilled, completed, DUC, indicator_id) VALUES ?`,
@@ -97,8 +107,6 @@ const queries = {
   SELECT_ALL_INDICATOR_ROWS_BY_ASSET_TYPE: `SELECT * 
                                             FROM catalog.??
                                             WHERE asset_type = ?`,
-
-                                          
 
   SELECT_UNITS_FROM_CATALOG: `SELECT units FROM catalog.?? WHERE tag = ? AND frequency = ? AND transformation = ? AND aggregation = ? `,
 

@@ -3,8 +3,61 @@ import moment from "moment";
 export function parseDataForHighChart(json) {
   // let jsonData = Object.assign({}, json.data);
   let convertedDataList = [];
+
+  //extract cftc data that graphs requires
+  let cftcIndices = json.sources.map((item, i) => item.includes("CFTC") ? i : '').filter(String);
+  //dynamic property access  
+  let cftcColumnName = cftcIndices.map(index => {
+    let columnName = json.columnsToUse[index];
+    
+    return columnName
+  });
+
+  
+ 
+  
+  for(let i = 0; i < cftcColumnName.length; i++){
+    console.log(cftcColumnName[i]);
+    cftcColumnName[i].push("date");
+  }
+   
+  cftcIndices.forEach(index__ => {
+    json.names[index__]  = json.names[index__] + " " + cftcColumnName[0][0];
+    json.namesForTag[index__]  = json.namesForTag[index__] + " " + cftcColumnName[0][0];
+
+
+    let item = json.values[index__];
+    let extractedData = [];
+    item.forEach((obj, index_) => {
+
+     
+      let transformedObj = {};
+  
+      // cftcColumnName is contained in an array, so destruct array by [0]
+    
+      cftcColumnName[0].forEach((col, index) => {
+        if(col != "date"){
+          transformedObj["value"] = obj[col];
+        } else {
+          transformedObj[col] = obj[col];
+        }
+        transformedObj["id"] = index_
+       
+      });
+      extractedData.push(transformedObj);
+    
+    });
+
+    extractedData.sort((a, b) => new Date(a.date) - new Date(b.date));
+    json.values[index__] = extractedData
+  })
+
+  
+  // console.log(json.values);
+ 
+
   for (let data of json.values) {
-    let convertedData = convertRDSDateFormatToHighCharts(data);
+    let convertedData = convertRDSDateFormatToHighCharts(data,  cftcColumnName[0]);
 
     convertedDataList.push(convertedData);
   }
@@ -17,15 +70,25 @@ export function parseDataForHighChart(json) {
 
 export default parseDataForHighChart;
 
-function convertRDSDateFormatToHighCharts(dataFromRds) {
+function convertRDSDateFormatToHighCharts(dataFromRds, cftcColumnName) {
   if (dataFromRds == []) {
     return [];
   }
 
+
+ 
   //convert and sort
   const convertedData = dataFromRds.map((item, index) => {
     const milliseconds = Date.parse(item.date);
-    let result = [milliseconds, item.value];
+      
+    let result;
+    // if(item.value == null){
+    //   result = [milliseconds, item[cftcColumnName]];
+    //   // console.log( item[cftcColumnName]);
+    // } else {
+      result = [milliseconds, item.value];
+    // }
+   
 
     if (item.value === 0) {
       let sum = 0;
@@ -44,7 +107,7 @@ function convertRDSDateFormatToHighCharts(dataFromRds) {
   });
 
   convertedData.sort((a, b) => a[0] - b[0]);
-
+  
   return convertedData;
 }
 

@@ -651,6 +651,56 @@ let featuredList = [
     // colors : ['#1f77b4', '#7f7f7f', "#FF00FF",'#8c564b', '#ff7f0e', '#9467bd', '#2ca02c', '#d62728' , '#e377c2'],
   },
 
+  {
+    title: "Gasoline relative to CPI and average wage",
+    urlendpoint: "gasolinerelativecost",
+    use: "case4",
+    chartToCreate: true,
+    numChartToCreate : 2, //length of chartmethod
+    chartToCreateName : ["Gasoline price in respect to CPI(CPI at 1990)", "Gasoline price in respect to Average Hourly Wage(no units)"],
+    chartMethod : [["Division"], ["Division"]],
+    adjustYaxis: true,
+    tag: ["GASREGW",  "CPIAUCSL","GASREGW", "AHETPI", "GASREGW"],
+    source: ["FRED","FRED", "FRED", "FRED","FRED"],
+    frequency: ["m","m","m", "m", "m"],
+    transformation: ["lin","lin","lin", "lin","lin"],
+    aggregation: ["avg","avg","avg", "avg","avg"],
+    adjustment: [127.5, 1, 60, 1,1],
+    units: [
+      "$ per Gallon adjusted to CPI", "$/Gallon"
+    ],
+    yaxistype : [0,0,1],
+    comparisonChartName: "GASREGW",
+    reference : "https://fredblog.stlouisfed.org/2023/07/are-real-gasoline-prices-really-higher/"
+    // colors : ['#1f77b4', '#7f7f7f', "#FF00FF",'#8c564b', '#ff7f0e', '#9467bd', '#2ca02c', '#d62728' , '#e377c2'],
+  },
+
+  {
+    title: "Non-Commerical Net Futures Positions and WTI Price",
+    urlendpoint: "futures_wti",
+    use: "compare",
+    // chartToCreate: true,
+    // numChartToCreate : 1, //length of chartmethod
+    // chartToCreateName : ["Non Commerical Net Positions"],
+    // chartMethod : [["Addition"]],
+    adjustYaxis: true,
+    tag: ["WTI-PHYSICAL","EURO FX", "WTISPLC"],
+    source: ["CFTC","CFTC","FRED"],
+    frequency: ["","","m"],
+    transformation: ["","","lin"],
+    aggregation: ["","","avg"],
+    columnsToUse : [["noncomm_positions_net"],["noncomm_positions_net"],""],
+    adjustment: [1, 1,1],
+    units: [
+      "contracts", "$/barrel"
+    ],
+    yaxistype : [0,0,1],
+    comparisonChartName: "WTISPLC",
+    // reference : "https://fredblog.stlouisfed.org/2023/07/are-real-gasoline-prices-really-higher/"
+    // colors : ['#1f77b4', '#7f7f7f', "#FF00FF",'#8c564b', '#ff7f0e', '#9467bd', '#2ca02c', '#d62728' , '#e377c2'],
+  },
+
+
 
  
   

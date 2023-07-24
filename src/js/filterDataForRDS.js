@@ -115,11 +115,28 @@ function getGraphInfo(
           const newGraphObj = {
             date: jsonObject.map((data) => data["report_date_as_yyyy_mm_dd"]),
             value: [
+              // jsonObject.map((data) => data["open_interest_all"]),
+              // jsonObject.map((data) => data["m_money_positions_long_all"]),
+              // jsonObject.map((data) => data["m_money_positions_short_all"]),
+              // jsonObject.map((data) => data["change_in_m_money_long_all"]),
+              // jsonObject.map((data) => data["change_in_m_money_short_all"]),
               jsonObject.map((data) => data["open_interest_all"]),
-              jsonObject.map((data) => data["m_money_positions_long_all"]),
-              jsonObject.map((data) => data["m_money_positions_short_all"]),
-              jsonObject.map((data) => data["change_in_m_money_long_all"]),
-              jsonObject.map((data) => data["change_in_m_money_short_all"]),
+              jsonObject.map((data) => data["noncomm_positions_long_all"]),
+              jsonObject.map((data) => data["noncomm_positions_short_all"]),
+              jsonObject.map((data) => data["comm_positions_long_all"]),
+              jsonObject.map((data) => data["comm_positions_short_all"]),
+              jsonObject.map((data) => data["tot_rept_positions_long_all"]),
+              jsonObject.map((data) => data["tot_rept_positions_short"]),
+              jsonObject.map((data) => data["nonrept_positions_long_all"]),
+              jsonObject.map((data) => data["nonrept_positions_short_all"]),
+              jsonObject.map((data) => data["noncomm_positions_net"]),
+              jsonObject.map((data) => data["comm_positions_net"]),
+              jsonObject.map((data) => data["tot_rept_positions_net"]),
+              jsonObject.map((data) => data["nonrept_positions_net"]),
+
+              
+
+
             ],
             code: code,
             frequency:
@@ -141,7 +158,9 @@ function getGraphInfo(
             source: source,
             assetType: "commodity",
           };
-  
+
+       
+          console.log(newGraphObj.value);
           resolve(newGraphObj);
         } catch (error) {
           reject(error);
@@ -165,6 +184,11 @@ function getGraphInfo(
               jsonObject.map((data) => data["tot_rept_positions_short"]),
               jsonObject.map((data) => data["nonrept_positions_long_all"]),
               jsonObject.map((data) => data["nonrept_positions_short_all"]),
+              jsonObject.map((data) => data["noncomm_positions_net"]),
+              jsonObject.map((data) => data["comm_positions_net"]),
+              jsonObject.map((data) => data["tot_rept_positions_net"]),
+              jsonObject.map((data) => data["nonrept_positions_net"]),
+
             ],
             code: code,
             frequency:

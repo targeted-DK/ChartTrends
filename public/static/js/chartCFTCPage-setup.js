@@ -15,6 +15,7 @@ axios
     tag: assetType,
   })
   .then((response) => {
+   
     const catalogs = response.data.catalog;
   
     const dataFromRds = response.data.jsonCFTCDataArrays;
@@ -46,28 +47,31 @@ axios
       // ['date', 'open_interest_all', 'm_money_positions_long_all', 'm_money_positions_short_all', 'change_in_m_money_long_all', 'change_in_m_money_short_all']
       const timestamps = convertedData.map((obj) => obj.date);
       const values1 = convertedData.map((obj) => obj.open_interest_all);
+
+    
       seriesData.push(timestamps);
       seriesData.push(values1);
      
-      if (catalog.asset_type == "commodity") {
-        let values2 = convertedData.map(
-          (obj) => obj.m_money_positions_long_all
-        );
-        let values3 = convertedData.map(
-          (obj) => obj.m_money_positions_short_all
-        );
-        let values4 = convertedData.map(
-          (obj) => obj.change_in_m_money_long_all
-        );
-        let values5 = convertedData.map(
-          (obj) => obj.change_in_m_money_short_all
-        );
-        seriesData.push(values2);
-        seriesData.push(values3);
-        seriesData.push(values4);
-        seriesData.push(values5);
-      } else if (catalog.asset_type == "derivative") {
-        console.log(convertedData);
+      // if (catalog.asset_type == "commodity") {
+      //   let values2 = convertedData.map(
+      //     (obj) => obj.m_money_positions_long_all
+      //   );
+      //   let values3 = convertedData.map(
+      //     (obj) => obj.m_money_positions_short_all
+      //   );
+      //   let values4 = convertedData.map(
+      //     (obj) => obj.change_in_m_money_long_all
+      //   );
+      //   let values5 = convertedData.map(
+      //     (obj) => obj.change_in_m_money_short_all
+      //   );
+      //   seriesData.push(values2);
+      //   seriesData.push(values3);
+      //   seriesData.push(values4);
+      //   seriesData.push(values5);
+      // } else 
+      // if (catalog.asset_type == "derivative") {
+      //   console.log(convertedData);
         let values2_ = convertedData.map(
           (obj) => obj.noncomm_positions_long_all
         );
@@ -86,6 +90,18 @@ axios
         let values9_ = convertedData.map(
           (obj) => obj.nonrept_positions_short_all
         );
+        let values10_ = convertedData.map(
+          (obj) => obj.noncomm_positions_net
+        );
+        let values11_ = convertedData.map(
+          (obj) => obj.comm_positions_net
+        );
+        let values12_ = convertedData.map(
+          (obj) => obj.tot_rept_positions_net
+        );
+        let values13_ = convertedData.map(
+          (obj) => obj.nonrept_positions_net
+        );
 
         seriesData.push(values2_);
         seriesData.push(values3_);
@@ -95,7 +111,11 @@ axios
         seriesData.push(values7_);
         seriesData.push(values8_);
         seriesData.push(values9_);
-      }
+        seriesData.push(values10_);
+        seriesData.push(values11_);
+        seriesData.push(values12_);
+        seriesData.push(values13_);
+      // }
 
       createHighcharts(seriesData, graphnames, CFTCTableName, catalog);
       count++;
@@ -182,6 +202,7 @@ export function createHighcharts(
     ],
 
     plotOptions: {
+     
       flags: {
         accessibility: {
           exposeAsGroupOnly: true,
@@ -193,7 +214,7 @@ export function createHighcharts(
     series: [
       ...seriesData.map((dataset, index) => ({
         name: graphnames[index],
-
+        turboThreshold : 0,
         data: dataset.map((value, i) => ({
           x: date[i], // Add the date for each data point
           y: value, // The corresponding value

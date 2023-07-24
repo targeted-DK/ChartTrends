@@ -275,27 +275,61 @@ export async function updateCFTCDataset() {
 
   for (const commodity of cftcList) {
     let response = await cftcAPIcreator.sendRequestToCFTC(commodity);
-    let excelAsJson = response.data;
-    let code = excelAsJson[0].contract_market_name;
 
-    // console.log(res);
+    let excelAsJson = response.data;
+
+   
+    let code = excelAsJson[0].contract_market_name;
+    let futonly_or_combined = excelAsJson[0].futonly_or_combined;
+    // console.log(futonly_or_combined);
+
     const extractedData = excelAsJson.map(
       ({
         report_date_as_yyyy_mm_dd,
         open_interest_all,
-        m_money_positions_long_all,
-        m_money_positions_short_all,
-        change_in_m_money_long_all,
-        change_in_m_money_short_all,
+        noncomm_positions_long_all,
+        noncomm_positions_short_all,
+        comm_positions_long_all,
+        comm_positions_short_all,
+        tot_rept_positions_long_all,
+        tot_rept_positions_short,
+        nonrept_positions_long_all,
+        nonrept_positions_short_all,
       }) => ({
         report_date_as_yyyy_mm_dd,
         open_interest_all,
-        m_money_positions_long_all,
-        m_money_positions_short_all,
-        change_in_m_money_long_all,
-        change_in_m_money_short_all,
+        noncomm_positions_long_all,
+        noncomm_positions_short_all,
+        comm_positions_long_all,
+        comm_positions_short_all,
+        tot_rept_positions_long_all,
+        tot_rept_positions_short,
+        nonrept_positions_long_all,
+        nonrept_positions_short_all,
+        noncomm_positions_net: noncomm_positions_long_all - noncomm_positions_short_all,
+        comm_positions_net: comm_positions_long_all - comm_positions_short_all,
+        tot_rept_positions_net: tot_rept_positions_long_all - tot_rept_positions_short,
+        non_rept_positions_net: nonrept_positions_long_all - nonrept_positions_short_all,
       })
     );
+    // console.log(res);
+    // const extractedData = excelAsJson.map(
+    //   ({
+    //     report_date_as_yyyy_mm_dd,
+    //     open_interest_all,
+    //     m_money_positions_long_all,
+    //     m_money_positions_short_all,
+    //     change_in_m_money_long_all,
+    //     change_in_m_money_short_all,
+    //   }) => ({
+    //     report_date_as_yyyy_mm_dd,
+    //     open_interest_all,
+    //     m_money_positions_long_all,
+    //     m_money_positions_short_all,
+    //     change_in_m_money_long_all,
+    //     change_in_m_money_short_all,
+    //   })
+    // );
     extractedData.sort(
       (a, b) =>
         new Date(b.report_date_as_yyyy_mm_dd) -
@@ -318,14 +352,13 @@ export async function updateCFTCDataset() {
     }
   }
 
-
-  for (const derivative  of cftcFinancialDerivativesList) {
+  for (const derivative of cftcFinancialDerivativesList) {
     let response = await cftcAPIcreator.sendRequestToCFTC(derivative);
-    // console.log(response);
+
     let excelAsJson = response.data;
-   
+
     let code = excelAsJson[0].contract_market_name;
-   
+
     const extractedData = excelAsJson.map(
       ({
         report_date_as_yyyy_mm_dd,
@@ -349,6 +382,10 @@ export async function updateCFTCDataset() {
         tot_rept_positions_short,
         nonrept_positions_long_all,
         nonrept_positions_short_all,
+        noncomm_positions_net: noncomm_positions_long_all - noncomm_positions_short_all,
+        comm_positions_net: comm_positions_long_all - comm_positions_short_all,
+        tot_rept_positions_net: tot_rept_positions_long_all - tot_rept_positions_short,
+        non_rept_positions_net: nonrept_positions_long_all - nonrept_positions_short_all,
       })
     );
     extractedData.sort(
@@ -357,7 +394,7 @@ export async function updateCFTCDataset() {
         new Date(a.report_date_as_yyyy_mm_dd)
     );
     extractedData.last_updated_time =
-    extractedData[0].report_date_as_yyyy_mm_dd.slice(0, 10);
+      extractedData[0].report_date_as_yyyy_mm_dd.slice(0, 10);
     extractedData.units = excelAsJson[0].contract_units;
     extractedData.description = excelAsJson[0].market_and_exchange_names;
     extractedData.frequency = "weekly";
@@ -1018,7 +1055,7 @@ export async function updateBOKDataset() {
             "/" +
             startEndDateInBOKFormat +
             "/" +
-            item;         
+            item;
           try {
             await axios.get(finalAPIurl).then(async (response) => {
               console.log(
@@ -1039,7 +1076,7 @@ export async function updateBOKDataset() {
       }
     }
   }
-  console.log("done")
+  console.log("done");
   return;
 }
 function formatCurrentDateForBOKDataset(frequency) {

@@ -166,7 +166,7 @@ app.get('*',function(req, res, next){
  */
 async function main(){
   // const job = schedule.scheduleJob('0 0 0,12 * *', updateEntireDatabase);
-  updateEntireDatabase();
+  // updateEntireDatabase();
   // processData.convertCopperCSVToJson();
 // await processData.updateFredDatasettemp();
 
@@ -181,7 +181,7 @@ async function updateEntireDatabase(){
    
   // // await processData.convertCopperCSVToJson();
   // await processData.updateFredDataset();
-  // await processData.updateCFTCDataset();
+  await processData.updateCFTCDataset();
   // await processData.updateEIADataset();
   // await processData.updateBOKDataset();
 }
