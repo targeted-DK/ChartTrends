@@ -7,6 +7,7 @@ import ejs from 'ejs';
 import morgan from 'morgan';
 import session from 'express-session';
 import apiRouter, { getDataFromEIA, getDataFromFRED } from './src/js/routes/requests/apiRequest.js';
+import getDataFromOpenAI from './src/js/routes/requests/openaiAPI/openaiAPICreator.js'
 import mysqlRouter from './src/js/routes/requests/mysqlRequest.js';
 import chartRouter from './src/js/routes/chart.js';
 import articleRouter from './src/js/routes/articleList.js';
@@ -16,6 +17,9 @@ import runPythonRouter from  './src/js/routes/runPython.js'
 import * as processData from './src/js/processData.js';
 import { fileURLToPath } from 'url';
 import cookieParser from 'cookie-parser';
+import openaiAPICreator from './src/js/routes/requests/openaiAPI/openaiAPICreator.js';
+
+
 import schedule from 'node-schedule'
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -151,7 +155,7 @@ app.get('/getSearchBarList', (req, res) => {
 app.get('/', function(req, res) {
 console.log(process.env.DB_HOST);
 res.sendFile(path.join(__dirname,'src/index.html'));
-main();
+// main();
 });
 
 //404 error
@@ -164,18 +168,30 @@ app.get('*',function(req, res, next){
  * This function runs whenever the webpage is loaded
  * 1) Gets data from mainPageData.js and loads charts on the main webpage using drawCharts.js
  */
+
+const IP_ADDRESS = '0.0.0.0'; // Listen on all IP addresses
+const PORT = 3000; // Port number
+
+
+
 async function main(){
-  schedule.scheduleJob('0 0 * * 5', async function(){
+
+  //doing this for now because this gets exeucted before getting mysql database authorization
+  setTimeout(() => {
+    openaiAPICreator.checkAndAddOpenAIResponseToDB();
+  }, 100);
+ 
+  // schedule.scheduleJob('0 0 * * 5', async function(){
     
-    console.log('Running a task at midnight every Friday');
-    // Add the code you want to run here
-    try {
-      await updateEntireDatabase();
-    } catch (error) {
-      console.error('An error occurred when updating the entire database:', error);
-      // Consider additional error handling here
-    }
-  });
+  //   console.log('Running a task at midnight every Friday');
+  //   // Add the code you want to run here
+  //   try {
+  //     await updateEntireDatabase();
+  //   } catch (error) {
+  //     console.error('An error occurred when updating the entire database:', error);
+  //     // Consider additional error handling here
+  //   }
+  // });
  
 };
 
@@ -194,6 +210,14 @@ async function updateEntireDatabase(){
 }
 
 
+
+app.listen(PORT, IP_ADDRESS, () => {
+  console.log('Server listening on port ' + PORT);
+  main();
+  
+});
+
+
 /**
  * Client Connection
  */
@@ -204,13 +228,6 @@ async function updateEntireDatabase(){
 //   next();
 // });
 
-const IP_ADDRESS = '0.0.0.0'; // Listen on all IP addresses
-const PORT = 3000; // Port number
-app.listen(PORT, IP_ADDRESS, () => {
-  console.log('Server listening on port ' + PORT);
-  main();
-  
-});
 
 
 /**

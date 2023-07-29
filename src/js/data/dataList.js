@@ -1097,7 +1097,7 @@ export const bokList = {
 
 
   KoreanHousingInventory  : {
-    info: { name: "Korean Housing Inventry", code: "901Y074" },
+    info: { name: "Korean Housing Inventory", code: "901Y074" },
     //Greater Seoul Metropolitan Area
     "GSMA" : "I410R",
   }

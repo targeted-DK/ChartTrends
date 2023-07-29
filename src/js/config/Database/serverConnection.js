@@ -17,11 +17,6 @@ const connection = mysql.createConnection({
 });
 
 // Database Connection
-connection.connect(function(error) {
-  if (error) throw error;
-  console.log("Connected to RDS Database on AWS");
- 
-});
 
 //GRANT ALL PRIVILEGES ON *.* TO 'username'@'%' WITH GRANT OPTION;
 
@@ -34,6 +29,14 @@ connection.query(grantPrivilegesSQL, function (error, results, fields) {
   if (error) throw error;
   console.log("Privileges to acesss all datasbase granted successfully");
 });
+
+connection.connect(function(error) {
+  if (error) throw error;
+ 
+  
+  console.log("Connected to RDS Database on AWS");
+});
+
 
 // connection.query(grantPrivilegesTEST, function (error, results, fields) {
 //   if (error) throw error;
