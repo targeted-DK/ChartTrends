@@ -1,49 +1,50 @@
 import { Configuration, OpenAIApi } from "openai";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 import axios from "axios";
 import sendOpenAIDataToDB from "./sendOpenAIDataToDB.js";
-import connection from "../../../config/Database/serverConnection.js"
+import express from "express";
+import bodyParser from "body-parser";
+const router = express.Router();
+
+router.use(bodyParser.json());
 
 dotenv.config();
 
-const configuration = new Configuration({
-    organization: process.env.openaiOrganizationID,
-    apiKey: process.env.openaiAPIKey,
+router.post("/openaiRequest", async (req, res) => {
+  try {
+    const tableName = req.body.tableName;
+    let dataFromDB = await checkAndAddOpenAIResponseToDB(tableName);
+    res.send(dataFromDB);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ message: "Error while fetching openAI response" }); // Sending a general server error message
+  }
 });
 
-const openai = new OpenAIApi(configuration);
-
-
-async function checkAndAddOpenAIResponseToDB(promptQuestion, tableName){
-    console.log(connection.authorized);
-    sendOpenAIDataToDB("Tell me how 10year treasury yield and cpi are related", "table");
+async function checkAndAddOpenAIResponseToDB(tableName) {
+  try {
+    let promptQuestion = `Imagine yourself as an financial expert. You are trying to make a chart named ${tableName}. Explain how they are related and interpreted in stock market in a concise but professional manner. Use less than 200 tokens.`;
+    let dataFromDB = await sendOpenAIDataToDB(promptQuestion, tableName);
+    return dataFromDB;
+  } catch (error) {
+    console.error("Error in checkAndAddOpenAIResponseToDB: ", error);
+    throw error; // Re-throw the error if you want calling functions to be able to catch it as well
+  }
 }
 
-export async function getDataFromOpenAI(prompt){
+export async function getDataFromOpenAI(promptQuestion) {
+  const configuration = new Configuration({
+    organization: process.env.openaiOrganizationID,
+    apiKey: process.env.openaiAPIKey,
+  });
 
-    let engineType = "davinci";
-    let openAIurl = `https://api.openai.com/v1/engines/${engineType}/completions`;
-    let openAIRequestContent = {
-        "prompt" :"Hi, I am testing if openAPI works on my node.js program",
-        "max_tokens" :30
-    }
+  const openai = new OpenAIApi(configuration);
+  const response = await openai.createChatCompletion({
+    model: "gpt-3.5-turbo",
+    messages: [{ role: "user", content: promptQuestion }],
+  });
 
-   return await axios.post(openAIurl, openAIRequestContent,{
-    headers: { 'Authorization': 'Bearer ' + configuration.apiKey }
-    
-    })
-   .then((response) => {
-         let promptResponse = response.data.choices[0].text;
-      
-         return promptResponse;
-
-    })
-    .catch((error) => {
-        console.error(error);
-    });
-
+  return response.data.choices[0].message.content;
 }
 
-
-
-export default {getDataFromOpenAI, checkAndAddOpenAIResponseToDB};
+export default { getDataFromOpenAI, checkAndAddOpenAIResponseToDB, router };

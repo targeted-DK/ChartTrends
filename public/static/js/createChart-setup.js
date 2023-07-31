@@ -19,19 +19,13 @@ export function convertRDSDateFormatToHighCharts(dataFromRds){
       return convertedData;
 }
 
-// const tag = req.params.tag;
-// var data;
-// (async function() {
-// data = await getDataFromRDS(tag);
-// })();
+
 /**
  * @param {Array<number, value>} array 
  * 
  * Creates highchart with given array
  */
 export function createHighcharts(convertedData) {
-
- 
 
     let newChartContainer = document.getElementById("chart-container");
     
@@ -90,6 +84,11 @@ export function createHighcharts(convertedData) {
         newChartContainer.style.right = "20%";
         newChartContainer.style.left = "20%";
     
+
+    
+}
+
+function getTextInfoForChart(){
 
     
 }

@@ -19,13 +19,15 @@ const queries = {
 
   CHECK_OPENAI_TABLE_IF_EXISTS: `SELECT * FROM ??.??`,
 
-  CHECK_IF_OPENAI_RESPONSE_OLDER_THAN_A_MONTH: `SELECT * FROM ??.?? WHERE last_updated_time < ??`,
+  CHECK_IF_OPENAI_RESPONSE_OLDER_THAN_A_MONTH: `SELECT * FROM ??.?? WHERE last_updated_time < ?`,
+  
+  SELECT_OPENAIRESULT_TABLE_TEXT: `SELECT openai_response FROM OPENAIRESULT.??`,
+
   DROP_OPENAI_TABLE: `DROP TABLE ??.??`,
   CREATE_OPENAI_TABLE: `CREATE TABLE ??.?? (
   indicator_id INT PRIMARY KEY AUTO_INCREMENT,
   openai_response TEXT,
-  last_updated_time DATE
-)`,
+  last_updated_time DATE)`,
 
   INSERT_DATA_TO_OPENAIRESULT_TABLE: `INSERT INTO ??.?? (openai_response, last_updated_time) VALUES (?,?)`,
   UPDATE_OPENAIRESULT_TABLE: `UPDATE ??.?? SET openai_response = ??, last_updated_time = ?? where id = 0`,
@@ -128,7 +130,6 @@ const queries = {
   //                     FROM catalog.EIA
   //                     WHERE tag = ?`,
 
-  SELECT_LAST_UPDATE_TIME_IN_OPENAIRESULT_TABLE: `SELECT last_update_time FROM OPENAIRESULT.?`,
 
   FIND_DUPLICATE_IN_INDICATOR_TABLE: `SELECT indicator_id, tag, description, frequency, transformation, aggregation, units, last_updated_time, asset_type 
   FROM catalog.?? 

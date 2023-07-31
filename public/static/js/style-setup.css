@@ -60,6 +60,12 @@
     color:#ffffff;
     cursor: pointer;
   }
+
+  .info-text {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #333;
+  }
 /* 
 button {
     cursor: pointer;

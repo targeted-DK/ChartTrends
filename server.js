@@ -18,7 +18,8 @@ import * as processData from './src/js/processData.js';
 import { fileURLToPath } from 'url';
 import cookieParser from 'cookie-parser';
 import openaiAPICreator from './src/js/routes/requests/openaiAPI/openaiAPICreator.js';
-
+import openaiAPI from './src/js/routes/requests/openaiAPI/openaiAPICreator.js';
+const { router: openaiRouter } = openaiAPI;
 
 import schedule from 'node-schedule'
 const app = express();
@@ -108,6 +109,7 @@ app.post('/mysqlRequest', mysqlRouter);
 app.get('/mysqlRequest', mysqlRouter);
 app.post('/apiRequest', apiRouter); 
 app.use('/runPython', runPythonRouter);
+app.post('/openaiRequest', openaiRouter)
 
 app.post('/analyze', (req, res) => {
   // handle the POST request here
@@ -177,9 +179,9 @@ const PORT = 3000; // Port number
 async function main(){
 
   //doing this for now because this gets exeucted before getting mysql database authorization
-  setTimeout(() => {
-    openaiAPICreator.checkAndAddOpenAIResponseToDB();
-  }, 100);
+  // setTimeout(() => {
+  //   openaiAPICreator.checkAndAddOpenAIResponseToDB();
+  // }, 100);
  
   // schedule.scheduleJob('0 0 * * 5', async function(){
     
