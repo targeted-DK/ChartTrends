@@ -88,7 +88,3 @@ export function createHighcharts(convertedData) {
     
 }
 
-function getTextInfoForChart(){
-
-    
-}

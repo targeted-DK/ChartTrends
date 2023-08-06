@@ -4,6 +4,12 @@ import axios from "axios";
 import sendOpenAIDataToDB from "./sendOpenAIDataToDB.js";
 import express from "express";
 import bodyParser from "body-parser";
+import featuredList from "../../../data/featuredList.js";
+import bankList from "../../../data/bankList.js";
+import bondsList from "../../../data/bondsList.js";
+import usgovList from "../../../data/usgovList.js";
+import fedList from "../../../data/fedList.js";
+import macroList from "../../../data/macroList.js";
 const router = express.Router();
 
 router.use(bodyParser.json());
@@ -13,8 +19,9 @@ dotenv.config();
 router.post("/openaiRequest", async (req, res) => {
   try {
     const tableName = req.body.tableName;
-    let dataFromDB = await checkAndAddOpenAIResponseToDB(tableName);
-    res.send(dataFromDB);
+    getPromptRelatedInfoFromDataListJS(tableName);
+    // let dataFromDB = await checkAndAddOpenAIResponseToDB(tableName);
+    // res.send(dataFromDB);
   } catch (err) {
     console.error(err);
     res.status(500).send({ message: "Error while fetching openAI response" }); // Sending a general server error message
@@ -45,6 +52,34 @@ export async function getDataFromOpenAI(promptQuestion) {
   });
 
   return response.data.choices[0].message.content;
+}
+
+async function getPromptRelatedInfoFromDataListJS(urlendpoint){
+
+    // let list = [];
+    // list.push(featuredList.map(item => item.urlendpoint));
+    // list.push(bankList.map(item => item.urlendpoint));
+    // list.push(bondsList.map(item => item.urlendpoint));
+    // list.push(macroList.map(item => item.urlendpoint));
+    // list.push(usgovList.map(item => item.urlendpoint));
+    // list.push(fedList.map(item => item.urlendpoint));
+
+    // let info = list[String(urlendpoint)];
+    //ratio, data, oil ? 
+
+    // console.log(info);
+    let hashMap = {};
+
+    // Combine all lists into a hash map for quick lookups
+    [...featuredList, ...bankList, ...bondsList, ...macroList, ...usgovList, ...fedList].forEach(item => {
+        hashMap[item.urlendpoint] = item;
+    });
+    
+    // Look up info in constant time
+    console.log(hashMap);
+    
+
+
 }
 
 export default { getDataFromOpenAI, checkAndAddOpenAIResponseToDB, router };

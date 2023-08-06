@@ -9,21 +9,19 @@ const chartSubject = tag;
 // let unit;
 
 Promise.all([
-  axios.post("/openaiRequest", {
-    tableName: chartSubject,
-  }),
+  // axios.post("/openaiRequest", {
+  //   tableName: chartSubject,
+  // }),
   axios.post("/mysqlRequest", {
-    //no longer setting up chart on the frontend.
     use: category,
-    //eia
+
     tag: chartSubject,
   }),
 ])
-  .then(([response1, response2]) => {
+  .then(([response2]) => {
+    // const textContainer = document.getElementById("info-text");
 
-    const textContainer = document.getElementById("info-text");
-   
-    textContainer.innerText = response1.data[0].openai_response;
+    // textContainer.innerText = response1.data[0].openai_response;
 
     let chartOptions = response2.data;
 
