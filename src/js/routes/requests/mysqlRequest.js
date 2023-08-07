@@ -49,6 +49,7 @@ import bankList from "../../data/bankList.js";
 import fedList from "../../data/fedList.js";
 import usgovList from "../../data/usgovList.js";
 import parseDataForHighChart from "../../charts/parseDataForHighchart.js";
+import chinaList from "../../data/chinaList.js";
 
 router.use(bodyParser.json());
 
@@ -58,6 +59,17 @@ router.post("/mysqlRequest", async (req, res) => {
 
   //use this block from now on 
   if (req.body.use == "usgov") {
+   
+  try {
+   
+    const results = await getDataFromRDS(req.body);
+    res.status(200).send(results);
+  } catch (error) {
+    res.status(500).send({ message: "Error fetching data from RDS", error });
+  }
+}
+
+if (req.body.use == "china") {
    
   try {
    
@@ -799,6 +811,7 @@ export function getDataFromRDS(json) {
 
 // /chart/featured, ratio, bonds, bank, fed case
   // 'eia', 'cftc category is different
+  
   if (chartCategoryList.includes(source)) {
     let list = [];
 
@@ -816,8 +829,11 @@ export function getDataFromRDS(json) {
       list = fedList;
     } else if (source == "usgov"){
       list = usgovList;
+    } else if (source == "china"){
+      list = chinaList;
     }
     
+   
     return new Promise((resolve, reject) => {
       // for (let feature of list) {
 
@@ -863,6 +879,7 @@ export function getDataFromRDS(json) {
 
         let tableName;
 
+       
         //CFTC data does not use "w_lin_avg format"
         if (source_instance != "CFTC") {
           tableName =

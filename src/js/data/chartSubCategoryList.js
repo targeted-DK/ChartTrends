@@ -14,7 +14,8 @@ export const chartCategoryList = [
   "macro",
   "bank",
   "fed",
-  "usgov"
+  "usgov",
+  "china"
 ];
 
 export const EIACategoryList = ["oil", "petroleum", "ng"];

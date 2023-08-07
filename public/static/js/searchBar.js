@@ -13,6 +13,7 @@ let ratioList = [];
 let bondsList = [];
 let fedList = [];
 let oilList = [];
+let chinaList = [];
 
 let fredDataUrlendpoints = [];
 let featuredUrlendpoints = [];
@@ -21,6 +22,7 @@ let ratioUrlendpoints = [];
 let bondsUrlendpoints = [];
 let fedUrlendpoints = [];
 let oilUrlendpoints = [];
+let chinaUrlendpoints = [];
 
 
 axios
@@ -35,6 +37,7 @@ axios
     bondsList = res.data.bondsList;
     fedList = res.data.fedList;
     oilList = res.data.oilList;
+    chinaList = res.data.chinaList;
   
     // featuredUrlendpoints = res.data.featuredList.map((obj) => obj.urlendpoint)
     // macroUrlendpoints = res.data.macroList.map((obj) => obj.urlendpoint)
@@ -206,6 +209,15 @@ function onInputChange() {
       filteredNames.push(obj.title);
     }
   });
+
+  chinaList.forEach((obj) => {
+    // trie.insert(obj.title)
+    // const closestMatch = trie.findClosestMatch(obj.title);
+    // filteredNames.push(closestMatch)
+    if (obj.title.substr(0, key.length).toLowerCase() === key) {
+      filteredNames.push(obj.title);
+    }
+  });
  
   createAutoCompleteDropDown(filteredNames);
 }
@@ -331,6 +343,15 @@ function onSubmitButtonClick() {
       if (obj.title === input) {
         urlendpoint = obj.urlendpoint;
         listType = "EIA"
+        sendRequestAndNavigateCustomChart(listType, urlendpoint);
+      } 
+      return;
+    });
+
+    chinaList.map((obj) => {
+      if (obj.title === input) {
+        urlendpoint = obj.urlendpoint;
+        listType = "china"
         sendRequestAndNavigateCustomChart(listType, urlendpoint);
       } 
       return;

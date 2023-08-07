@@ -1028,7 +1028,7 @@ export async function updateBOKDataset() {
   let bokStatsAPI = "StatisticSearch/";
   let bokImportantListAPI = "KeyStatisticList/";
 
-  let frequencyOptions = ["M", "A"];
+  let frequencyOptions = ["M","Q","A"];
 
   let finalAPIurl = "";
   let currentDate = new Date();
@@ -1042,8 +1042,10 @@ export async function updateBOKDataset() {
         for (let i = 0; i < frequencyOptions.length; i++) {
           let frequency = frequencyOptions[i];
 
+          
           let startEndDateInBOKFormat =
             formatCurrentDateForBOKDataset(frequency);
+            
           finalAPIurl =
             bokAPIurl +
             bokStatsAPI +
@@ -1056,14 +1058,17 @@ export async function updateBOKDataset() {
             startEndDateInBOKFormat +
             "/" +
             item;
+
+            
           try {
             await axios.get(finalAPIurl).then(async (response) => {
               console.log(
                 "Got data from Bank of Korea and saving data to the AWS RDS"
               );
 
+              // console.log(response);
               let json = response.data.StatisticSearch.row;
-
+              
               let result = await getGraphInfo(json, "", "BOK", "", frequency);
 
               await sendDataToRDS(result);
@@ -1088,6 +1093,17 @@ function formatCurrentDateForBOKDataset(frequency) {
     return "195001/" + new Date().toISOString().slice(0, 8).replace(/-/g, "");
   } else if (frequency == "A") {
     return "1950/" + new Date().toISOString().slice(0, 4).replace(/-/g, "");
+  } else if (frequency = "Q"){
+    let endQuarter = getQuarter(new Date());
+    return "1950Q1/" + endQuarter;
+
   }
   return new Error("Specified frequency does not exist");
+}
+
+function getQuarter(date) {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const quarter = Math.floor(month / 3) + 1;
+  return `${year}Q${quarter}`;
 }

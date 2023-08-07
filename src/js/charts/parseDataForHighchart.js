@@ -733,6 +733,8 @@ function createHighChartsOptions(jsonData) {
         },
       };
     } else {
+
+      
       //case for comparing two graphs with different y-axis
       chartOptions = {
         title: {

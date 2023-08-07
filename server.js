@@ -38,6 +38,7 @@ import featuredList from './src/js/data/featuredList.js';
 import fedList from './src/js/data/fedList.js';
 import oilList from './src/js/data/oilList.js'
 import usgovList from './src/js/data/usgovList.js';
+import chinaList from './src/js/data/chinaList.js';
 
 
 //disable cache
@@ -145,6 +146,7 @@ app.get('/getSearchBarList', (req, res) => {
     fedList : fedList.map(({ title, urlendpoint }) => ({ title, urlendpoint })),
     oilList : oilList.map(({ title, urlendpoint }) => ({ title, urlendpoint })), 
     usgovList : usgovList.map(({ title, urlendpoint }) => ({ title, urlendpoint })), 
+    chinaList : chinaList.map(({ title, urlendpoint }) => ({ title, urlendpoint })), 
 }
 
   res.status(200).send(filteredNames);
@@ -187,28 +189,28 @@ async function main(){
     
   //   console.log('Running a task at midnight every Friday');
   //   // Add the code you want to run here
-  //   try {
-  //     await updateEntireDatabase();
-  //   } catch (error) {
-  //     console.error('An error occurred when updating the entire database:', error);
-  //     // Consider additional error handling here
-  //   }
+    try {
+      await updateEntireDatabase();
+    } catch (error) {
+      console.error('An error occurred when updating the entire database:', error);
+      // Consider additional error handling here
+    }
   // });
  
 };
 
 async function updateEntireDatabase(){
-  await processData.getDUCDataset();
-  // await processData.updateFredDatasettemp();
-  await processData.updateNDLDataset();
-  // // // // // await processData.getShillerDataset();
-   await processData.getBakerHughesDataset();
+  // await processData.getDUCDataset();
+  // // await processData.updateFredDatasettemp();
+  // await processData.updateNDLDataset();
+  // // // // // // await processData.getShillerDataset();
+  //  await processData.getBakerHughesDataset();
    
-  // // await processData.convertCopperCSVToJson();
-  await processData.updateFredDataset();
-  await processData.updateCFTCDataset();
-  await processData.updateEIADataset();
-  await processData.updateBOKDataset();
+  // // // await processData.convertCopperCSVToJson();
+  // await processData.updateFredDataset();
+  // await processData.updateCFTCDataset();
+  // await processData.updateEIADataset();
+  // await processData.updateBOKDataset();
 }
 
 

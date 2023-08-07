@@ -24,7 +24,7 @@ Promise.all([
     // textContainer.innerText = response1.data[0].openai_response;
 
     let chartOptions = response2.data;
-
+    
     //adding function() in labelformatter disappears during data transmission from back->front
     let legendTags = response2.data.legend.legendTags;
 

@@ -6,6 +6,7 @@ import macroList from "./data/macroList.js";
 import ratioList from "./data/ratioList.js";
 import { fredDataList } from "./dataList.js";
 import oilList from "./oilList.js";
+import chinaList from "./data/chinaList.js";
 
 // import {featuredList} from "./featuredList.js";
 // localStorage.setItem("fredDataList", JSON.stringify(fredDataList));
@@ -154,6 +155,12 @@ function onInputChange() {
       filteredNames.push(obj.title);
     }
   });
+  chinaList.forEach((obj) => {
+    if (obj.title.substr(0, key.length).toLowerCase() === key) {
+      filteredNames.push(obj.title);
+    }
+  });
+
 
   createAutoCompleteDropDown(filteredNames);
 }
@@ -290,7 +297,14 @@ function onSubmitButtonClick() {
       return;
     });
 
-
+    chinaList.map((obj) => {
+      if (obj.title === key) {
+        urlendpoint = obj.urlendpoint;
+        listType = "china"
+        sendRequestAndNavigateCustomChart(listType, urlendpoint);
+      } 
+      return;
+    });
 
 
 

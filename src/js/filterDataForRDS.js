@@ -270,12 +270,12 @@ function getGraphInfo(
     let lastUpdatedTime = jsonObject[jsonObject.length - 1].TIME;
   
    
-
+   
     return new Promise((resolve, reject) => {
       try {
         const newGraphObj = {
           value: jsonObject.map((data) => data.DATA_VALUE),
-          date: jsonObject.map((data) => data.TIME),
+          date: jsonObject.map((data) => convertBOKFormatToDateFormat(data.TIME)),
           code: statCode + "_" + itemCode,
           description: statName + "_" + itemName,
           last_updated_time: lastUpdatedTime,
@@ -287,7 +287,7 @@ function getGraphInfo(
           source: source,
           assetType: assetType,
         };
-
+        
         resolve(newGraphObj);
       } catch (error) {
         reject(error);
@@ -382,3 +382,28 @@ export default getGraphInfo;
 //   order: null,
 //   database_id: 139
 // }
+function convertBOKFormatToDateFormat(input) {
+  let date;
+
+  if (input.length === 4) {
+    date = new Date(input, 0, 1);
+  } else if (input.includes('Q')) {
+    const year = parseInt(input.substring(0, 4));
+    const quarter = parseInt(input.substring(5));
+    const month = (quarter - 1) * 3;
+    date = new Date(year, month, 1);
+  } else if (input.length === 6) {
+    const year = parseInt(input.substring(0, 4));
+    const month = parseInt(input.substring(4, 6)) - 1;
+    date = new Date(year, month, 1);
+  } else if (input.length === 8) {
+    const year = parseInt(input.substring(0, 4));
+    const month = parseInt(input.substring(4, 6)) - 1;
+    const day = parseInt(input.substring(6, 8));
+    date = new Date(year, month, day);
+  } else {
+    throw new Error('Invalid input format');
+  }
+
+  return date.toISOString().substring(0, 10);
+}

@@ -13,6 +13,7 @@ import {
   eiaDataPetroleumTags,
 } from "../data/dataList.js";
 import { EIACategoryList, EIANGSubCategoryList, EIAOilSubCategoryList, EIAPetroleumFourWeekAvgDemandTags, EIAPetroleumSubCategoryList } from "../data/chartSubCategoryList.js";
+import chinaList from "../data/chinaList.js";
 
 var router = express.Router();
 
@@ -168,6 +169,20 @@ router.get("/CFTC/:tag", (req, res, next) => {
   } else {
     //define error message later
     res.status(404).render("404", {});
+  }
+});
+
+
+router.get("/china/:tag", (req, res, next) => {
+  const tag = req.params.tag;
+
+  const fileName = "chartMainTemplate";
+  const list = chinaList.map((item) => item.urlendpoint);
+
+  if (list.includes(tag)) {
+    res.render(fileName, {use : "china", tag: tag });
+  } else {
+    res.status(404).render("404", { error: "Page not found" });
   }
 });
 
