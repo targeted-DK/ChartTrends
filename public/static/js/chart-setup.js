@@ -9,19 +9,19 @@ const chartSubject = tag;
 // let unit;
 
 Promise.all([
-  // axios.post("/openaiRequest", {
-  //   tableName: chartSubject,
-  // }),
+  axios.post("/openaiRequest", {
+    urlendpoint : chartSubject,
+  }),
   axios.post("/mysqlRequest", {
     use: category,
 
     tag: chartSubject,
   }),
 ])
-  .then(([response2]) => {
-    // const textContainer = document.getElementById("info-text");
+  .then(([response1, response2]) => {
+    const textContainer = document.getElementById("info-text");
 
-    // textContainer.innerText = response1.data[0].openai_response;
+    textContainer.innerText = response1.data[0].openai_response;
 
     let chartOptions = response2.data;
     
@@ -58,6 +58,12 @@ Promise.all([
     newChartContainer.style.position = "relative";
     newChartContainer.style.right = "20%";
     newChartContainer.style.left = "20%";
+
+    textContainer.style.width = "70%";
+    textContainer.style.height = "1000px";
+    textContainer.style.position = "relative";
+    textContainer.style.right = "20%";
+    textContainer.style.left = "20%";
   })
   .then(() => {
     const loading = document.getElementById("loading");

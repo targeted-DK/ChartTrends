@@ -24,7 +24,7 @@ const chinaList = [
 
     {
         title: "China Current Account, HSI",
-        urlendpoint: "chinaac_hsi",
+        urlendpoint: "chinaca_hsi",
         openaiItem : ["China Current Account", "HangSeng Index"],
         use: "compare",
         chartToCreate: false,
@@ -45,7 +45,7 @@ const chinaList = [
 
       {
         title: "China Current Account, Oil",
-        urlendpoint: "chinaac_oil",
+        urlendpoint: "chinaca_oil",
         openaiItem : ["China Current Account", "WTI Oil Price"],
         use: "compare",
         chartToCreate: false,

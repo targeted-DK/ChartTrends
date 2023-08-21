@@ -23,7 +23,7 @@ let dataFromDB = "";
 
 export async function sendOpenAIDataToDB(promptQuestion, tableName_) {
   let tableName = tableName_;
-
+  // console.log(tableName);
   if (!connection.authorized) {
     console.log("not authorized");
     return;

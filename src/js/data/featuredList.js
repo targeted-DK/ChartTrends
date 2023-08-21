@@ -42,6 +42,7 @@ const featuredList = [
     units: ["Million USD", "Billion USD", "Billion USD", "Points"],
     // adjustYaxis 
     comparisonChartName: "WILL5000PR",
+    chatgptPromptInput : ["Wilshire 5000 Price Index", "Domestic Liquidity Indicator"]
   },
 
   {
@@ -60,6 +61,8 @@ const featuredList = [
     adjustment: [1, -1000, -1000, 1],
     units: ["Million USD", "Billion USD", "Billion USD", "Points"],
     comparisonChartName: "NASDAQCOM",
+    // chatgptPrompts : ["Nasdaq", "Domestic Liquidity Indicator"]
+
   },
 
 
@@ -82,6 +85,8 @@ const featuredList = [
     yaxistype : [0,1],
     comparisonChartName: "WTISPLC",
     colors :  ["#0000FF", "#000000"],
+    // chatgptPrompts : ["WTI Cushing Price", "3 Months - 2 Year Yield"]
+
   },
 
   {
@@ -103,6 +108,8 @@ const featuredList = [
     yaxistype : [0,0,1],
     comparisonChartName: "WTISPLC",
     colors :  ["#0000FF", "#FF0000", "#000000"],
+    // chatgptPrompts : ["WTI Cushing Price", " 10-Year Treasury Constant Maturity Minus 2-Year Treasury Constant Maturity", ]
+
   },
 
 
