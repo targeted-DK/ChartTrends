@@ -69,6 +69,7 @@ Promise.all([
 
     //container -> gptContainer -> gpttext/info containers
     gptContainer.style.width = "100%"
+    gptContainer.style.position = "relative"
     gptTextContainer.style.width = "100%";
     gptTextContainer.style.height = "1000px";
     gptTextContainer.style.position = "relative";
