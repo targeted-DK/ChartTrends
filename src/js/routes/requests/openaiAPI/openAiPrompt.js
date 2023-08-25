@@ -1,1 +1,1 @@
-const chartQuestion = "Hi, I am asking about";
+// const chartQuestion = "Hi, I am asking about";

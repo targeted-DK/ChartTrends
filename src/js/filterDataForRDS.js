@@ -160,7 +160,7 @@ function getGraphInfo(
           };
 
        
-          console.log(newGraphObj.value);
+          // console.log(newGraphObj.value);
           resolve(newGraphObj);
         } catch (error) {
           reject(error);

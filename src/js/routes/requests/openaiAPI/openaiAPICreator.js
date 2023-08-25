@@ -1,7 +1,7 @@
 import { Configuration, OpenAIApi } from "openai";
 import dotenv from "dotenv";
 import axios from "axios";
-import sendOpenAIDataToDB from "./sendOpenAIDataToDB.js";
+import sendOpenAIDataToDBAndFetch from "./sendOpenAIDataToDB.js";
 import express from "express";
 import bodyParser from "body-parser";
 import featuredList from "../../../data/featuredList.js";
@@ -10,12 +10,14 @@ import bondsList from "../../../data/bondsList.js";
 import usgovList from "../../../data/usgovList.js";
 import fedList from "../../../data/fedList.js";
 import macroList from "../../../data/macroList.js";
-import { fredDataList } from "../../../data/dataList.js";
+import {eiaDataOilTags, eiaDataNGTags, eiaDataPetroleumTags, fredDataList, eiaDataOilList, eiaDataPetroleumList } from "../../../data/dataList.js";
 const router = express.Router();
 
 router.use(bodyParser.json());
 
 dotenv.config();
+
+let openaimodel;
 
 router.post("/openaiRequest", async (req, res) => {
   try {
@@ -35,7 +37,7 @@ async function checkAndAddOpenAIResponseToDB(urlendpoint, chartName, chatgptProm
   
   try {
     let promptQuestion = `Imagine yourself as an financial expert. You are trying to make a chart named ${chartName}. This chart contains following graphs : ${chatgptPromptInputs}. Explain how they are related and interpreted in stock market in a concise but professional manner. Use less than 200 tokens.`;
-    let dataFromDB = await sendOpenAIDataToDB(promptQuestion, urlendpoint);
+    let dataFromDB = await sendOpenAIDataToDBAndFetch(promptQuestion, urlendpoint);
     return dataFromDB;
   } catch (error) {
     console.error("Error in checkAndAddOpenAIResponseToDB: ", error);
@@ -54,12 +56,14 @@ export async function getDataFromOpenAI(promptQuestion) {
     model: "gpt-3.5-turbo",
     messages: [{ role: "user", content: promptQuestion }],
   });
+  // openaimodel = response.model;
 
   return response.data.choices[0].message.content;
 }
 
 async function getPromptRelatedInfoFromDataListJS(urlendpoint){
 
+    // gather all info before if-else
     let list = [];
     list.push(featuredList.map(item => item.urlendpoint));
     list.push(bankList.map(item => item.urlendpoint));
@@ -84,12 +88,11 @@ async function getPromptRelatedInfoFromDataListJS(urlendpoint){
     let chartDetails = hashMap[urlendpoint];
     let chartName = chartDetails.title;
     let use = chartDetails.use;
+
     //if use == compare, fetch realnames from dataList.js or other files
     //if it is other cases, such as custom charts, use chatgptPrompts in the object.
     let chatgptPromptInputs;
-
-  
-    if(use != "compare"){
+    if(use != "compare" || use != "enumerate"){
       chatgptPromptInputs = chartDetails.chatgptPromptInput;
     } else {
       chatgptPromptInputs = [];
@@ -98,7 +101,6 @@ async function getPromptRelatedInfoFromDataListJS(urlendpoint){
       let sources = chartDetails.source;
       
       for(let num in sources){
-        
         if(sources[num] == "FRED"){
           // console.log(fredDataList);
           for (const [key, val] of Object.entries(fredDataList)) {
@@ -107,6 +109,30 @@ async function getPromptRelatedInfoFromDataListJS(urlendpoint){
             } 
           }
          
+        } else if(sources[num] == "EIA"){
+          //eiaDataTags is a list, eiaDataList is kv pair object.
+          let eiaDataTags = [...eiaDataOilTags, ...eiaDataPetroleumTags, ...eiaDataNGTags];
+          let eiaDataList = {...eiaDataOilList, ...eiaDataPetroleumList, ...eiaDataOilList};
+          let tagIndex = eiaDataTags.findInex(item => item == tags[num]);
+       
+          if (tagIndex !== -1) {
+
+           let tag = (Object.keys(eiaDataList[tagIndex]));
+            chatgptPromptInputs.push(tag);
+          } else {
+            chatgptPromptInputs.push("No match found");
+          }
+
+        }else if(sources[num] == "CFTC"){
+
+
+        }else if(sources[num] == "BakerHughes"){
+
+
+        }else if(sources[num] == "NDL"){
+
+        }else if(sources[num] == "BOK"){
+           
         }
       }
     }

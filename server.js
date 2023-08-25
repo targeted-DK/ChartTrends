@@ -181,9 +181,9 @@ const PORT = 3000; // Port number
 async function main(){
 
   //doing this for now because this gets exeucted before getting mysql database authorization
-  setTimeout(() => {
-    openaiAPICreator.checkAndAddOpenAIResponseToDB();
-  }, 1000);
+  // setTimeout(() => {
+    // openaiAPICreator.checkAndAddOpenAIResponseToDB();
+  // }, 1000);
  
   // schedule.scheduleJob('0 0 * * 5', async function(){
     

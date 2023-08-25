@@ -21,7 +21,7 @@ let oneMonthAgo = `${yearAgo}-${monthAgo}-${dayAgo}`;
 
 let dataFromDB = "";
 
-export async function sendOpenAIDataToDB(promptQuestion, tableName_) {
+export async function sendOpenAIDataToDBAndFetch(promptQuestion, tableName_) {
   let tableName = tableName_;
   // console.log(tableName);
   if (!connection.authorized) {
@@ -62,7 +62,7 @@ export async function sendOpenAIDataToDB(promptQuestion, tableName_) {
                 promptQuestion,
                 tableName
               );
-              dataFromDB = openaiResponse;
+              dataFromDB = [{"openai_response" : openaiResponse, "last_updated_time" : currentDate}];
 
               connection.query(
                 queries.INSERT_DATA_TO_OPENAIRESULT_TABLE,
@@ -78,10 +78,11 @@ export async function sendOpenAIDataToDB(promptQuestion, tableName_) {
               console.log(
                 "New openAI response table is created and data has been fetched and inserted to the table"
               );
-
+              
               resolve(dataFromDB);
               return;
             }
+            
           );
         } else {
         console.log("table exists, so checking how old data is");
@@ -114,7 +115,7 @@ export async function sendOpenAIDataToDB(promptQuestion, tableName_) {
                       tableName
                     );
 
-                    dataFromDB = openaiResponse;
+                    dataFromDB = [{"openai_response" : openaiResponse, "last_updated_time" : currentDate}];
 
                     connection.query(
                       queries.UPDATE_OPENAIRESULT_TABLE,
@@ -159,11 +160,11 @@ async function getDataFromTable(tableName) {
           return;
         }
         console.log("SELECT_OPENAIRESULT_TABLE_TEXT executed");
-
+       
         resolve(result);
       }
     );
   });
 }
 
-export default sendOpenAIDataToDB;
+export default sendOpenAIDataToDBAndFetch;

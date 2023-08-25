@@ -61,7 +61,7 @@ const featuredList = [
     adjustment: [1, -1000, -1000, 1],
     units: ["Million USD", "Billion USD", "Billion USD", "Points"],
     comparisonChartName: "NASDAQCOM",
-    // chatgptPrompts : ["Nasdaq", "Domestic Liquidity Indicator"]
+    chatgptPromptInput : ["Nasdaq Index", "Domestic Liquidity Indicator"]
 
   },
 
@@ -85,7 +85,7 @@ const featuredList = [
     yaxistype : [0,1],
     comparisonChartName: "WTISPLC",
     colors :  ["#0000FF", "#000000"],
-    // chatgptPrompts : ["WTI Cushing Price", "3 Months - 2 Year Yield"]
+    chatgptPromptInput : ["WTI Cushing Price", "3-Month Treasury Constant Maturity Minus 2-Year Treasury Constant Maturity"]
 
   },
 
@@ -108,7 +108,7 @@ const featuredList = [
     yaxistype : [0,0,1],
     comparisonChartName: "WTISPLC",
     colors :  ["#0000FF", "#FF0000", "#000000"],
-    // chatgptPrompts : ["WTI Cushing Price", " 10-Year Treasury Constant Maturity Minus 2-Year Treasury Constant Maturity", ]
+    // chatgptPromptInput : ["WTI Cushing Price", " 10-Year Treasury Constant Maturity Minus 2-Year Treasury Constant Maturity", ]
 
   },
 
@@ -232,13 +232,15 @@ const featuredList = [
     adjustment: [1,1,1],
     units : ["ratio", "percent"],
     yaxistype : [0,1],
-    comparisonChartName : "DGS10"
+    comparisonChartName : "DGS10",
+    chatgptPromptInput : ["Copper-Gold Ratio", "US10YR Bond Yield"]
   },
   //three charts
   {
     title: "Nominal Comparison of Oil, Wilshire 5000, Gold",
     urlendpoint: "oil_will5000_gold",
     use: "case2",
+    
     chartToCreate: false,
     adjustYaxis: true,
     tag: [ "DCOILWTICO" , "WILL5000PR", "GOLD"],
@@ -249,7 +251,8 @@ const featuredList = [
     adjustment: [1, 1, 1],
     units: ["dollars","points",  "dollars"],
     yaxistype : [0,1,0],
-    comparisonChartName: null
+    comparisonChartName: null,
+    chatgptPromptInput : ["WTI Oil Price", "Wilshire 5000 Price Index", "Gold Price"]
   },
 
   //@todo - issue with cftc data as it has multiple values in a row
@@ -388,6 +391,7 @@ const featuredList = [
     units: ["percent", "percent", "percent"],
     yaxistype : [0,1],
     comparisonChartName: "DFF",
+    chatgptPromptInput : ["Corporated Debt divided by GDP", "Fed Funds Rate"]
   },
   {
     title: "Total US Debt / GDP and Fed Funds Rate",
@@ -682,55 +686,55 @@ const featuredList = [
     // colors : ['#1f77b4', '#7f7f7f', "#FF00FF",'#8c564b', '#ff7f0e', '#9467bd', '#2ca02c', '#d62728' , '#e377c2'],
   },
 
-  // {
-  //   title: "Non-Commerical Net Futures Positions and WTI Price",
-  //   urlendpoint: "futures_wti",
-  //   use: "compare",
-  //   // chartToCreate: true,
-  //   // numChartToCreate : 1, //length of chartmethod
-  //   // chartToCreateName : ["Non Commerical Net Positions"],
-  //   // chartMethod : [["Addition"]],
-  //   adjustYaxis: true,
-  //   tag: ["WTI-PHYSICAL","EURO FX", "WTISPLC"],
-  //   source: ["CFTC","CFTC","FRED"],
-  //   frequency: ["","","m"],
-  //   transformation: ["","","lin"],
-  //   aggregation: ["","","avg"],
-  //   columnsToUse : [["noncomm_positions_net"],["noncomm_positions_net"],""],
-  //   adjustment: [1, 1,1],
-  //   units: [
-  //     "contracts", "$/barrel"
-  //   ],
-  //   yaxistype : [0,0,1],
-  //   comparisonChartName: "WTISPLC",
-  //   // reference : "https://fredblog.stlouisfed.org/2023/07/are-real-gasoline-prices-really-higher/"
-  //   // colors : ['#1f77b4', '#7f7f7f', "#FF00FF",'#8c564b', '#ff7f0e', '#9467bd', '#2ca02c', '#d62728' , '#e377c2'],
-  // },
+  {
+    title: "Non-Commerical Net Futures Positions and WTI Price",
+    urlendpoint: "futures_wti",
+    use: "compare",
+    // chartToCreate: true,
+    // numChartToCreate : 1, //length of chartmethod
+    // chartToCreateName : ["Non Commerical Net Positions"],
+    // chartMethod : [["Addition"]],
+    adjustYaxis: true,
+    tag: ["WTI-PHYSICAL","EURO FX", "WTISPLC"],
+    source: ["CFTC","CFTC","FRED"],
+    frequency: ["","","m"],
+    transformation: ["","","lin"],
+    aggregation: ["","","avg"],
+    columnsToUse : [["noncomm_positions_net"],["noncomm_positions_net"],""],
+    adjustment: [1, 1,1],
+    units: [
+      "contracts", "$/barrel"
+    ],
+    yaxistype : [0,0,1],
+    comparisonChartName: "WTISPLC",
+    // reference : "https://fredblog.stlouisfed.org/2023/07/are-real-gasoline-prices-really-higher/"
+    // colors : ['#1f77b4', '#7f7f7f', "#FF00FF",'#8c564b', '#ff7f0e', '#9467bd', '#2ca02c', '#d62728' , '#e377c2'],
+  },
 
-  // {
-  //   title: "Non-Commerical Net Futures Positions and Nasdaq",
-  //   urlendpoint: "futures_nasdaq",
-  //   use: "compare",
-  //   // chartToCreate: true,
-  //   // numChartToCreate : 1, //length of chartmethod
-  //   // chartToCreateName : ["Non Commerical Net Positions"],
-  //   // chartMethod : [["Addition"]],
-  //   adjustYaxis: true,
-  //   tag: ["NASDAQ MINI","NASDAQCOM"],
-  //   source: ["CFTC","FRED"],
-  //   frequency: ["","m"],
-  //   transformation: ["","lin"],
-  //   aggregation: ["","avg"],
-  //   columnsToUse : [["noncomm_positions_net"],""],
-  //   adjustment: [1, 1],
-  //   units: [
-  //     "contracts", "points"
-  //   ],
-  //   yaxistype : [0,1],
-  //   comparisonChartName: "NASDAQCOM",
-  //   // reference : "https://fredblog.stlouisfed.org/2023/07/are-real-gasoline-prices-really-higher/"
-  //   // colors : ['#1f77b4', '#7f7f7f', "#FF00FF",'#8c564b', '#ff7f0e', '#9467bd', '#2ca02c', '#d62728' , '#e377c2'],
-  // },
+  {
+    title: "Non-Commerical Net Futures Positions and Nasdaq",
+    urlendpoint: "futures_nasdaq",
+    use: "compare",
+    // chartToCreate: true,
+    // numChartToCreate : 1, //length of chartmethod
+    // chartToCreateName : ["Non Commerical Net Positions"],
+    // chartMethod : [["Addition"]],
+    adjustYaxis: true,
+    tag: ["NASDAQ MINI","NASDAQCOM"],
+    source: ["CFTC","FRED"],
+    frequency: ["","m"],
+    transformation: ["","lin"],
+    aggregation: ["","avg"],
+    columnsToUse : [["noncomm_positions_net"],""],
+    adjustment: [1, 1],
+    units: [
+      "contracts", "points"
+    ],
+    yaxistype : [0,1],
+    comparisonChartName: "NASDAQCOM",
+    // reference : "https://fredblog.stlouisfed.org/2023/07/are-real-gasoline-prices-really-higher/"
+    // colors : ['#1f77b4', '#7f7f7f', "#FF00FF",'#8c564b', '#ff7f0e', '#9467bd', '#2ca02c', '#d62728' , '#e377c2'],
+  },
 
 
 

@@ -21,7 +21,7 @@ const queries = {
 
   CHECK_IF_OPENAI_RESPONSE_OLDER_THAN_A_MONTH: `SELECT * FROM ??.?? WHERE last_updated_time < ?`,
   
-  SELECT_OPENAIRESULT_TABLE_TEXT: `SELECT openai_response FROM OPENAIRESULT.??`,
+  SELECT_OPENAIRESULT_TABLE_TEXT: `SELECT openai_response, last_updated_time FROM OPENAIRESULT.??`,
 
   DROP_OPENAI_TABLE: `DROP TABLE ??.??`,
   CREATE_OPENAI_TABLE: `CREATE TABLE ??.?? (

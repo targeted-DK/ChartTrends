@@ -64,7 +64,7 @@
     
 
 <!-- Two containers merged into one, to make 'tag' accessible from both js files -->
-<div id="container">
+<div class = "container" id="container">
   <script>let tag = "<%= tag %>";
           let use = "<%= use %>";
   </script>
@@ -76,8 +76,13 @@
     <!-- <script type="module" src="/static/js/createChart-setup.js"></script> -->
   </div>
 
-  <div class="info-text" id = "info-text">
+  <div class="gpt-container" id = "gpt-container">
+    <div class = "gpt-text" id = "gpt-text">
+    </div>
+    <sub class = "gpt-info" id = "gpt-info">
+    </sub>
   </div>
+ 
   <script type="module" src="/static/js/chart-setup.js"></script>
   </div>
 </div>
