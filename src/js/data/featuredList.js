@@ -9,7 +9,7 @@
 //for 2-chart graphs, we need comparisonChartName in case of different units
 const featuredList = [
   {
-    title: "M2 vs. CPI",
+    title: "M2 vs. CPI yoy change",
     urlendpoint: "M2_CPI",
     use: "compare",
     chartToCreate: false,

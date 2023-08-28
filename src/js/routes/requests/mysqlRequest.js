@@ -778,7 +778,7 @@ export async function sendDataToRDS(mappedDataForRds) {
    
   } else {
     console.log("Does not have access to database");
-
+    // console.log(database);
   // database.end((err) => {
   //   if (err) {
   //     console.error('Error closing MySQL connection:', err);

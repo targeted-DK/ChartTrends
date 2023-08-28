@@ -161,7 +161,7 @@ async function getPromptRelatedInfoFromDataListJS(urlendpoint){
         } else if(sources[num] == "custom"){
           //this case may be modified because it is a colleciton of custom charts that vary depending on how charts are drawn
 
-          chatgptPromptInputs.push(tags[num] + " price")
+          chatgptPromptInputs.push(tags[num])
 
 
         }
