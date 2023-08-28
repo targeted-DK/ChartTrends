@@ -48,7 +48,6 @@ let bankList = [
       numChartToCreate : 3, 
       chartToCreateName :["Ratio of Securities in Bank Credit of All Commercial Banks","Ratio of Securities in Bank Credit of Small Domestically Chartered Commercial Banks","Ratio of Securities in Bank Credit of Large Domestically Chartered Commercial Banks"],
       chartMethod : "Division",
-    
       adjustYaxis: false,
       tag: ["TOTBKCR", "SBCACBW027SBOG","BC0SCBW027SBOG", "SBCSCBW027SBOG", "BC0LCBW027SBOG","SBCLCBW027SBOG"],
       source :  ["FRED", "FRED","FRED","FRED","FRED","FRED"],
@@ -60,6 +59,7 @@ let bankList = [
       newUnits : ["percent", "percent","percent"],
       yaxistype : [0,0,0],
       comparisonChartName : null,
+      chatgptPromptInput : ["Ratio of Securities in Bank Credit of All Commercial Banks","Ratio of Securities in Bank Credit of Small Domestically Chartered Commercial Banks","Ratio of Securities in Bank Credit of Large Domestically Chartered Commercial Banks"],
     },
   
 
@@ -77,6 +77,7 @@ let bankList = [
       adjustment: [1,1,1],
       units : ["Billions of dollars","Billions of dollars","Billions of dollars"],
       comparisonChartName : null,
+    
     },
 
    
@@ -99,6 +100,7 @@ let bankList = [
       newUnits : ["percent", "percent"],
       yaxistype : [0,0],
       comparisonChartName : null,
+      chatgptPromptInput :  ["CRE Ratio in Small Banks", "CRE Ratio in Large Banks"],
     },
 
     {
@@ -139,6 +141,7 @@ let bankList = [
       newUnits : ["percent", "percent"],
       yaxistype : [0,0],
       comparisonChartName : null,
+      chatgptPromptInput: ["Cash/Reserve in Small Commercial Banks","Cash/Reserve in Large Commercial Banks"],
     },
 
     {
@@ -180,6 +183,7 @@ let bankList = [
       newUnits : ["percent"],
       yaxistype : [0],
       comparisonChartName : null,
+      chatgptPromptInput : ["Level of Reserves to GDP Ratio"],
     },
 
    
