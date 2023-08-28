@@ -10,7 +10,8 @@ import bondsList from "../../../data/bondsList.js";
 import usgovList from "../../../data/usgovList.js";
 import fedList from "../../../data/fedList.js";
 import macroList from "../../../data/macroList.js";
-import {eiaDataOilTags, eiaDataNGTags, eiaDataPetroleumTags, fredDataList, eiaDataOilList, eiaDataPetroleumList } from "../../../data/dataList.js";
+import {eiaDataOilTags, eiaDataNGTags, eiaDataPetroleumTags, fredDataList, eiaDataOilList, eiaDataPetroleumList, cftcFinancialDerivativesList, cftcList, bokList } from "../../../data/dataList.js";
+import chinaList from "../../../data/chinaList.js";
 const router = express.Router();
 
 router.use(bodyParser.json());
@@ -71,6 +72,7 @@ async function getPromptRelatedInfoFromDataListJS(urlendpoint){
     list.push(macroList.map(item => item.urlendpoint));
     list.push(usgovList.map(item => item.urlendpoint));
     list.push(fedList.map(item => item.urlendpoint));
+    list.push(chinaList.map(item => item.urlendpoint));
 
     // let info = list[String(urlendpoint)];
     // ratio, data, oil ? 
@@ -79,7 +81,7 @@ async function getPromptRelatedInfoFromDataListJS(urlendpoint){
     let hashMap = {};
 
     // Combine all lists into a hash map for quick lookups
-    [...featuredList, ...bankList, ...bondsList, ...macroList, ...usgovList, ...fedList].forEach(item => {
+    [...featuredList, ...bankList, ...bondsList, ...macroList, ...usgovList, ...fedList, ...chinaList].forEach(item => {
         hashMap[item.urlendpoint] = item;
     });
     
@@ -113,18 +115,24 @@ async function getPromptRelatedInfoFromDataListJS(urlendpoint){
           //eiaDataTags is a list, eiaDataList is kv pair object.
           let eiaDataTags = [...eiaDataOilTags, ...eiaDataPetroleumTags, ...eiaDataNGTags];
           let eiaDataList = {...eiaDataOilList, ...eiaDataPetroleumList, ...eiaDataOilList};
-          let tagIndex = eiaDataTags.findInex(item => item == tags[num]);
+          let eiaTagIndex = eiaDataTags.findInex(item => item == tags[num]);
        
-          if (tagIndex !== -1) {
+          if (eiaTagIndex !== -1) {
 
-           let tag = (Object.keys(eiaDataList[tagIndex]));
+           let tag = (Object.keys(eiaDataList[eiaTagIndex]));
             chatgptPromptInputs.push(tag);
+            
           } else {
-            chatgptPromptInputs.push("No match found");
+            chatgptPromptInputs.push("No match found in EIA dataset");
           }
 
         }else if(sources[num] == "CFTC"){
 
+          //cftc tags used are exactly same as names, so no need to filter out
+          // let cftcTags = [...cftcList, ...cftcFinancialDerivativesList];
+
+          chatgptPromptInputs.push(tags[num])
+          break;
 
         }else if(sources[num] == "BakerHughes"){
 
@@ -132,8 +140,27 @@ async function getPromptRelatedInfoFromDataListJS(urlendpoint){
         }else if(sources[num] == "NDL"){
 
         }else if(sources[num] == "BOK"){
-           
-        }
+
+         
+          let bokTag = tags[num];
+
+          const [categoryTag, valueTag] = bokTag.split("_");
+
+          let bokDataObjects = Object.entries(bokList);
+
+          for(let dataObject in bokDataObjects){
+            if(dataObject.info.code == categoryTag){
+          
+              let key = findKeyByValue(dataObject, valueTag);
+
+              let nameUsedInGPT = dataObject.info.name + ", " + key;
+              console.log(nameUsedInGPT);
+              chatgptPromptInputs.push(nameUsedInGPT)
+              break;
+            }
+          }
+          chatgptPromptInputs.push("No match found in Bank of Korea Dataset");
+        } 
       }
     }
     
@@ -146,7 +173,6 @@ function findKeyByValue(obj, value) {
       return key;
     }
   }
-  return null; // If value is not found
+  return null; // Return null if value is not found
 }
-
 export default { getDataFromOpenAI, checkAndAddOpenAIResponseToDB, router };

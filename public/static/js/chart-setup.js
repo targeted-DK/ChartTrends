@@ -27,6 +27,7 @@ Promise.all([
 ])
   .then(([response1, response2]) => {
 
+
     const gptContainer = document.getElementById("gpt-container")
     const gptTextContainer = document.getElementById("gpt-text");
     const gptInfoContainer = document.getElementById("gpt-info");

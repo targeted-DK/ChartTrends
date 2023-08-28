@@ -1096,49 +1096,7 @@ export const bokList = {
   // },
 
   //A,Q
-  GDPGrowth  : {
-    info: { name: "GDP Growth Rate", code: "902Y015" },
-    //Greater Seoul Metropolitan Area
-    "South Korea": "KOR",
-// "Australia": "AUS",
-// "Austria": "AUT",
-// "Belgium": "BEL",
-// "Canada": "CAN",
-// "Chile": "CHL",
-"China": "CHN",
-// "Czech Republic": "CZE",
-// "Denmark": "DNK",
-// "Estonia": "EST",
-// "Finland": "FIN",
-// "France": "FRA",
-// "Germany": "DEU",
-// "Greece": "GRC",
-// "Hungary": "HUN",
-// "Iceland": "ISL",
-// "Indonesia": "IDN",
-// "Ireland": "IRL",
-// "Israel": "ISR",
-// "Italy": "ITA",
-// "Japan": "JPN",
-// "Latvia": "LVA",
-// "Luxembourg": "LUX",
-// "Mexico": "MEX",
-// "Netherlands": "NLD",
-// "New Zealand": "NZL",
-// "Norway": "NOR",
-// "Poland": "POL",
-// "Portugal": "PRT",
-// "Russia": "RUS",
-// "Slovakia": "SVK",
-// "Slovenia": "SVN",
-// "Spain": "ESP",
-// "Sweden": "SWE",
-// "Switzerland": "CHE",
-// "Turkey": "TUR",
-// "United Kingdom": "GBR",
-// "United States": "USA",
-
-  }
+ 
 
   // KoreanHousingInventory  : {
   //   info: { name: "Korean Housing Inventory", code: "901Y074" },
