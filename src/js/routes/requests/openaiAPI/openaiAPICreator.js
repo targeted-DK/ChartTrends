@@ -37,7 +37,7 @@ router.post("/openaiRequest", async (req, res) => {
 async function checkAndAddOpenAIResponseToDB(urlendpoint, chartName, chatgptPromptInputs) {
   
   try {
-    let promptQuestion = `Imagine yourself as an financial expert. You are trying to make a chart named ${chartName}. This chart contains following graphs : ${chatgptPromptInputs}. Explain how they are related and interpreted in stock market in a concise but professional manner. Use less than 200 tokens.`;
+    let promptQuestion = `Imagine yourself as an financial expert. You are trying to make a chart named ${chartName}. This chart contains following graphs : ${chatgptPromptInputs}. Explain how they are related and interpreted in stock market in a concise but professional manner. Use less than 500 tokens.`;
     let dataFromDB = await sendOpenAIDataToDBAndFetch(promptQuestion, urlendpoint);
     return dataFromDB;
   } catch (error) {
@@ -140,8 +140,6 @@ async function getPromptRelatedInfoFromDataListJS(urlendpoint){
         }else if(sources[num] == "NDL"){
 
         }else if(sources[num] == "BOK"){
-
-         
           let bokTag = tags[num];
 
           const [categoryTag, valueTag] = bokTag.split("_");
