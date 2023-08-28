@@ -352,6 +352,8 @@ const featuredList = [
     units: ["percent", "Billions of Dollars"],
     yaxistype : [0,1],
     comparisonChartName: "A091RC1Q027SBEA",
+    chatgptPromptInput : ["US Government Expenditure Interest Rate as a % of GDP", "Federal Government current expenditures: interest payments"]
+
   },
 
 
